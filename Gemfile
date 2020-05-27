@@ -39,10 +39,14 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # Gem для доступа к контроллерам из javascript
 gem 'paloma', '~> 6.0.0'
 
-#group :development, :test do
-#  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-#  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-#end
+group :development do
+  #gem "listen"
+  gem "capistrano", require: false
+  gem "capistrano-rails", require: false
+  gem "capistrano-rbenv", require: false
+  gem "capistrano-nvm", require: false
+  #gem "pry-rails"
+end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
