@@ -10,7 +10,14 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+//= require paloma
+//= require_tree ./page_scripts
 //= require rails-ujs
-//= require activestorage
+// require activestorage
 //= require turbolinks
 //= require_tree .
+
+
+$(document).ready(function(){
+  Paloma.start();
+});
