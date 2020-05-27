@@ -1,0 +1,8 @@
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: mostransport
+  pool: 10
+  host: localhost
+  username: mostransport
+  password: mostranspass

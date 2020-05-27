@@ -17,6 +17,9 @@
 default: &default
   adapter: postgresql
   encoding: unicode
+  host: localhost
+  pool: 5
+  timeout: 5000
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
@@ -80,8 +83,3 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
-production:
-  <<: *default
-  database: mostransport_production
-  username: mostransport
-  password: <%= ENV['MOSTRANSPORT_DATABASE_PASSWORD'] %>
