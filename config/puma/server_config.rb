@@ -1,12 +1,13 @@
 #!/usr/bin/env puma
 
-root_path = File.expand_path('..', File.dirname(__FILE__))
+fail 'RACK_ENV must be set' unless ENV['RACK_ENV']
+fail 'RAILS_ENV must be set' unless ENV['RAILS_ENV']
 
 # The directory to operate out of.
 #
 # The default is the current directory.
 #
-directory root_path
+directory '/home/mostransport/mostransport/current'
 
 # Use an object or block as the rack application. This allows the
 # config file to be the application itself.
@@ -29,29 +30,30 @@ directory root_path
 #
 # The default is "development".
 #
-# environment ENV.fetch('RACK_ENV')
+environment ENV.fetch('RACK_ENV')
 
 # Daemonize the server into the background. Highly suggest that
 # this be combined with "pidfile" and "stdout_redirect".
 #
 # The default is "false".
 #
-# daemonize true
+daemonize true
 
 # Store the pid of the server in the file at "path".
 #
-pidfile File.join(root_path, 'tmp', 'pids', 'puma.pid')
+pidfile '/home/mostransport/mostransport/shared/tmp/pids/puma.pid'
 
 # Use "path" as the file to store the server info state. This is
 # used by "pumactl" to query and control the server.
 #
-state_path File.join(root_path, 'tmp', 'pids', 'puma.state')
+state_path '/home/mostransport/mostransport/shared/tmp/pids/puma.state'
 
 # Redirect STDOUT and STDERR to files specified. The 3rd parameter
 # ("append") specifies whether the output is appended, the default is
 # "false".
 #
-# stdout_redirect File.join(root_path, 'log', 'puma.stdout.log'), File.join('log', 'puma.stderr.log'), true
+stdout_redirect '/home/mostransport/mostransport/shared/log/puma.stdout.log',
+  '/home/mostransport/mostransport/shared/log/puma.stderr.log', true
 
 # Disable request logging.
 #
@@ -75,7 +77,7 @@ threads 0, 2
 # bind 'unix:///var/run/puma.sock'
 # bind 'unix:///var/run/puma.sock?umask=0111'
 # bind 'ssl://127.0.0.1:9292?key=path_to_key&cert=path_to_cert'
-bind 'tcp://localhost:3000'
+bind 'tcp://localhost:55501'
 
 # Instead of "bind 'ssl://127.0.0.1:9292?key=path_to_key&cert=path_to_cert'" you
 # can also use the "ssl_bind" option.
@@ -112,7 +114,7 @@ bind 'tcp://localhost:3000'
 #
 # The default is "0".
 #
-# workers 4
+workers 4
 
 # Code to run immediately before the master starts workers.
 #
