@@ -6,7 +6,7 @@
 # server "example.com", user: "deploy", roles: %w{app db web}, my_property: :my_value
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
-server '84.201.137.27', user: "mostransport", roles: %w{app db web tasks}
+server '84.201.149.214', user: "mostransport", roles: %w{app db web tasks}
 
 
 # role-based syntax

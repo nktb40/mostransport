@@ -45,8 +45,11 @@ set :keep_releases, 7
 # Uncomment the following to require manually verifying the host key before first deploy.
 set :ssh_options, verify_host_key: :always
 
+set :bundle_bins, %w{rake rails}
+
 namespace :deploy do
   after 'symlink:shared', 'deploy:setup_configs'
+  after 'symlink:shared', 'deploy:setup_bundler'
   after 'deploy:publishing', 'puma:phased-restart'
   after 'deploy:publishing', 'sidekiq:quiet'
   after 'deploy:published', 'sidekiq:stop'

@@ -197,7 +197,7 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   paloma (~> 6.0.0)
-  pg (>= 0.18, < 2.0)
+  pg (>= 0.18)
   puma (~> 3.11)
   rails (~> 5.2.3)
   sass-rails (~> 5.0)
