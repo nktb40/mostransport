@@ -547,9 +547,9 @@ Paloma.controller('Map',
               contour = routeStops.find(function(r){return r.contour == t});
 
               if (contour){
-                contour.id = [...new Set(contour.id.concat(ids))];
+                contour.id = Array.from(new Set(contour.id.concat(ids)));
               } else {
-                routeStops.push({contour: t, id: [...new Set(ids)]});
+                routeStops.push({contour: t, id: Array.from(new Set(ids))});
               }
               
             });
