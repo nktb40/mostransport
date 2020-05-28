@@ -55,5 +55,5 @@ namespace :deploy do
   after 'deploy:published', 'sidekiq:stop'
   after 'deploy:published', 'sidekiq:start'
   after 'deploy:failed', 'sidekiq:restart'
-  after 'deploy:published', 'sitemap:refresh'
+  #after 'deploy:published', 'sitemap:refresh'
 end
