@@ -27,6 +27,8 @@ append :linked_files, ".env"
 append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system", "storage", "uploads",
   "public/packs", "public/uploads"
 
+set :bundle_bins, %w{rake rails}
+
 # Bundler integration
 append :bundle_bins, 'puma', 'pumactl'
 
@@ -44,8 +46,6 @@ set :keep_releases, 7
 
 # Uncomment the following to require manually verifying the host key before first deploy.
 set :ssh_options, verify_host_key: :always
-
-set :bundle_bins, %w{rake rails}
 
 namespace :deploy do
   after 'symlink:shared', 'deploy:setup_configs'
