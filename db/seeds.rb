@@ -68,23 +68,53 @@ puts "LnkStationRoutes: done"
 # ====================================
 # Isohrones/ Public Transport
 # ====================================
-# puts "Isohrones/ Public Transport: begin"
-# (0..1).each do |i|
-#   (1..6).each do |p|
-#     CSV.foreach("seeds/public_transport/stops_iso_public_transport_int#{i}_p#{p}.csv", :headers => true) do |row|
-#       station = Station.find_or_create_by(source_id: row['global_id'])
-#       row = {
-#       	station_id: station.id,
-#        	unique_code: row['ID'], 
-#       	source_station_id: row['global_id'], 
-#       	contour: row['contour'], 
-#       	profile: row['profile'],
-#       	with_interval: row['with_interval'],
-#       	geo_data: row['polygon'] 
-#       }
-#       item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
-#       item.update!(row)
-#     end
-#   end
-# end
-# puts "Isohrones/ Public Transport: done"
+puts "Isohrones/ Public Transport: begin"
+files = Dir.glob("seeds/#{profile}/*.csv")
+
+files.each do |file_name|
+  puts "*** Loading #{file_name}"
+  CSV.foreach(file_name, :headers => true, :col_sep => ";", :quote_char => "'") do |row|
+    puts(row.to_hash)
+    station = Station.find_or_create_by(source_id: row['global_id'])
+    row = {
+      station_id: station.id,
+      unique_code: row['ID'], 
+      source_station_id: row['global_id'], 
+      contour: row['contour'], 
+      profile: row['profile'],
+      with_interval: row['with_interval'],
+      geo_data: JSON.parse(row['polygon'])
+    }
+    item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
+    item.update!(row)
+  end
+end
+puts "Isohrones/ Public Transport: done"
+
+# ====================================
+# Isohrones/ Walking
+# ====================================
+["walking, cycling, driving"].each do |profile|
+
+  files = Dir.glob("seeds/#{profile}/*.csv")
+
+  files.each do |file_name|
+    puts "*** Loading #{file_name}"
+    CSV.foreach(file_name, :headers => true, :col_sep => ",", :quote_char => '"') do |row|
+      puts(row.to_hash)
+      station = Station.find_or_create_by(source_id: row['global_id'])
+      row = {
+        station_id: station.id,
+        unique_code: row['ID'], 
+        source_station_id: row['global_id'], 
+        contour: row['contour'], 
+        profile: row['profile'],
+        with_interval: row['with_interval'],
+        geo_data: JSON.parse(row['polygon'])
+      }
+      item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
+      item.update!(row)
+    end
+  end
+
+end

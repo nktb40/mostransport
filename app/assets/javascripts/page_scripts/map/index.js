@@ -59,6 +59,8 @@ Paloma.controller('Map',
 
     // Загрузка Tileset-ов для отображения объектов на карте
     map.on('load', function() {
+      console.log("Map");
+      console.log(map);
 
       // Загружаем слои с изохронами
       iso_layers.forEach(function(layer){
@@ -571,22 +573,7 @@ Paloma.controller('Map',
       };
 
       isochrones.forEach(function(p){
-        geo_type = "";
-        polygon = [];
-
-        if(p.profile == "public_transport"){
-          polygon = JSON.parse(p.geo_data);
-          if(polygon.length == 1){
-            geo_type = "Polygon";
-          } else{
-            geo_type = "MultiPolygon";
-          }
-
-        } else {
-          polygon = [JSON.parse(p.geo_data)];
-          geo_type = "Polygon";
-        }
-
+        
         feature = {
           "type": "Feature",
           "properties": {
@@ -595,10 +582,7 @@ Paloma.controller('Map',
             "global_id": p.source_station_id, 
             "contour": p.contour
           },
-          "geometry": {
-            "type": geo_type,
-            "coordinates": polygon
-          }
+          "geometry": p.geo_data
         };
 
         data.features.push(feature);
