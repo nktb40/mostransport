@@ -386,11 +386,11 @@ Paloma.controller('Map',
 	    console.log(data);
 
 	    isoFeatures = getPolygonFeatures(data);
-        console.log(isoFeatures);
-        map.getSource('pointIsochrones').setData(isoFeatures);
-        featureWithInfo = addFeatureInfo(isoFeatures);
-        displayInfo(featureWithInfo);
-        filter_objects(featureWithInfo);
+      console.log(isoFeatures);
+      map.getSource('pointIsochrones').setData(isoFeatures);
+      featureWithInfo = addFeatureInfo(isoFeatures);
+      displayInfo(featureWithInfo);
+      //filter_objects(featureWithInfo);
 	  })
 	  .always(function() {
 	    $('.loading').addClass('none');
@@ -417,7 +417,7 @@ Paloma.controller('Map',
 
 
     // Обработчик события получения сообщения с сервера WiX
-    window.onmessage = function(e){
+    /*window.onmessage = function(e){
       $('.loading').addClass('none');
 
       console.log("Result:");
@@ -560,7 +560,7 @@ Paloma.controller('Map',
       });
 
       return routeStops;
-    }
+    }*/
 
 
     function getPolygonFeatures(isochrones){
@@ -573,7 +573,7 @@ Paloma.controller('Map',
       };
 
       isochrones.forEach(function(p){
-        
+
         feature = {
           "type": "Feature",
           "properties": {
