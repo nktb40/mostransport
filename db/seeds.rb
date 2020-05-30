@@ -27,29 +27,29 @@ require 'csv'
 # end
 # puts "Stations: done"
 
-# # ====================================
-# # Routes
-# # ====================================
-# puts "Routes: begin"
-# CSV.foreach("seeds/routes/routes_enrich.csv", :headers => true) do |row|
-#   row = {
-#   	global_id: row['global_id'],
-#     route_number: row['RouteNumber'],
-#     route_code: row['route_code'],
-#     route_name: row['RouteName'],
-#     track_of_following: row['TrackOfFollowing'],
-#     reverse_track_of_following: row['ReverseTrackOfFollowing'],
-#     type_of_transport: row['TypeOfTransport'],
-#     carrier_name: row['CarrierName'],
-#     geo_data: row['geoData'],
-#     route_interval: row['Avg_fact_interval'],
-#     route_length: row['route_length'],
-#     route_cost: row['route_cost']
-#   }
-#   item = Route.find_or_initialize_by(global_id: row[:global_id])
-#   item.update!(row)
-# end
-# puts "Routes: done"
+# ====================================
+# Routes
+# ====================================
+puts "Routes: begin"
+CSV.foreach("seeds/routes/routes_enrich.csv", :headers => true) do |row|
+  row = {
+  	global_id: row['global_id'],
+    route_number: row['RouteNumber'],
+    route_code: row['route_code'],
+    route_name: row['RouteName'],
+    track_of_following: row['TrackOfFollowing'],
+    reverse_track_of_following: row['ReverseTrackOfFollowing'],
+    type_of_transport: row['TypeOfTransport'],
+    carrier_name: row['CarrierName'],
+    geo_data: row['geoData'],
+    route_interval: row['avg_fact_interval'],
+    route_length: row['route_length'],
+    route_cost: row['route_cost']
+  }
+  item = Route.find_or_initialize_by(global_id: row[:global_id])
+  item.update!(row)
+end
+puts "Routes: done"
 
 # # ====================================
 # # LnkStationRoutes
@@ -91,35 +91,35 @@ require 'csv'
 # end
 # puts "Isohrones/ Public Transport: done"
 
-# ====================================
-# Isohrones/ Walking
-# ====================================
-["walking", "cycling", "driving"].each do |profile|
+# # ====================================
+# # Isohrones/ Walking
+# # ====================================
+# ["walking", "cycling", "driving"].each do |profile|
 
-  puts "Isohrones/ #{profile}: begin"
+#   puts "Isohrones/ #{profile}: begin"
 
-  files = Dir.glob("seeds/#{profile}/*.csv")
+#   files = Dir.glob("seeds/#{profile}/*.csv")
 
-  files.each do |file_name|
-    puts "*** Loading #{file_name}"
-    CSV.foreach(file_name, :headers => true, :col_sep => ",", :quote_char => '"') do |row|
-      #puts(row.to_hash)
-      station = Station.find_or_create_by(source_id: row['global_id'])
-      row = {
-        station_id: station.id,
-        unique_code: row['id'], 
-        source_station_id: row['global_id'], 
-        contour: row['contour'], 
-        profile: row['profile'],
-        with_interval: row['with_interval'],
-        geo_data: JSON.parse(row['polygon'])
-      }
-      #puts row
-      item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
-      item.update!(row)
-    end
-  end
+#   files.each do |file_name|
+#     puts "*** Loading #{file_name}"
+#     CSV.foreach(file_name, :headers => true, :col_sep => ",", :quote_char => '"') do |row|
+#       #puts(row.to_hash)
+#       station = Station.find_or_create_by(source_id: row['global_id'])
+#       row = {
+#         station_id: station.id,
+#         unique_code: row['id'], 
+#         source_station_id: row['global_id'], 
+#         contour: row['contour'], 
+#         profile: row['profile'],
+#         with_interval: row['with_interval'],
+#         geo_data: JSON.parse(row['polygon'])
+#       }
+#       #puts row
+#       item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
+#       item.update!(row)
+#     end
+#   end
 
-  puts "Isohrones/ #{profile}: done"
+#   puts "Isohrones/ #{profile}: done"
 
-end
+# end

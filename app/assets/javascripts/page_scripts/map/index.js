@@ -610,7 +610,7 @@ Paloma.controller('Map',
           'route_code': route.route_code,
           'route_cost': route.route_cost,
           'route_length': route.route_length,
-          'interval': route.route_interval
+          'route_interval': route.route_interval
         };
 
         feature.geometry = geometry;
