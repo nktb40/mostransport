@@ -27,29 +27,29 @@ require 'csv'
 # end
 # puts "Stations: done"
 
-# ====================================
-# Routes
-# ====================================
-puts "Routes: begin"
-CSV.foreach("seeds/routes/routes_enrich.csv", :headers => true) do |row|
-  row = {
-  	global_id: row['global_id'],
-    route_number: row['RouteNumber'],
-    route_code: row['route_code'],
-    route_name: row['RouteName'],
-    track_of_following: row['TrackOfFollowing'],
-    reverse_track_of_following: row['ReverseTrackOfFollowing'],
-    type_of_transport: row['TypeOfTransport'],
-    carrier_name: row['CarrierName'],
-    geo_data: row['geoData'],
-    route_interval: row['avg_fact_interval'],
-    route_length: row['route_length'],
-    route_cost: row['route_cost']
-  }
-  item = Route.find_or_initialize_by(global_id: row[:global_id])
-  item.update!(row)
-end
-puts "Routes: done"
+# # ====================================
+# # Routes
+# # ====================================
+# puts "Routes: begin"
+# CSV.foreach("seeds/routes/routes_enrich.csv", :headers => true) do |row|
+#   row = {
+#   	global_id: row['global_id'],
+#     route_number: row['RouteNumber'],
+#     route_code: row['route_code'],
+#     route_name: row['RouteName'],
+#     track_of_following: row['TrackOfFollowing'],
+#     reverse_track_of_following: row['ReverseTrackOfFollowing'],
+#     type_of_transport: row['TypeOfTransport'],
+#     carrier_name: row['CarrierName'],
+#     geo_data: row['geoData'],
+#     route_interval: row['avg_fact_interval'],
+#     route_length: row['route_length'],
+#     route_cost: row['route_cost']
+#   }
+#   item = Route.find_or_initialize_by(global_id: row[:global_id])
+#   item.update!(row)
+# end
+# puts "Routes: done"
 
 # # ====================================
 # # LnkStationRoutes
@@ -123,3 +123,52 @@ puts "Routes: done"
 #   puts "Isohrones/ #{profile}: done"
 
 # end
+
+# ====================================
+# Metric types
+# ====================================
+puts "Metric Type: begin"
+rows = [
+  {metric_code: "isochrone_area", metric_name: "Площадь изохрона", unit_code: "км2."},
+
+  {metric_code: "houses_cnt", metric_name: "Кол-во домов", unit_code: ""},
+  {metric_code: "houses_population", metric_name: "Кол-во жителей", unit_code: ""},
+
+  {metric_code: "offices_cnt", metric_name: "Кол-во офисов", unit_code: ""},
+  {metric_code: "offices_population", metric_name: "Кол-во работников", unit_code: ""},
+
+  {metric_code: "universities_cnt", metric_name: "Кол-во университетов", unit_code: ""},
+  {metric_code: "universities_population", metric_name: "Кол-во студентов", unit_code: ""}
+]
+
+rows.each do |row|
+  item = MetricType.find_or_initialize_by(metric_code: row[:metric_code])
+  item.update!(row)
+end
+puts "Metric Type: done"
+
+# ====================================
+# Metris
+# ====================================
+puts "Metrics: begin"
+
+files = Dir.glob("seeds/metrics/*.csv")
+
+files.each do |file_name|
+  puts "*** Loading #{file_name}"
+  CSV.foreach(file_name, :headers => true, :col_sep => ";") do |row|
+    puts(row.to_hash)
+    metric_type = MetricType.find_or_create_by(metric_code: row['metric_code'])
+    isochrone = Isochrone.find_by(unique_code: row['isochrone_code'])
+    row = {
+      metric_type_id: metric_type.id,
+      isochrone_id: isochrone.id, 
+      isochrone_unique_code: row['isochrone_code'],
+      metric_value: row['metric_value']
+    }
+    item = Metric.find_or_initialize_by(metric_type_id: row[:metric_type_id], isochrone_id: row[:isochrone_id])
+    item.update!(row)
+  end
+end
+puts "Metrics: done"
+

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_27_091214) do
+ActiveRecord::Schema.define(version: 2020_05_31_045421) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,23 @@ ActiveRecord::Schema.define(version: 2020_05_27_091214) do
   create_table "lnk_station_routes", force: :cascade do |t|
     t.integer "station_id"
     t.integer "route_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "metric_types", force: :cascade do |t|
+    t.string "metric_code"
+    t.string "metric_name"
+    t.string "unit_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "metrics", force: :cascade do |t|
+    t.integer "metric_type_id"
+    t.integer "isochrone_id"
+    t.string "isochrone_unique_code"
+    t.integer "metric_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
