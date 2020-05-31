@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     collection do
       get :get_routes
       get :get_isochrones
+      get :get_metrics
      end
   end
 

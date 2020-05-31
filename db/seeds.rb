@@ -129,7 +129,7 @@ require 'csv'
 # ====================================
 puts "Metric Type: begin"
 rows = [
-  {metric_code: "isochrone_area", metric_name: "Площадь изохрона", unit_code: "км2."},
+  {metric_code: "isochrone_area", metric_name: "Площадь изохрона (км2)", unit_code: "км2."},
 
   {metric_code: "houses_cnt", metric_name: "Кол-во домов", unit_code: ""},
   {metric_code: "houses_population", metric_name: "Кол-во жителей", unit_code: ""},
@@ -147,28 +147,52 @@ rows.each do |row|
 end
 puts "Metric Type: done"
 
-# ====================================
-# Metris
-# ====================================
-puts "Metrics: begin"
+# # ====================================
+# # Metris
+# # ====================================
+# puts "Metrics: begin"
 
-files = Dir.glob("seeds/metrics/*.csv")
+# files = Dir.glob("seeds/metrics/*.csv")
 
-files.each do |file_name|
-  puts "*** Loading #{file_name}"
-  CSV.foreach(file_name, :headers => true, :col_sep => ";") do |row|
-    puts(row.to_hash)
-    metric_type = MetricType.find_or_create_by(metric_code: row['metric_code'])
-    isochrone = Isochrone.find_by(unique_code: row['isochrone_code'])
-    row = {
-      metric_type_id: metric_type.id,
-      isochrone_id: isochrone.id, 
-      isochrone_unique_code: row['isochrone_code'],
-      metric_value: row['metric_value']
-    }
-    item = Metric.find_or_initialize_by(metric_type_id: row[:metric_type_id], isochrone_id: row[:isochrone_id])
-    item.update!(row)
-  end
-end
-puts "Metrics: done"
+# files.each do |file_name|
+#   puts "*** Loading #{file_name}"
+#   CSV.foreach(file_name, :headers => true, :col_sep => ";") do |row|
+#     puts(row.to_hash)
+#     metric_type = MetricType.find_or_create_by(metric_code: row['metric_code'])
+#     isochrone = Isochrone.find_by(unique_code: row['isochrone_code'])
+#     row = {
+#       metric_type_id: metric_type.id,
+#       isochrone_id: isochrone.id, 
+#       isochrone_unique_code: row['isochrone_code'],
+#       metric_value: row['metric_value']
+#     }
+#     item = Metric.find_or_initialize_by(metric_type_id: row[:metric_type_id], isochrone_id: row[:isochrone_id])
+#     item.update!(row)
+#   end
+# end
+# puts "Metrics: done"
 
+# # ==================
+# # Test metrics
+# # ==================
+# rows = [
+#   {"metric_code"=>"isochrone_area", "isochrone_code"=>"1001928-public_transport-10-1", "metric_value"=>"64"},
+#   {"metric_code"=>"offices_cnt", "isochrone_code"=>"1001928-public_transport-10-1", "metric_value"=>"120"},
+#   {"metric_code"=>"offices_population", "isochrone_code"=>"1001928-public_transport-10-1", "metric_value"=>"3450"},
+#   {"metric_code"=>"houses_cnt", "isochrone_code"=>"1001928-public_transport-10-1", "metric_value"=>"540"},
+#   {"metric_code"=>"houses_population", "isochrone_code"=>"1001928-public_transport-10-1", "metric_value"=>"6827"}
+# ]
+# rows.each do |row|
+#   metric_type = MetricType.find_or_create_by(metric_code: row['metric_code'])
+#   isochrone = Isochrone.find_by(unique_code: row['isochrone_code'])
+
+#   row = {
+#       metric_type_id: metric_type.id,
+#       isochrone_id: isochrone.id, 
+#       isochrone_unique_code: row['isochrone_code'],
+#       metric_value: row['metric_value']
+#   }
+
+#   item = Metric.find_or_initialize_by(metric_type_id: row[:metric_type_id], isochrone_id: row[:isochrone_id])
+#   item.update!(row)
+# end

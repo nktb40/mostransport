@@ -11,14 +11,6 @@ Paloma.controller('Map',
     var pointsTileset = "nktb.bev2q4f8" //ID tileset объектов
     var pointsSourceLayer = "bus_stops"; //Название SourceLayer
 
-    // Изохроны по всем точкам
-    var iso_layers = [
-      /*{name: 'walking', url: 'nktb.3s2j8c2h'},
-      {name: 'cycling', url: 'nktb.3ka2s10w'},
-      {name: 'driving', url: 'nktb.14cjlo9r'},
-      {name: 'public_transport', url: 'nktb.19y282q8'}*/
-    ];
-
     // Данные по вспомогательным объектам
     var data_layers = [
       {name_quantity: 'Кол-во домов', name_population: 'Кол-во жителей', name: 'houses', url: 'nktb.314cfju0',icon:'house'},
@@ -47,59 +39,8 @@ Paloma.controller('Map',
     var obj_popup = new mapboxgl.Popup();
     var point_popup = new mapboxgl.Popup();
 
-    // Добавляем строки в таблицу со статистикой изохрона
-    data_layers.forEach(function(layer){
-      tr1 = '<tr class="info '+layer.name+' none"><td>'+layer.name_quantity+':</td><td class="time time-10"></td><td class="time time-20"></td><td class="time time-30"></td></tr>';
-      tr2 = '<tr class="info '+layer.name+'-population none"><td>'+layer.name_population+':</td><td class="time time-10"></td><td class="time time-20"></td><td class="time time-30"></td></tr>'
-      
-      $('#stop_stat').find('tbody').append(tr1);
-      $('#stop_stat').find('tbody').append(tr2);
-    });
-
-
     // Загрузка Tileset-ов для отображения объектов на карте
     map.on('load', function() {
-      console.log("Map");
-      console.log(map);
-
-      // Загружаем слои с изохронами
-      iso_layers.forEach(function(layer){
-
-        map.addSource(layer.name, {
-          'type': 'vector',
-          url: "mapbox://"+layer.url
-        });
-
-       times.forEach(function(t,i){
-          if (i > 0){
-            beforeLayer = layer.name+"-"+times[i-1];
-          } else{
-            beforeLayer = "";
-          }
-          
-          map.addLayer({
-            'id': layer.name+"-"+t,
-            'type': 'fill',
-            'source': layer.name,
-            'source-layer': layer.name+"-"+t,
-            'filter': ["all",["==",["get","profile"],profile],["match",["get","contour"],minutes, true, false]],
-            'layout': {
-              'visibility': 'visible'
-            },
-            'paint': {
-              'fill-color': ["case",
-                              ["==",["get","contour"],10],'#63d125',
-                              ["==",["get","contour"],20],'#efd700',
-                              ["==",["get","contour"],30],'#ef8725',
-                              '#efac00'
-                            ],
-              //["concat",'cycling-',["get","contour"]]
-              'fill-opacity': 0.5
-            }
-          });
-        });
-      });
-      
 
       // Слой для отображения индивидуальных изохронов
       map.addSource('pointIsochrones', {
@@ -148,7 +89,7 @@ Paloma.controller('Map',
         }
       });
 
-     // Загружаем слой с точками
+      // Загружаем слой с остановками
       map.addSource("points", {
           "type": "vector",
           "url": "mapbox://"+pointsTileset,
@@ -170,38 +111,12 @@ Paloma.controller('Map',
         }
       });
 
-      // Загружаем слои с доп. данными
-      data_layers.forEach(function(layer){
-        map.addSource(layer.name, {
-            "type": "vector",
-            "url": "mapbox://"+layer.url,
-            "tileSize": 512
-          }
-        );
-
-        map.addLayer({
-          'id': layer.name,
-          'type': 'symbol',
-          'source': layer.name,
-          'source-layer': layer.name,
-          'filter': false,
-          'layout': {
-            'icon-image': layer.icon+'-15',
-            'icon-padding': 0,
-            'icon-allow-overlap': true
-          }
-        });
-      });
-
       // Change the cursor to a pointer when it enters a feature in the 'points' layer.
       data_layers.map(function(l){return l.name}).concat('points').forEach(function(l){
         map.on('mouseenter', l, function(e) {
           map.getCanvas().style.cursor = 'pointer';
           if(e.features[0].source == 'points'){
             addPointPopup(e);
-          }
-          else {
-            addObjPopup(e);
           }
         });
 
@@ -212,21 +127,6 @@ Paloma.controller('Map',
           point_popup.remove();
         });
       });
-
-      // Добавление popup для вспомогательных объектов
-      function addObjPopup(e){
-        obj_popup.setLngLat(e.lngLat)
-          .setHTML(
-            "<p>"+e.features[0].properties.name+"</p>"
-            +
-            "<p>"+e.features[0].properties.address+"</p>"
-             +
-            "<p>Кол-во жителей: "+e.features[0].properties.population+"</p>"
-            +
-            "<p>id: "+e.features[0].properties.id+"</p>"
-            )
-          .addTo(map);
-      }
 
       // Добавление popup для остановок
       function addPointPopup(e){
@@ -279,9 +179,10 @@ Paloma.controller('Map',
 
     var selected_point;
     var prev_selected_point;       
+    var prev_profile;
     var profile = 'public_transport';
     var minutes = [0,10,20,30];
-    var use_intervals = 0;
+    var use_intervals = false;
 
     // Target the "params" form in the HTML
     var params = document.getElementById('params');
@@ -289,11 +190,12 @@ Paloma.controller('Map',
     // When a user changes the value of profile or duration by clicking a button, change the parameter's value and make the API query again
     params.addEventListener('change', function(e) {
       if (e.target.name === 'profile') {
+        prev_profile = profile;
         profile = e.target.value;
       } 
 
       if(profile == 'public_transport'){
-        use_intervals = (e.target.checked) ? (1) : (0);
+        use_intervals = e.target.checked;
       } else {
         use_intervals = null;
       }
@@ -323,82 +225,65 @@ Paloma.controller('Map',
     // Функция фильтрации изохронов на карте
     function filterMap(){
 
-      // Очищаем InfoBox
-      hideInfoBox();
-
       // Фильтры
       filter_minutes = ["match",["get", "contour"], minutes, true, false];
-	  filter_profile = ["==",["get", "profile"], profile];
+      filter_profile = ["==",["get", "profile"], profile];
+      
+      // Устанавливаем фильтры на слой с остановками
+      map.setFilter('pointIsoLayer', ["all",filter_profile, filter_minutes]);
 
       if(selected_point != null){
 
-      	// Устанавливаем фильтры на слой с остановками
-		map.setFilter('pointIsoLayer', ["all",filter_profile, filter_minutes]);
+        // Очищаем InfoBox
+        hideInfoBox();
 
-        // Скрываем слои с изохронами на все остановки
-        iso_layers.forEach(function(layer){
-          times.forEach(function(t){
-            map.setFilter(layer.name+"-"+t, false);
-          });
-        });
-
-        if(selected_point != prev_selected_point){
+        if(selected_point != prev_selected_point || prev_profile != profile){
         	// Очищаем слои с маршрутом и с индивидуальными изохронами
 	        map.getSource('pointIsochrones').setData({'type': 'FeatureCollection','features': []});
 	        map.getSource('routes').setData({'type': 'FeatureCollection','features': []});
 
 	        // Отправляем запрос на получение изохронов для точки
-	        pointIsoMessage();
+	        getIsochrones();
 
 	        // Отправляем запрос на получение линий маршрутов 
 	        if (profile == 'public_transport'){
-	          routesMessage();
+	          getRoutes();
 	        }
         }
 
-      } /*else {
-        map.setFilter('pointIsoLayer', false);
-		
-		// Фильтры для слоёв
-      	filter_minutes = ["match",["get", "contour"], minutes, true, false];
-      	filter_profile = ["==",["get", "profile"], profile];
-
-        iso_layers.forEach(function(layer){
-          times.forEach(function(t){
-            map.setFilter(layer.name+"-"+t, ["all",filter_profile, filter_minutes]);
-          });
-        });
-      }*/
+      } 
     }
 
-    // Отправка сообщения на сервер WIX для получения изохронов по выбранной точке
-    function pointIsoMessage(){
+    // Отправка запроса для получения изохронов по выбранной точке
+    function getIsochrones(){
       //console.log(selected_point);
       $('.loading').removeClass('none');
 
       params = {
-        station_id: [selected_point.properties.global_id]
+        station_id: [selected_point.properties.global_id],
+        profile: profile,
+        with_interval: use_intervals
       }
 
       $.get("/map/get_isochrones", params)
       .done(function(data) {
-	    console.log("get_isochrones");
-	    console.log(data);
+  	    console.log("get_isochrones");
+  	    console.log(data);
 
-	    isoFeatures = getPolygonFeatures(data);
-      console.log(isoFeatures);
-      map.getSource('pointIsochrones').setData(isoFeatures);
-      featureWithInfo = addFeatureInfo(isoFeatures);
-      displayInfo(featureWithInfo);
-      //filter_objects(featureWithInfo);
-	  })
-	  .always(function() {
-	    $('.loading').addClass('none');
-	  });
-    }
+  	    isoFeatures = getIsochroneFeatures(data);
+        console.log(isoFeatures);
+        map.getSource('pointIsochrones').setData(isoFeatures);
+        
+        isochrone_codes = data.map(function(i){return i.unique_code});
+        getMetrics(isochrone_codes);
+  	  })
+  	  .always(function() {
+  	    $('.loading').addClass('none');
+  	  });
+      }
 
-    // Отправка сообщения на сервер WIX для получения координат маршрутов
-    function routesMessage(){
+    // Отправка запроса для получения координат маршрутов
+    function getRoutes(){
       params = {
         station_id: selected_point.properties.global_id
       }
@@ -406,164 +291,33 @@ Paloma.controller('Map',
       $.get("/map/get_routes", params)
       .done(function(data) {
       	console.log(data);
-	    routeFeatures = getRouteFeatures(data);
-        map.getSource('routes').setData(routeFeatures);
-        displayRouteStat(routeFeatures);
-	  })
-	  .always(function() {
-	    $('.loading').addClass('none');
-	  });
+  	    routeFeatures = getRouteFeatures(data);
+          map.getSource('routes').setData(routeFeatures);
+          displayRouteStat(routeFeatures);
+  	  })
+  	  .always(function() {
+  	    $('.loading').addClass('none');
+  	  });
     }
 
-
-    // Обработчик события получения сообщения с сервера WiX
-    /*window.onmessage = function(e){
-      $('.loading').addClass('none');
-
-      console.log("Result:");
-      console.log(e.data);
-
-      if(e.data.messageType == "POINT_ISO") {
-        isoFeatures = getPolygonFeatures(e.data.isochrones);
-        console.log(isoFeatures);
-        map.getSource('pointIsochrones').setData(isoFeatures);
-        featureWithInfo = addFeatureInfo(isoFeatures);
-        displayInfo(featureWithInfo);
-        filter_objects(featureWithInfo);
-      } 
-      else if(e.data.messageType == "ROUTES"){
-        routeFeatures = getRouteFeatures(e.data.routes);
-        map.getSource('routes').setData(routeFeatures);
-        displayRouteStat(routeFeatures);
-
-        last_min = minutes.sort(function(a, b){return b - a})[0];
-        routes = getRouteStops(routeFeatures);
-        route = routes.find(function(r){return r.contour == last_min});
-
-        console.log("Stops:");
-        console.log(route);
-        //routePointsMessage(route.id);
-        pointIsoMessage();
+    // Отправка запроса для получения метрик изохрона
+    function getMetrics(isochrone_codes){
+      params = {
+        isochrone_codes: isochrone_codes
       }
-      else if(e.data.messageType == "ROUTE_POINTS_ISO"){
-        stopFeatures = getRouteStopsFeatures(e.data.isochrones);
-        map.getSource('pointIsochrones').setData(stopFeatures);
-        displayInfo(stopFeatures);
-        filter_objects(stopFeatures);
-        isoCompareMessage("cycling");
-      }
-      else if(e.data.messageType == "ISO_COMPARE"){
-        e.data.isochrones.forEach(function(iso){
-          polygon = turf.polygon([iso.polygon]);
-          area_1 = Number($('.info.area').find('.time-'+iso.contour).html());
-          area_2 = getFeatureArea(polygon);
-          share = (area_1/area_2*100).toFixed(2);
-          $('.info.velo-share').find('.time-'+iso.contour).html(area_2+" ("+share+"%)");
-          $('.info.velo-share').removeClass('none');
-        });
-      }
-    }
 
-    function getRouteStops(routesCollection){
-
-      point = selected_point;
-      var stopPoint = turf.point(point.geometry.coordinates);
-      routeStops = [];
-      
-      minutes = minutes.filter(function(m){return m > 0}).sort(function(a, b){return b-a});
-
-      var stops = [];
-
-      routesCollection.features.forEach(function(route){
-
-        var stopsOnRoute = [];
-
-        // Определяем номер маршрута
-        var route_num = route.routeNumber;
-
-        if(route.typeOfTransport == "автобус"){
-            route_num = "А"+route_num;
-        } else if(route.typeOfTransport == "троллейбус"){
-            route_num = "Тб"+route_num;
-        } else if(route.typeOfTransport == "трамвай"){
-            route_num = "Тм"+route_num;
-        } 
-
-        // Отбираем из остановок те, которые входят в изохрон маршрута для заданного времени
-        route.geometry.coordinates.forEach(function(direction, dirIndex){
-          
-          // Из маршрута берём названия остановок
-          if (dirIndex == 0){
-            track = route.trackOfFollowing.replace(/«|»/g, "");
-          } else if (dirIndex == 1){
-            track = route.reverseTrackOfFollowing.replace(/«|»/g, "");
-          }
-
-          if(track.includes(point.properties.StationName)){
-            // Строим линию направления
-            line = turf.lineString(direction);
-
-            // Определяем близжайшую к остановке точку на маршруте
-            pointOnRoute = turf.nearestPointOnLine(line, stopPoint);
-
-            // Находим точки остановок для маршрута
-            stopsOnRoute = map.querySourceFeatures('points', {sourceLayer: 'bus_stops', filter: 
-              ["all",
-                ["in",["get","StationName"],track],
-                ["in",route_num,["get","RouteNumbers"]]
-              ]});
-
-            // Определяем близжайшую точку на маршруте для всех остановок направления
-            stopsOnRoute.forEach(function(s){
-              p = turf.point(s.geometry.coordinates);
-              s.pointOnRoute = turf.nearestPointOnLine(line, p);
-            });
-
-            // Определяем последнюю точку на направлении
-            stp = direction[0];
-            enp = direction[direction.length-1];
-
-            if(stp[0] == enp[0] && stp[1] == enp[1]){
-              lastPoint = turf.point(direction[direction.length-2]);
-            } else {
-              lastPoint = turf.point(direction[direction.length-1]);
-            }
-            
-            // Обрезаем линию от остановки до конца маршрута
-            line = turf.lineSlice(pointOnRoute, lastPoint, line);
-
-            minutes.forEach(function(t){
-              // Обрезаем линию от остановки до расстояния, которое можно проехать за заданное время
-              start = 0;
-              stop = 15 * t/60;
-              sliced = turf.lineSliceAlong(line, start, stop, {units: 'kilometers'});
-              sliced_buffer = turf.buffer(sliced, 0.02, {units: 'kilometers'});
-
-              // Определяем точки, которые находятся внутри маршрута заданной длины
-              stops = stopsOnRoute.filter(function(s){
-                return turf.booleanPointInPolygon(s.pointOnRoute, sliced_buffer);
-              });
-
-              ids = stops.map(function(r){return r.properties.global_id});
-
-              contour = routeStops.find(function(r){return r.contour == t});
-
-              if (contour){
-                contour.id = Array.from(new Set(contour.id.concat(ids)));
-              } else {
-                routeStops.push({contour: t, id: Array.from(new Set(ids))});
-              }
-              
-            });
-          }
-        });
+      $.get("/map/get_metrics", params)
+      .done(function(data) {
+        console.log("Metrics:");
+        console.log(data);
+        displayMetrics(data)
+      })
+      .always(function() {
+        $('.loading').addClass('none');
       });
+    }
 
-      return routeStops;
-    }*/
-
-
-    function getPolygonFeatures(isochrones){
+    function getIsochroneFeatures(isochrones){
 
       isochrones = isochrones.sort(function(a, b){return b.contour - a.contour});
 
@@ -589,8 +343,6 @@ Paloma.controller('Map',
       });
       return data;
     }
-
-    var geodata;
 
     function getRouteFeatures(routesArray){
       data = {
@@ -618,35 +370,6 @@ Paloma.controller('Map',
         data.features.push(feature);
       });
 
-      return data;
-    }
-
-    function getRouteStopsFeatures(stops){
-      data = {
-         'type': 'FeatureCollection',
-         'features': []
-      };
-
-      routeStops.forEach(function(r){
-        stops = stops.filter(function(s){return r.id.includes(s.global_id);});
-        var feature = turf.polygon([stops[0].polygon]);
-
-        for (i = 1; i < stops.length; i++) {
-          feature = turf.union(feature, turf.polygon([stops[i].polygon]));
-        }
-
-        feature.properties = {
-            "id": selected_point.properties.global_id+"-"+"public_transport-"+r.contour,
-            "profile": "public_transport", 
-            "global_id": selected_point.properties.global_id, 
-            "contour": r.contour
-          }
-
-        data.features.push(feature);
-      });
-
-      data = addFeatureInfo(data);
-      console.log(data);
       return data;
     }
 
@@ -763,6 +486,25 @@ Paloma.controller('Map',
         });
       });
       $('#info-box').removeClass('none');
+    }
+
+    // Функция отображения метрик изохрорна
+    function displayMetrics(metrics){
+      $('#stop_stat').find('tbody').html("");
+      metrics.forEach(function(metric){
+
+        td_name = '<td>'+ metric.name +'</td>';
+        td_10 = '<td>'+ (metric.metrics['10'] || 0) +'</td>';
+        td_20 = '<td>'+ (metric.metrics['20'] || 0) +'</td>';
+        td_30 = '<td>'+ (metric.metrics['30'] || 0) +'</td>';
+        tr = '<tr>'+td_name+td_10+td_20+td_30+'</tr>';        
+
+        $('#stop_stat').find('tbody').append(tr);
+
+      });
+      if(metrics.length > 0){
+        $('#info-box').removeClass('none');
+      }
     }
 
     // Функция отображения статистики по маршруту
