@@ -195,7 +195,7 @@ Paloma.controller('Map',
       } 
 
       if(profile == 'public_transport'){
-        use_intervals = e.target.checked;
+        use_intervals = document.getElementById('use_intervals').checked;
       } else {
         use_intervals = null;
       }
@@ -264,6 +264,8 @@ Paloma.controller('Map',
         profile: profile,
         with_interval: use_intervals
       }
+
+      console.log(params);
 
       $.get("/map/get_isochrones", params)
       .done(function(data) {
