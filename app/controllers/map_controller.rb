@@ -22,11 +22,11 @@ class MapController < ApplicationController
 		
 		metrics.map(&:metric_name).uniq.each do |code|
 			result = {name: code}
-			result['metrics'] = JSON.parse(metrics.filter{|m| m.metric_name == code}.map{|m| "{\"#{m.contour}\": #{m.metric_value}}"}.join(', '))
+			values = metrics.filter{|m| m.metric_name == code}.map{|m| "\"#{m.contour}\": #{m.metric_value}"}.join(', ')
+			result['metrics'] = JSON.parse("{#{values}}")
 			@results.push(result)
 		end
-
-		puts @results
+		
 		render json: @results, status: :ok
 	end
 end
