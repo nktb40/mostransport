@@ -6,8 +6,10 @@ class MapController < ApplicationController
 	end
 
 	def get_isochrones
+		params[:with_interval] = nil if params[:with_interval].blank?
+		
 		@isochrones = Station.find_by(source_id: params[:station_id]).isochrones
-				.where(profile: params[:profile], with_interval: params[:with_interval])
+			.where(profile: params[:profile], with_interval: params[:with_interval])
 
 		render json: @isochrones.to_json, status: :ok
 	end
@@ -26,7 +28,7 @@ class MapController < ApplicationController
 			result['metrics'] = JSON.parse("{#{values}}")
 			@results.push(result)
 		end
-		
+
 		render json: @results, status: :ok
 	end
 end
