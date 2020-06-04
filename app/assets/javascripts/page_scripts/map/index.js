@@ -364,7 +364,8 @@ Paloma.controller('Map',
           'route_code': route.route_code,
           'route_cost': route.route_cost,
           'route_length': route.route_length,
-          'route_interval': route.route_interval
+          'route_interval': route.route_interval,
+          'straightness': route.straightness
         };
 
         feature.geometry = geometry;
@@ -521,6 +522,7 @@ Paloma.controller('Map',
         $(row).append('<td>'+feature.route_interval+' мин</td>');
         $(row).append('<td>'+feature.route_length+' км</td>');
         $(row).append('<td>'+f.format(feature.route_cost)+' руб</td>');
+        $(row).append('<td>'+feature.straightness+'</td>');
 
         $('#routes_stat tbody').append(row);
       });

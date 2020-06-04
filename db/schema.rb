@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_31_045421) do
+ActiveRecord::Schema.define(version: 2020_06_04_153407) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,11 +61,12 @@ ActiveRecord::Schema.define(version: 2020_05_31_045421) do
     t.string "type_of_transport"
     t.string "carrier_name"
     t.json "geo_data"
-    t.integer "route_interval"
-    t.integer "route_length"
-    t.integer "route_cost"
+    t.float "route_interval"
+    t.float "route_length"
+    t.float "route_cost"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "straightness"
   end
 
   create_table "stations", force: :cascade do |t|
