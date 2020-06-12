@@ -8,8 +8,10 @@ class MapController < ApplicationController
 	def get_isochrones
 		params[:with_interval] = nil if params[:with_interval].blank?
 		
-		@isochrones = Station.find_by(source_id: params[:station_id]).isochrones
-			.where(profile: params[:profile], with_interval: params[:with_interval])
+		#@isochrones = Station.where(source_id: params[:station_id]).
+		@isochrones = Isochrone.where(source_station_id: params[:station_id], profile: params[:profile])
+		@isochrones = @isochrones.where(with_interval: params[:with_interval]) if params[:with_interval].present?
+		@isochrones = @isochrones.where(contour: params[:contour]) if params[:contour].present?
 
 		render json: @isochrones.to_json, status: :ok
 	end

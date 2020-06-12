@@ -1,0 +1,37 @@
+<div class='flex-parent h-full'>
+  <div class='flex-child flex-child--no-shrink px24 pb24 w400 h-full' style="padding-top: 120px">
+
+    <div class="logo fixed flex-parent flex-parent--center-cross pb18 border-b border--gray-light w360" style="top:10px;">
+      <!--span class='ico txt-h2 txt-bold border round-full bg-blue-light color-white'>M</span-->
+      <img class="ico round-full" src="https://static.wixstatic.com/media/e10a80_5932a1ba843b45719a5607465c228af0~mv2.png">
+      <div class="flex-parent flex-parent--column ml12">
+        <span class="txt-bold txt-l color-blue">mostransport.info</span>
+        <span class="txt-s">Анализ маршрутной сети городов</span>
+      </div>
+    </div>
+
+    <div id="new_route">
+      <p class="txt-l mb12">Новый маршрут</p>
+      <div id="route_list" class="txt-m"></div>
+      <button id="calculate_route" class='btn btn--green mt24 mx-auto'>Рассчитать маршрут</button>
+    </div>
+
+    <div>
+      <p class='txt-l mb12 mt24'>Показатели маршрута:</p>
+      <table id="route_stat" class="table border--0">
+        <thead>
+          <tr>
+            <th>Показатель</th>
+            <th>Значение</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+  <div class='flex-child flex-child--grow'>
+    <div id='map' class="h-full w-full"></div>
+  </div>
+</div>

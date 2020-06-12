@@ -1,0 +1,7 @@
+.route_line{
+	border-left-width: 3px;
+	border-style: dashed;
+	margin-left: 13px;
+	height: 20px;
+	color: #a9a6a6;
+}
