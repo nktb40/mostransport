@@ -1,0 +1,3 @@
+class ConstructorController < ApplicationController
+
+end

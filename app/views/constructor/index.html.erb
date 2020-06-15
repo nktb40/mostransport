@@ -6,6 +6,18 @@
     <div class="h-full scroll-styled scroll-auto">
       <%= render "shared/menu" %>
 
+      <div id="new_route" class="pt18">
+        <p class="txt-l mb12">Новый маршрут</p>
+        <div id="route_list" class="txt-m pr-2"></div>
+
+        <p id="choose_points_alert" class="text-muted text-center py-3 border rounded mt-4">Выберите точки на карте</p>
+
+        <div class="d-none justify-content-center" id="constr_btns">
+          <button id="calculate_route" class='btn btn-sm btn-success rounded-pill px-4 mt-4' style="width: 120px">Рассчитать</button>
+          <button id="clean_route" class='btn btn-sm btn-outline-success rounded-pill px-4 mt-4 ml-2' style="width: 120px;">Очистить</button>
+        </div>
+      </div>
+
       <div id="route_metrics" class="d-none">
         <p class='txt-l mb12 mt24'>Показатели маршрута:</p>
         <table id="route_stat" class="table border--0">

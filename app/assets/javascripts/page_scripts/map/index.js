@@ -526,6 +526,10 @@ Paloma.controller('Map',
 
         $('#routes_stat tbody').append(row);
       });
+
+      if(featureCollection.features.length > 0){
+        $('#info-box').removeClass('none');
+      }
     }
 
     // Функция очистки информации
