@@ -22,9 +22,9 @@ Paloma.controller('Routes',
     var point_popup = new mapboxgl.Popup();
 
     // Выбранные точки маршрута
-    var selected_points = []
-
-    var metrics = []
+    var selected_points = [];
+    var map_markers = [];
+    var metrics = [];
 
     // Инициализируем карту
     var map = new mapboxgl.Map({
@@ -90,7 +90,7 @@ Paloma.controller('Routes',
         'type': 'line',
         'source': 'routes',
         'paint': {
-          'line-width': 4,
+          'line-width': 6,
           'line-color': '#F7455D'
         }
       });
@@ -160,30 +160,68 @@ Paloma.controller('Routes',
         .setHTML(
           "<div class='loading loading--s none'></div>"
           +
-          "<p>Остановка: "+e.features[0].properties.StationName+"</p>"
+          "<span><b>ID:</b> "+e.features[0].properties.global_id+"</span><br>"
           +
-          "<p>Маршруты: "+e.features[0].properties.RouteNumbers+"</p>"
+          "<span><b>Остановка:</b> "+e.features[0].properties.StationName+"</span><br>"
+          +
+          "<span><b>Маршруты:</b> "+e.features[0].properties.RouteNumbers+"</span>"
           )
         .addTo(map);
     }
 
     map.on('click', function(event) {
       selected_point = map.queryRenderedFeatures(event.point, { layers: ['points']})[0];
-
+      $('.route_stop').removeClass('active_item');
+      
       if(selected_point != null){
-        selected_points.push(selected_point);
-        new mapboxgl.Marker().setLngLat(selected_point.geometry.coordinates).addTo(map);
+        global_id = selected_point.properties.global_id;
 
-        drawRouteList();
-        drawLineRoute();
+        if(selected_points.filter(function(p){return p.properties.global_id == global_id}).length == 0){
+          selected_points.push(selected_point);
+          marker = new mapboxgl.Marker().setLngLat(selected_point.geometry.coordinates).addTo(map);
+          marker.stop_id = global_id;
+          map_markers.push(marker);
+
+          drawRouteList();
+          drawLineRoute();
+
+          $('#constr_btns').addClass('d-flex');
+        } else {
+          $('.route_stop[data-stop-id='+global_id+']').addClass('active_item');
+        }
+        
       }
 
     });
 
+    // Обработчик нажатия конпки очистки маршрута
+    $('#clean_route').on('click',function(e){
+      metrics = [];
+      selected_points = [];
+
+      map_markers.forEach(function(m){m.remove()});
+      map_markers = [];
+
+      drawRouteList();
+      drawLineRoute();
+      displayMetrics();
+      getDirectionRoute();
+
+      $('#constr_btns').removeClass('d-flex');
+    });
+
+    // Обработчик нажатия конпки расчёта параметров маршрута
+    $('#calculate_route').on('click',function(e){
+      metrics = [];
+      getDirectionRoute();
+      getRouteIsochrones();
+    });
+
     // Функция отображения списка остановок маршрута
     function drawRouteList(){
+      $('#route_list').html("");
       if (selected_points.length > 0){
-        $('#route_list').html("");
+        $('#choose_points_alert').addClass('d-none');
 
         selected_points.forEach(function(stop,i){
           if(i > 0){
@@ -191,16 +229,40 @@ Paloma.controller('Routes',
             $('#route_list').append(div_html)
           }          
 
-          stop_html = '<div class="route_stop flex-parent flex-parent--row flex-parent--center-cross">'
+          stop_html = '<div class="route_stop d-flex align-items-center pr-2 rounded" data-stop-id="'+stop.properties.global_id+'"">'
           +'<svg class="icon w30 h36 color-blue"><use xlink:href="#icon-marker"/></svg>'
-          +'<span class="stop_name ml6">Мост</span></div>';
+          +'<span class="stop_name ml6">Мост</span>'
+          +'<button type="button" class="close ml-auto remove-stop" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+          +'</div>';
           stop_el = $(stop_html);
           $(stop_el).find('.stop_name').text(stop.properties.StationName);
           $('#route_list').append(stop_el);
 
         });
         
+      } else {
+        $('#choose_points_alert').removeClass('d-none');
       }
+    }
+
+    // Обработчик события удаления остановки
+    $(document).on('click','.remove-stop',function(e){
+      stop_id = $(e.target).closest('.route_stop').data('stop-id');
+      deletePoint(stop_id);
+    });
+
+    // Функция удаления остановки из маршрута
+    function deletePoint(stop_id){
+      // Удаляем остановку из массива
+      selected_points = selected_points.filter(function(p){return p.properties.global_id != stop_id});
+
+      //Удаляем маркер
+      map_markers.filter(function(m){return m.stop_id == stop_id})[0].remove();
+      map_markers = map_markers.filter(function(m){return m.stop_id != stop_id});
+
+      // Перерисовываем маршрут
+      drawRouteList();
+      drawLineRoute();
     }
 
     // Функция отрисовки маршрута прямыми линиями
@@ -209,15 +271,10 @@ Paloma.controller('Routes',
         line_coords = selected_points.map(function(p){return p.geometry.coordinates});
         line = turf.lineString(line_coords);
         map.getSource('line_routes').setData(line);
+      } else {
+        map.getSource('line_routes').setData(turf.featureCollection([]));
       }
     }
-
-    // Обработчик нажатия конпки расчёта параметров маршрута
-    $('#calculate_route').on('click',function(e){
-      metrics = [];
-      getDirectionRoute();
-      getRouteIsochrones();
-    });
 
     // Функция генерации маршрута через API MapBox
     function getDirectionRoute(){
@@ -237,6 +294,8 @@ Paloma.controller('Routes',
 
           getStraightness();
         });
+      } else {
+        map.getSource('routes').setData(turf.featureCollection([]));
       }
     }
 
@@ -337,16 +396,21 @@ Paloma.controller('Routes',
     // Функция отображения метрик
     function displayMetrics(){
       $('#route_stat tbody').html("");
-      metrics.sort(function(a, b){return a.order - b.order});
-      metrics.forEach(function(metric){
+      if(metrics.length > 0){
+        $('#route_metrics').removeClass('d-none');
+        metrics.sort(function(a, b){return a.order - b.order});
+        metrics.forEach(function(metric){
 
-        td_name = '<td>'+ metric.name +'</td>';
-        td_val = '<td>'+ metric.value +'</td>';
-        tr = '<tr>'+td_name+td_val+'</tr>';        
+          td_name = '<td>'+ metric.name +'</td>';
+          td_val = '<td>'+ metric.value +'</td>';
+          tr = '<tr>'+td_name+td_val+'</tr>';        
 
-        $('#route_stat').find('tbody').append(tr);
+          $('#route_stat').find('tbody').append(tr);
 
-      });
+        });
+      } else {
+        $('#route_metrics').addClass('d-none');
+      }
     }
 
   }
