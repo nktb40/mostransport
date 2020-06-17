@@ -14,4 +14,3 @@ docker-compose.override.yml
 .env*
 .ruby-gemset
 /spec/examples.txt
-/seeds/*
