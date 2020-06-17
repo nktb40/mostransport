@@ -41,30 +41,41 @@ CSV.foreach("seeds/routes/routes_enrich.csv", :headers => true) do |row|
     reverse_track_of_following: row['ReverseTrackOfFollowing'],
     type_of_transport: row['TypeOfTransport'],
     carrier_name: row['CarrierName'],
-    geo_data: row['geoData'],
+    geo_data: JSON.parse(row['geoData']),
     route_interval: row['avg_fact_interval'],
     route_length: row['route_length'],
     route_cost: row['route_cost'],
-    straightness: row['straightness']
+    straightness: row['straightness'],
+    bbox: JSON.parse(row['bbox']),
+    source_id: row['ID']
   }
   item = Route.find_or_initialize_by(global_id: row[:global_id])
   item.update!(row)
 end
 puts "Routes: done"
 
-# # ====================================
-# # LnkStationRoutes
-# # ====================================
-# puts "LnkStationRoutes: begin"
-# Station.all.each do |s|
-#   r_codes = s.route_numbers.split('; ')
-#   routes = Route.where(route_code: r_codes)
+# ====================================
+# LnkStationRoutes
+# ====================================
+puts "LnkStationRoutes: begin"
+file = "seeds/routes/route2stops.csv"
 
-#   routes.each do |r|
-#   	LnkStationRoute.find_or_create_by(station_id: s.id, route_id: r.id)
-#   end
-# end
-# puts "LnkStationRoutes: done"
+LnkStationRoute.delete_all
+
+CSV.foreach(file, :headers => true, :col_sep => ";") do |row|
+  route = Route.find_by(source_id: row['route_id'])
+  if route.present?
+    station_ids = JSON.parse(row['stop_id'])
+
+    station_ids.each_with_index do |id,i|
+      station = Station.find_by(source_id: id)
+      link = LnkStationRoute.find_or_initialize_by(station_id: station.id, route_id: route.id, track_no: row['track_no'])
+      link.update!(seq_no: i+1)
+    end
+  end
+end
+puts "LnkStationRoutes: done"
+
 
 # # ====================================
 # # Isohrones/ Public Transport

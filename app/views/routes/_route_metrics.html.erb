@@ -1,0 +1,29 @@
+<div class="route_metrics mt-5">
+  <p class="mb-3">Показатели маршрута:</p>
+  <table id="route_stat" class="table border--0">
+    <thead>
+      <tr>
+        <th>Показатель</th>
+        <th>Значение</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Интервал</td>
+        <td><%= route.route_interval %> мин</td>
+      </tr>
+      <tr>
+        <td>Длина</td>
+        <td><%= route.route_length %> км</td>
+      </tr>
+      <tr>
+        <td>Прямолинейность</td>
+        <td><%= route.straightness %></td>
+      </tr>
+      <tr>
+        <td>Стоимость</td>
+        <td><%= route.route_cost %> руб</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

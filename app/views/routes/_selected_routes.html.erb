@@ -1,0 +1,12 @@
+<% @routes.each_with_index do |route, i| %>
+  <div class="list-group accordion" id="route_list_<%= route.id %>">
+    <button type="button" class="list-group-item list-group-item-action mt-3 route-item" data-toggle="collapse" data-target="#route_collapse_<%= route.id %>" aria-expanded="false" data-route-bbox="<%= route.bbox %>">
+      <span class="text-truncate d-inline-block" style="max-width:300px">
+        <%= route.route_code %> - <small><%= route.route_name %></small></button>
+      </span>
+    <div id="route_collapse_<%= route.id %>" class="collapse border py-3 px-2" data-parent="#selected_routes">
+      <%= render "route_list", route: route %>
+      <%= render "route_metrics", route: route %>
+    </div>
+  </div>
+<% end %>

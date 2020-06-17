@@ -1,24 +1,25 @@
 <div class='flex-parent h-full'>
-  <div class='flex-child flex-child--no-shrink px24 pb24 w400 h-full' style="padding-top: 100px">
+  <div class='flex-child flex-child--no-shrink px18 pb24 w400 h-full' style="padding-top: 100px">
 
     <%= render "shared/logo" %>
 
     <div class="h-full scroll-styled scroll-auto">
       <%= render "shared/menu" %>
 
-      <div id="route_metrics" class="d-none">
-        <p class='txt-l mb12 mt24'>Показатели маршрута:</p>
-        <table id="route_stat" class="table border--0">
-          <thead>
-            <tr>
-              <th>Показатель</th>
-              <th>Значение</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+      <div id="search_menu" class="pt-3">
+        <p>Поиск маршрутов:</p>
+        <select id="route_search" class="selectpicker" data-live-search="true" data-style="btn-info" multiple title="Выберите маршруты" data-size="10" data-width="360px" data-actions-box="true" data-deselect-all-text="Очистить" data-select-all-text="Выбрать все" data-selected-text-format="count > 5" data-header="Маршруты">
+          <% Route.all.order(:route_code).each do |route| %>
+            <option title="<%= route.route_code %>" data-content='<span class="text-truncate d-inline-block" style="max-width:265px"><%= route.route_code %> - <small><%= route.route_name %></small></span'><%= route.route_code %></option>
+          <% end %>
+        </select>
       </div>
+
+      <div class="w360 mt-4">
+        <p class="mb-0">Выбранные маршруты:</p>
+        <div id="selected_routes"></div>
+      </div>
+
     </div>
 
   </div>
