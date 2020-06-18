@@ -1,7 +1,12 @@
+.logo .ico{
+	width: 60px;
+}
+
 .route_line{
-	border-left-width: 3px;
-	border-style: dashed;
-	margin-left: 13px;
+	border-left: 3px dashed;
+	margin-left: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 	height: 20px;
 	color: #a9a6a6;
 }
@@ -15,4 +20,116 @@
 }
 .bs-select-all, .bs-deselect-all{
 	border: 1px solid #dee2e6!important;
+}
+
+.w400 {
+	width: 400px;
+}
+
+.w110 {
+	width: 110px;
+}
+
+.btn-green {
+	color: white;
+    background-color: #01aa46;
+}
+
+.btn-green:hover {
+	color: white;
+    background-color: #01aa46;
+}
+
+.btn-green.active {
+	color: white;
+    background-color: #01aa46;
+}
+
+.btn-green.active:hover {
+	color: #01aa46;
+	border: 1px solid #01aa46;
+    background-color: white;
+}
+
+.btn-yellow {
+	color: white;
+    background-color: #f0dc00;
+}
+
+.btn-yellow:hover {
+	color: white;
+    background-color: #f0dc00;
+}
+
+.btn-yellow.active {
+	color: white;
+    background-color: #f0dc00;
+}
+
+.btn-yellow.active:hover {
+	color: #f0dc00;
+	border: 1px solid #f0dc00;
+    background-color: white;
+}
+
+.btn-orange {
+	color: #ff6e00;
+	border: 1px solid #ff6e00;
+    background-color: white;
+}
+
+.btn-orange:hover {
+	color: white;
+    background-color: #ff6e00;
+}
+
+.btn-orange.active {
+	color: white;
+    background-color: #ff6e00;
+}
+
+.btn-orange.active:hover {
+	color: #ff6e00;
+	border: 1px solid #ff6e00;
+    background-color: white;
+}
+
+.btn-blue {
+	color: #fff!important;
+    background-color: #448ee4!important;
+}
+
+.bg-blue {
+    background-color: #448ee4!important;
+}
+
+.custom-select option {
+    color: #495057;
+}
+
+.text-blue {
+	color: #448ee4!important;
+}
+
+.text-l {
+    font-size: 18px;
+    line-height: 30px;
+}
+
+.text-bold {
+    font-weight: 700!important;
+}
+
+.vertical-nav{
+	overflow: hidden;
+	width: 200px;
+	transition: width 0.3s ease;
+	-webkit-transition: width 0.3s ease;
+	-moz-transition: width 0.3s ease;
+	-ms-transition: width 0.3s ease;
+	-o-transition: width 0.3s ease;
+}
+
+.vertical-nav.collapsed{
+	width: 0px;
 }

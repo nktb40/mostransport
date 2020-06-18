@@ -230,10 +230,13 @@ Paloma.controller('Constructor',
           }          
 
           stop_html = '<div class="route_stop d-flex align-items-center pr-2 rounded" data-stop-id="'+stop.properties.global_id+'"">'
-          +'<svg class="icon w30 h36 color-blue"><use xlink:href="#icon-marker"/></svg>'
-          +'<span class="stop_name ml6">Мост</span>'
+          +'<svg class="bi bi-geo-alt text-blue mr-2" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'
+          +'<path fill-rule="evenodd" d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>'
+          +'</svg>'
+          +'<span class="stop_name">Мост</span>'
           +'<button type="button" class="close ml-auto remove-stop" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
           +'</div>';
+
           stop_el = $(stop_html);
           $(stop_el).find('.stop_name').text(stop.properties.StationName);
           $('#route_list').append(stop_el);

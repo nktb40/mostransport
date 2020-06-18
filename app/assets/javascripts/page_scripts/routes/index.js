@@ -2,6 +2,9 @@ var map;
 Paloma.controller('Routes',
 {
   index: function(){
+    // Инициализация selectpicker
+    $('.selectpicker').selectpicker();
+
   	// ключ для Mapbox
     var publicToken = 'pk.eyJ1Ijoibmt0YiIsImEiOiJjazhscjEwanEwZmYyM25xbzVreWMyYTU1In0.dcztuEUgjlhgaalrc_KLMw';
 
@@ -130,7 +133,7 @@ Paloma.controller('Routes',
     $(document).on('click','.route-item',function(e){
       bbox = $(this).data('route-bbox');
       map.fitBounds(bbox, {
-        padding: {top: 20, bottom:20, left: 20, right: 20}
+        padding: {top: 70, bottom:70, left: 70, right: 70}
       });
     });
     

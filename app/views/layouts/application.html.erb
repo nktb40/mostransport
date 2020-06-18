@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="h-full">
+<html class="h-100">
   <head>
 
     <title>Mostransport</title>
@@ -12,9 +12,6 @@
     <!-- Import Mapbox GL JS  -->
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.9.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.9.0/mapbox-gl.css' rel='stylesheet' />
-    <!-- Import Assembly -->
-    <link href='https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.min.css' rel='stylesheet'>
-    <script src='https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.js'></script>
     <!-- Import jQuery -->
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
     <!-- Import Turfjs for poligon simplification -->
@@ -34,76 +31,28 @@
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
-    <style>
-      .w400{
-        width: 420px;
-      }
-      .logo .ico{
-        /*padding-left: 11px;
-        padding-right: 11px;
-        padding-top: 6px;
-        padding-bottom: 7px;*/
-        width: 60px;
-      }
-
-      #links{
-        position: absolute;
-        top: 0px;
-        right: 20px;
-      }
-
-      #links img{
-        border-radius: 9999px;
-        margin-right: 20px;
-      }
-
-      .fs1facebookShareButton {
-        border-radius: border-radius: 9999px;
-        cursor: pointer;
-        min-width: 24px;
-        white-space: nowrap;
-        display: inline-block;
-      }
-
-      .fs1shareButton {
-        height: 25px;
-        border-radius: 2px;
-        border-width: 1px;
-        border-style: solid;
-        border-color: #9aabc6 #6f83ad #6176a3;
-        background: url(https://static.parastorage.com/services/skins/2.1229.80/images/wysiwyg/core/themes/base/bg_fbshare.png) 0 0 repeat-x;
-      }
-
-      .fs1icon {
-        width: 21px;
-        height: 21px;
-        background: url(https://static.parastorage.com/services/skins/2.1229.80/images/wysiwyg/core/themes/base/facebooklogo.png) 5px 3px no-repeat;
-        border-right: 1px solid #425e85;
-        position: absolute;
-      }
-
-      .fs1label {
-        line-height: 21px;
-        margin-left: 22px;
-        padding: 3px 6px;
-        color: #fff;
-        font-size: 12px;
-        text-shadow: 1px 1px 1px #304871;
-        border-left: 1px solid #6176a3;
-        vertical-align: top;
-      }
-
-      .scrolled {
-        overflow-x: scroll;
-        overflow-y: overlay;
-        -webkit-overflow-scrolling: touch;
-      }
-    </style>
-
   </head>
 
-  <body class="h-full">
-    <%= yield %>
+  <body class="h-100">
+
+    <div class='d-flex h-100'>
+      <%= render "shared/menu" %>
+      <div class='pb-3 w400 d-flex flex-column'>
+
+        <%= render "shared/logo" %>
+
+        <div class="h-100 overflow-auto px-3">
+          <%= yield :side_bar %>
+        </div>
+      </div>
+      <div class='flex-grow-1'>
+        <div id='map' class="h-100 w-100"></div>
+      </div>
+    </div>
+
+    <%= render "shared/social_links" %>
+
+    <%= yield :scripts %>
     <%= insert_paloma_hook %>
   </body>
 </html>

@@ -1,4 +1,4 @@
-Paloma.controller('Map',
+Paloma.controller('Isochrones',
 {
   index: function(){
     //=========================================
@@ -353,7 +353,7 @@ Paloma.controller('Map',
       };
 
       routesArray.forEach(function(route){
-        geometry = JSON.parse(route.geo_data.replace(/'/g, '"'));
+        geometry = route.geo_data;
 
         feature = {
           'type': 'Feature',

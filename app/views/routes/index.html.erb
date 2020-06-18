@@ -1,35 +1,24 @@
-<div class='flex-parent h-full'>
-  <div class='flex-child flex-child--no-shrink px18 pb24 w400 h-full' style="padding-top: 100px">
-
-    <%= render "shared/logo" %>
-
-    <div class="h-full scroll-styled scroll-auto">
-      <%= render "shared/menu" %>
-
-      <div id="search_menu" class="pt-3">
-        <p>Поиск маршрутов:</p>
-        <select id="route_search" class="selectpicker" data-live-search="true" data-style="btn-info" multiple title="Выберите маршруты" data-size="10" data-width="360px" data-actions-box="true" data-deselect-all-text="Очистить" data-select-all-text="Выбрать все" data-selected-text-format="count > 5" data-header="Маршруты">
-          <% Route.all.order(:route_code).each do |route| %>
-            <option title="<%= route.route_code %>" data-content='<span class="text-truncate d-inline-block" style="max-width:265px"><%= route.route_code %> - <small><%= route.route_name %></small></span'><%= route.route_code %></option>
-          <% end %>
-        </select>
-      </div>
-
-      <div class="w360 mt-4">
-        <p class="mb-0">Выбранные маршруты:</p>
-        <div id="selected_routes"></div>
-      </div>
-
-    </div>
-
+<% content_for :side_bar do %>
+  <div id="search_menu" class="pt-3">
+    <p>Поиск маршрутов:</p>
+    <select id="route_search" class="selectpicker" data-live-search="true" data-style="rounded-pill btn-blue px-3" multiple title="Выберите маршруты" data-size="10" data-width="360px" data-actions-box="true" data-deselect-all-text="Очистить" data-select-all-text="Выбрать все" data-selected-text-format="count > 5" data-header="Маршруты">
+      <% Route.all.order(:route_code).each do |route| %>
+        <option title="<%= route.route_code %>" data-content='<span class="text-truncate d-inline-block" style="max-width:265px"><%= route.route_code %> - <small><%= route.route_name %></small></span'><%= route.route_code %></option>
+      <% end %>
+    </select>
   </div>
-  <div class='flex-child flex-child--grow'>
-    <div id='map' class="h-full w-full"></div>
-  </div>
-</div>
 
-<script type="text/javascript">
-  $(document).on('turbolinks:load', function() {
-     Paloma.start();
-  });
-</script>
+  <div class="w360 mt-4">
+    <p class="mb-0">Выбранные маршруты:</p>
+    <div id="selected_routes"></div>
+  </div>
+<% end %>
+
+
+<% content_for :scripts do %>
+  <script type="text/javascript">
+    $(document).on('turbolinks:load', function() {
+       Paloma.start();
+    });
+  </script>
+<% end %>

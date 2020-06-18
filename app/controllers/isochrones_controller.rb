@@ -1,4 +1,4 @@
-class MapController < ApplicationController
+class IsochronesController < ApplicationController
 
 	def get_routes
 		@routes = Station.find_by(source_id: params[:station_id]).routes
