@@ -267,7 +267,7 @@ Paloma.controller('Isochrones',
 
       console.log(params);
 
-      $.get("/map/get_isochrones", params)
+      $.get("/isochrones/get_isochrones", params)
       .done(function(data) {
   	    console.log("get_isochrones");
   	    console.log(data);
@@ -290,7 +290,7 @@ Paloma.controller('Isochrones',
         station_id: selected_point.properties.global_id
       }
 
-      $.get("/map/get_routes", params)
+      $.get("/isochrones/get_routes", params)
       .done(function(data) {
       	console.log(data);
   	    routeFeatures = getRouteFeatures(data);
@@ -308,7 +308,7 @@ Paloma.controller('Isochrones',
         isochrone_codes: isochrone_codes
       }
 
-      $.get("/map/get_metrics", params)
+      $.get("/isochrones/get_metrics", params)
       .done(function(data) {
         console.log("Metrics:");
         console.log(data);
