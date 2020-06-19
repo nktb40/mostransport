@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_17_121934) do
+ActiveRecord::Schema.define(version: 2020_06_19_052040) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 2020_06_17_121934) do
     t.integer "metric_type_id"
     t.integer "isochrone_id"
     t.string "isochrone_unique_code"
-    t.integer "metric_value"
+    t.float "metric_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
