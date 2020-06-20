@@ -2,8 +2,7 @@ $('#selected_routes').html("<%= j render partial: 'selected_routes' %>");
 
 <% isochrones = [] %>
 <% @routes.each_with_index do |route, i| %>
-	<% station_ids = route.stations.map(&:id) %>
-	<% isochrones = isochrones.concat(Isochrone.where(station_id: station_ids, profile: "walking", contour: 10)) %>
+	<% isochrones = isochrones.concat(route.isochrones.where(profile: "route_cover", contour: 5)) %>
 <% end %>
 geo_data = <%= raw isochrones.map(&:geo_data).to_json() %>;
 features = turf.featureCollection(geo_data.map(function(d){return turf.feature(d)}));

@@ -136,40 +136,72 @@ require 'csv'
 
 # end
 
-# ====================================
-# Metric types
-# ====================================
-puts "Metric Type: begin"
-rows = [
-  {metric_code: "isochrone_area", metric_name: "Площадь изохрона (км2)", unit_code: "км2."},
+# # ====================================
+# # Isohrones/ Route Cover
+# # ====================================
 
-  {metric_code: "houses_cnt", metric_name: "Кол-во домов", unit_code: ""},
-  {metric_code: "houses_population", metric_name: "Кол-во жителей", unit_code: ""},
+# puts "Isohrones/route_cover: begin"
 
-  {metric_code: "offices_cnt", metric_name: "Кол-во офисов", unit_code: ""},
-  {metric_code: "offices_population", metric_name: "Кол-во работников", unit_code: ""},
+# files = Dir.glob("seeds/route_cover/*.csv")
 
-  {metric_code: "universities_cnt", metric_name: "Кол-во университетов", unit_code: ""},
-  {metric_code: "universities_population", metric_name: "Кол-во студентов", unit_code: ""}
-]
+# files.each do |file_name|
+#   puts "*** Loading #{file_name}"
+#   CSV.foreach(file_name, :headers => true, :col_sep => ",", :quote_char => '"') do |row|
+#     #puts(row.to_hash)
+#     route = Route.find_or_create_by(source_id: row['global_id'])
+#     row = {
+#       route_id: route.id,
+#       unique_code: row['id'], 
+#       source_route_id: row['global_id'], 
+#       contour: row['contour'], 
+#       profile: row['profile'],
+#       geo_data: JSON.parse(row['polygon'])
+#     }
+#     #puts row
+#     item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
+#     item.update!(row)
+#   end
+# end
 
-rows.each do |row|
-  item = MetricType.find_or_initialize_by(metric_code: row[:metric_code])
-  item.update!(row)
-end
-puts "Metric Type: done"
+# puts "Isohrones/route_cover: done"
+
+# # ====================================
+# # Metric types
+# # ====================================
+# puts "Metric Type: begin"
+# rows = [
+#   {metric_code: "isochrone_area", metric_name: "Площадь изохрона (км2)", unit_code: "км2."},
+
+#   {metric_code: "houses_cnt", metric_name: "Кол-во домов", unit_code: ""},
+#   {metric_code: "houses_population", metric_name: "Кол-во жителей", unit_code: ""},
+
+#   {metric_code: "offices_cnt", metric_name: "Кол-во офисов", unit_code: ""},
+#   {metric_code: "offices_population", metric_name: "Кол-во работников", unit_code: ""},
+
+#   {metric_code: "universities_cnt", metric_name: "Кол-во университетов", unit_code: ""},
+#   {metric_code: "universities_population", metric_name: "Кол-во студентов", unit_code: ""}
+# ]
+
+# rows.each do |row|
+#   item = MetricType.find_or_initialize_by(metric_code: row[:metric_code])
+#   item.update!(row)
+# end
+# puts "Metric Type: done"
 
 # ====================================
 # Metris
 # ====================================
 puts "Metrics: begin"
 
+Metric.delete_all
+
 files = Dir.glob("seeds/metrics/*.csv")
 
 files.each do |file_name|
   puts "*** Loading #{file_name}"
+  items = []
   CSV.foreach(file_name, :headers => true, :col_sep => ";") do |row|
-    puts(row.to_hash)
+    #puts(row.to_hash)
     metric_type = MetricType.find_or_create_by(metric_code: row['metric_code'])
     isochrone = Isochrone.find_by(unique_code: row['isochrone_code'])
     row = {
@@ -178,9 +210,11 @@ files.each do |file_name|
       isochrone_unique_code: row['isochrone_code'],
       metric_value: row['metric_value']
     }
-    item = Metric.find_or_initialize_by(metric_type_id: row[:metric_type_id], isochrone_id: row[:isochrone_id])
-    item.update!(row)
+    items << Metric.new(row)
+    #item = Metric.find_or_initialize_by(metric_type_id: row[:metric_type_id], isochrone_id: row[:isochrone_id])
+    #item.update!(row)
   end
+  Metric.import items, validate: false, batch_size: 1000
 end
 puts "Metrics: done"
 

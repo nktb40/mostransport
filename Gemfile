@@ -40,6 +40,9 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # Gem для доступа к контроллерам из javascript
 gem 'paloma', '~> 6.0.0'
 
+# Gem для быстрой вставки большого числа записей в БД
+gem 'activerecord-import'
+
 group :development do
   #gem "listen"
   gem "capistrano", require: false
