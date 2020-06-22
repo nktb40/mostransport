@@ -153,7 +153,7 @@ Paloma.controller('Routes',
         .addTo(map);
     }
 
-    // Обработчик события выбора маршрутов строке поиска
+    // Обработчик события выбора маршрутов в строке поиска
     $('#route_search').on('changed.bs.select', function (e, clickedIndex, isSelected) {
     	route_codes = $('#route_search').val();
     	showRoutes(route_codes);
@@ -162,7 +162,7 @@ Paloma.controller('Routes',
 
     // Функция отображения линии маршрута на карте
     function showRoutes(route_codes){
-    	filter =  ["in",["get","route_code"], "["+route_codes+"]"];
+    	filter =  ["in",["get","route_code"], ["literal",route_codes]];
     	map.setFilter("routes",filter);
     }
 
