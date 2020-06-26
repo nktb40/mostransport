@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_20_060218) do
+ActiveRecord::Schema.define(version: 2020_06_25_081853) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2020_06_20_060218) do
     t.datetime "updated_at", null: false
     t.integer "route_id"
     t.integer "source_route_id"
+    t.boolean "with_changes"
     t.index ["unique_code"], name: "index_isochrones_on_unique_code", unique: true
   end
 

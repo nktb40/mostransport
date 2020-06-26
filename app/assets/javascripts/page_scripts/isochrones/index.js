@@ -183,6 +183,7 @@ Paloma.controller('Isochrones',
     var profile = 'public_transport';
     var minutes = [0,10,20,30];
     var use_intervals = false;
+    var use_changes = false;
 
     // Target the "params" form in the HTML
     var params = document.getElementById('params');
@@ -196,8 +197,10 @@ Paloma.controller('Isochrones',
 
       if(profile == 'public_transport'){
         use_intervals = document.getElementById('use_intervals').checked;
+        use_changes = document.getElementById('use_changes').checked;
       } else {
         use_intervals = null;
+        use_changes = null;
       }
 
       prev_selected_point = selected_point;
@@ -212,10 +215,10 @@ Paloma.controller('Isochrones',
 
       if(minutes.includes(val)){
         minutes = minutes.filter(function(el){return el != val});
-        $(btn).addClass("btn--stroke");
+        $(btn).removeClass("active");
       } else{
         minutes.push(val);
-        $(btn).removeClass("btn--stroke");
+        $(btn).addClass("active");
       }
       
       prev_selected_point = selected_point;
@@ -262,7 +265,8 @@ Paloma.controller('Isochrones',
       params = {
         station_id: [selected_point.properties.global_id],
         profile: profile,
-        with_interval: use_intervals
+        with_interval: use_intervals,
+        with_changes: use_changes
       }
 
       console.log(params);

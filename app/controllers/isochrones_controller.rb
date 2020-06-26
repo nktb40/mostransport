@@ -11,6 +11,7 @@ class IsochronesController < ApplicationController
 		#@isochrones = Station.where(source_id: params[:station_id]).
 		@isochrones = Isochrone.where(source_station_id: params[:station_id], profile: params[:profile])
 		@isochrones = @isochrones.where(with_interval: params[:with_interval]) if params[:with_interval].present?
+		@isochrones = @isochrones.where(with_changes: params[:with_changes]) if params[:with_changes].present?
 		@isochrones = @isochrones.where(contour: params[:contour]) if params[:contour].present?
 
 		render json: @isochrones.to_json, status: :ok
