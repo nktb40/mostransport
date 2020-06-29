@@ -4,5 +4,6 @@ production:
   database: mostransport
   pool: 10
   host: localhost
+  timeout: 5000
   username: mostransport
   password: mostranspass

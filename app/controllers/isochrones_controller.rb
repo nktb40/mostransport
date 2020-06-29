@@ -5,6 +5,11 @@ class IsochronesController < ApplicationController
 		render json: @routes.to_json, status: :ok
 	end
 
+	def get_changes_routes
+		@routes = Route.where(route_code: params[:route_codes])
+		render json: @routes.to_json, status: :ok
+	end
+
 	def get_isochrones
 		params[:with_interval] = nil if params[:with_interval].blank?
 		

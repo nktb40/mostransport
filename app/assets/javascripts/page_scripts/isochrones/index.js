@@ -1,3 +1,4 @@
+var map;
 Paloma.controller('Isochrones',
 {
   index: function(){
@@ -25,7 +26,7 @@ Paloma.controller('Isochrones',
     mapboxgl.accessToken = publicToken;
 
     // Инициализируем карту
-    var map = new mapboxgl.Map({
+    map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v11',
       center: [37.618936,55.754388],
@@ -70,6 +71,25 @@ Paloma.controller('Isochrones',
       });
       
 
+      // Слой для отображения пересадочных маршрутов на карте
+      map.addSource('changes_routes', {
+        'type': 'geojson',
+        'data': {
+          'type': 'FeatureCollection',
+          'features': []
+        }
+      });
+
+      map.addLayer({
+        'id': 'changes_routes',
+        'type': 'line',
+        'source': 'changes_routes',
+        'paint': {
+          'line-width': 3,
+          'line-color': '#979797'
+        }
+      });
+
       // Слой для отображения маршрутов на карте
       map.addSource('routes', {
         'type': 'geojson',
@@ -84,7 +104,7 @@ Paloma.controller('Isochrones',
         'type': 'line',
         'source': 'routes',
         'paint': {
-          'line-width': 4,
+          'line-width': 3,
           'line-color': '#F7455D'
         }
       });
@@ -110,6 +130,22 @@ Paloma.controller('Isochrones',
           'circle-color': '#3976bc'
         }
       });
+
+      // Слой для отображения выбранных точек
+      map.addLayer({
+        'id': 'selected_points',
+        'type': 'circle',
+        'source': 'points',
+        'source-layer': pointsSourceLayer,
+        'filter': false,
+        'paint': {
+          'circle-radius': {
+            'stops': [[9, 2], [22, 15]]
+          },
+          'circle-color': '#3976bc'
+        }
+      });
+
 
       // Change the cursor to a pointer when it enters a feature in the 'points' layer.
       data_layers.map(function(l){return l.name}).concat('points').forEach(function(l){
@@ -145,26 +181,31 @@ Paloma.controller('Isochrones',
         //console.log(event);
         prev_selected_point = selected_point;
         selected_point = map.queryRenderedFeatures(event.point, { layers: ['points']})[0];
-
-        // create the popup
-        var popup = new mapboxgl.Popup({ offset: 40 }).setHTML(
-          "<div class='loading loading--s none'></div>"
-          +
-          "<p>Остановка: "+selected_point.properties.StationName+"</p>"
-          +
-          "<p>Маршруты: "+selected_point.properties.RouteNumbers+"</p>"
-        );
            
         if(selected_point != null){
           console.log("selected_point");
           console.log(selected_point);
-           
+
+          // create the popup
+          var popup = new mapboxgl.Popup({ offset: 40 }).setHTML(
+            "<div class='loading loading--s none'></div>"
+            +
+            "<p>Остановка: "+selected_point.properties.StationName+"</p>"
+            +
+            "<p>Маршруты: "+selected_point.properties.RouteNumbers+"</p>"
+          );
+          
+          // Добавляем маркер
           marker.setLngLat(selected_point.geometry.coordinates);
           marker.setPopup(popup);
           marker.addTo(map);
-
           marker.togglePopup();
 
+          // Скрываем другие точки
+          map.setPaintProperty('points', 'circle-color', '#aeaeae');
+        } else {
+          // Если не выбрана остановка, то показываем все точки
+          map.setPaintProperty('points', 'circle-color', '#3976bc');
         }
 
         filterMap();
@@ -194,7 +235,7 @@ Paloma.controller('Isochrones',
         prev_profile = profile;
         profile = e.target.value;
       } 
-
+      
       if(profile == 'public_transport'){
         use_intervals = document.getElementById('use_intervals').checked;
         use_changes = document.getElementById('use_changes').checked;
@@ -282,6 +323,15 @@ Paloma.controller('Isochrones',
         
         isochrone_codes = data.map(function(i){return i.unique_code});
         getMetrics(isochrone_codes);
+
+        // Подсвечиваем остановки выбранных маршрутов
+        selected_stops = Array.from(new Set(data.map(function(d){return d.properties.stop_ids}).reduce(function(a, b){return a.concat(b)})));
+        console.log(selected_stops);
+        map.setFilter('selected_points', ["in",["get","global_id"], ["literal",selected_stops]]);
+
+        // Получаем линии пересадочных маршрутов
+        route_codes = Array.from(new Set(data.map(function(d){return d.properties.routes}).reduce(function(a, b){return a.concat(b)})));
+        getChangesRoutes(route_codes);
   	  })
   	  .always(function() {
   	    $('.loading').addClass('none');
@@ -304,6 +354,24 @@ Paloma.controller('Isochrones',
   	  .always(function() {
   	    $('.loading').addClass('none');
   	  });
+    }
+
+    // Отправка запроса для получения координат пересадочных маршрутов
+    function getChangesRoutes(route_codes){
+      params = {
+        route_codes: route_codes
+      }
+
+      $.get("/isochrones/get_changes_routes", params)
+      .done(function(data) {
+        console.log("Changes routes");
+        console.log(data);
+        routeFeatures = getRouteFeatures(data);
+        map.getSource('changes_routes').setData(routeFeatures);
+      })
+      .always(function() {
+        $('.loading').addClass('none');
+      });
     }
 
     // Отправка запроса для получения метрик изохрона

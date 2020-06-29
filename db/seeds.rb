@@ -54,57 +54,58 @@ require 'csv'
 # end
 # puts "Routes: done"
 
-# ====================================
-# LnkStationRoutes
-# ====================================
-puts "LnkStationRoutes: begin"
-file = "seeds/routes/route2stops.csv"
-
-LnkStationRoute.delete_all
-items = []
-CSV.foreach(file, :headers => true, :col_sep => ";") do |row|
-  route = Route.find_by(route_code: row['route_code'])
-  if route.present?
-    station_ids = JSON.parse(row['stop_id'])
-
-    station_ids.each_with_index do |id,i|
-      station = Station.find_by(source_id: id)
-      #link = LnkStationRoute.find_or_initialize_by(station_id: station.id, route_id: route.id, track_no: row['track_no'])
-      #link.update!(seq_no: i+1)
-      item = {station_id: station.id, route_id: route.id, track_no: row['track_no'], seq_no: i+1}
-      items << LnkStationRoute.new(item)
-    end
-  end
-end
-LnkStationRoute.import items, validate: false, batch_size: 1000
-puts "LnkStationRoutes: done"
-
 # # ====================================
-# # Isohrones/ Public Transport
+# # LnkStationRoutes
 # # ====================================
-# puts "Isohrones/ Public Transport: begin"
-# files = Dir.glob("seeds/public_transport/*.csv")
+# puts "LnkStationRoutes: begin"
+# file = "seeds/routes/route2stops.csv"
 
-# files.each do |file_name|
-#   puts "*** Loading #{file_name}"
-#   CSV.foreach(file_name, :headers => true, :col_sep => ";", :quote_char => "'") do |row|
-#     #puts(row.to_hash)
-#     station = Station.find_or_create_by(source_id: row['global_id'])
-#     row = {
-#       station_id: station.id,
-#       unique_code: row['ID'], 
-#       source_station_id: row['global_id'], 
-#       contour: row['contour'], 
-#       profile: row['profile'],
-#       with_interval: row['with_interval'],
-#       with_changes: row['with_changes'],
-#       geo_data: JSON.parse(row['polygon'])
-#     }
-#     item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
-#     item.update!(row)
+# LnkStationRoute.delete_all
+# items = []
+# CSV.foreach(file, :headers => true, :col_sep => ";") do |row|
+#   route = Route.find_by(route_code: row['route_code'])
+#   if route.present?
+#     station_ids = JSON.parse(row['stop_id'])
+
+#     station_ids.each_with_index do |id,i|
+#       station = Station.find_by(source_id: id)
+#       #link = LnkStationRoute.find_or_initialize_by(station_id: station.id, route_id: route.id, track_no: row['track_no'])
+#       #link.update!(seq_no: i+1)
+#       item = {station_id: station.id, route_id: route.id, track_no: row['track_no'], seq_no: i+1}
+#       items << LnkStationRoute.new(item)
+#     end
 #   end
 # end
-# puts "Isohrones/ Public Transport: done"
+# LnkStationRoute.import items, validate: false, batch_size: 1000
+# puts "LnkStationRoutes: done"
+
+# ====================================
+# Isohrones/ Public Transport
+# ====================================
+puts "Isohrones/ Public Transport: begin"
+files = Dir.glob("seeds/public_transport/*.csv")
+
+files.each do |file_name|
+  puts "*** Loading #{file_name}"
+  CSV.foreach(file_name, :headers => true, :col_sep => ";", :quote_char => "'") do |row|
+    #puts(row.to_hash)
+    station = Station.find_or_create_by(source_id: row['global_id'])
+    row = {
+      station_id: station.id,
+      unique_code: row['ID'], 
+      source_station_id: row['global_id'], 
+      contour: row['contour'], 
+      profile: row['profile'],
+      with_interval: row['with_interval'],
+      with_changes: row['with_changes'],
+      geo_data: JSON.parse(row['polygon']),
+      properties: JSON.parse(row['properties'])
+    }
+    item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
+    item.update!(row)
+  end
+end
+puts "Isohrones/ Public Transport: done"
 
 # # ====================================
 # # Isohrones/ Walking
@@ -191,35 +192,35 @@ puts "LnkStationRoutes: done"
 # end
 # puts "Metric Type: done"
 
-# # ====================================
-# # Metris
-# # ====================================
-# puts "Metrics: begin"
+# ====================================
+# Metris
+# ====================================
+puts "Metrics: begin"
 
-# Metric.delete_all
+#Metric.delete_all
 
-# files = Dir.glob("seeds/metrics/*.csv")
+files = Dir.glob("seeds/metrics/*.csv")
 
-# files.each do |file_name|
-#   puts "*** Loading #{file_name}"
-#   items = []
-#   CSV.foreach(file_name, :headers => true, :col_sep => ";") do |row|
-#     #puts(row.to_hash)
-#     metric_type = MetricType.find_or_create_by(metric_code: row['metric_code'])
-#     isochrone = Isochrone.find_by(unique_code: row['isochrone_code'])
-#     row = {
-#       metric_type_id: metric_type.id,
-#       isochrone_id: isochrone.id, 
-#       isochrone_unique_code: row['isochrone_code'],
-#       metric_value: row['metric_value']
-#     }
-#     items << Metric.new(row)
-#     #item = Metric.find_or_initialize_by(metric_type_id: row[:metric_type_id], isochrone_id: row[:isochrone_id])
-#     #item.update!(row)
-#   end
-#   Metric.import items, validate: false, batch_size: 1000
-# end
-# puts "Metrics: done"
+files.each do |file_name|
+  puts "*** Loading #{file_name}"
+  items = []
+  CSV.foreach(file_name, :headers => true, :col_sep => ";") do |row|
+    #puts(row.to_hash)
+    metric_type = MetricType.find_or_create_by(metric_code: row['metric_code'])
+    isochrone = Isochrone.find_by(unique_code: row['isochrone_code'])
+    row = {
+      metric_type_id: metric_type.id,
+      isochrone_id: isochrone.id, 
+      isochrone_unique_code: row['isochrone_code'],
+      metric_value: row['metric_value']
+    }
+    items << Metric.new(row)
+    #item = Metric.find_or_initialize_by(metric_type_id: row[:metric_type_id], isochrone_id: row[:isochrone_id])
+    #item.update!(row)
+  end
+  Metric.import items, validate: false, batch_size: 1000
+end
+puts "Metrics: done"
 
 # # ==================
 # # Test metrics
