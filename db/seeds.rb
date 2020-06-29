@@ -83,14 +83,15 @@ require 'csv'
 # Isohrones/ Public Transport
 # ====================================
 puts "Isohrones/ Public Transport: begin"
-items = []
 
 files = Dir.glob("seeds/public_transport/*.csv")
 
 files.each do |file_name|
   puts "*** Loading #{file_name}"
-  CSV.foreach(file_name, :headers => true, :col_sep => ";", :quote_char => "'") do |row|
+  items = []
+  CSV.foreach(file_name, :headers => true, :col_sep => ";") do |row|
     #puts(row.to_hash)
+    puts row['polygon']
     station = Station.find_or_create_by(source_id: row['global_id'])
     row = {
       station_id: station.id,
@@ -103,15 +104,14 @@ files.each do |file_name|
       geo_data: JSON.parse(row['polygon']),
       properties: JSON.parse(row['properties'])
     }
+    puts row
     #item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
     #item.update!(row)
 
     items << Isochrone.new(row)
-
   end
+  Isochrone.import items, batch_size: 1000, on_duplicate_key_update: {conflict_target: [:unique_code], columns: [:station_id, :geo_data, :properties]}
 end
-
-Isochrone.import items, batch_size: 2000, on_duplicate_key_update: {conflict_target: [:unique_code], columns: [:station_id, :geo_data, :properties]}
 
 puts "Isohrones/ Public Transport: done"
 

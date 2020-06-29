@@ -1,0 +1,8 @@
+---
+:concurrency: 1
+:tag: default
+:timeout: 30
+:logfile: ./log/sidekiq_default.log
+:queues:
+  - default
+  - mailers

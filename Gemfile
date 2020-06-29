@@ -43,6 +43,11 @@ gem 'paloma', '~> 6.0.0'
 # Gem для быстрой вставки большого числа записей в БД
 gem 'activerecord-import'
 
+# Gem для выполнения задач в фоновом режиме
+gem 'sidekiq'
+gem 'redis'
+gem 'hiredis'
+
 group :development do
   #gem "listen"
   gem "capistrano", require: false
