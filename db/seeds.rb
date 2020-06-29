@@ -83,6 +83,8 @@ require 'csv'
 # Isohrones/ Public Transport
 # ====================================
 puts "Isohrones/ Public Transport: begin"
+items = []
+
 files = Dir.glob("seeds/public_transport/*.csv")
 
 files.each do |file_name|
@@ -101,10 +103,16 @@ files.each do |file_name|
       geo_data: JSON.parse(row['polygon']),
       properties: JSON.parse(row['properties'])
     }
-    item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
-    item.update!(row)
+    #item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
+    #item.update!(row)
+
+    items << Isochrone.new(row)
+
   end
 end
+
+Isochrone.import items, batch_size: 2000, on_duplicate_key_update: {conflict_target: [:unique_code], columns: [:station_id, :geo_data, :properties]}
+
 puts "Isohrones/ Public Transport: done"
 
 # # ====================================
@@ -218,7 +226,7 @@ files.each do |file_name|
     #item = Metric.find_or_initialize_by(metric_type_id: row[:metric_type_id], isochrone_id: row[:isochrone_id])
     #item.update!(row)
   end
-  Metric.import items, validate: false, batch_size: 1000
+  Metric.import items, batch_size: 1000, on_duplicate_key_update: {conflict_target: [:metric_type_id, :isochrone_id], columns: [:metric_value]}
 end
 puts "Metrics: done"
 
