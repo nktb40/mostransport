@@ -230,6 +230,7 @@ class LoadDataWorker
 		files.each do |file_name|
 		  puts "*** Loading #{file_name}"
 		  items = []
+
 		  CSV.foreach(file_name, :headers => true, :col_sep => ";") do |row|
 		    #puts(row.to_hash)
 		    metric_type = MetricType.find_or_create_by(metric_code: row['metric_code'])
@@ -241,6 +242,11 @@ class LoadDataWorker
 		      metric_value: row['metric_value']
 		    }
 		    items << Metric.new(row)
+		    
+		  	if items.length == 1000
+		  		Metric.import items, batch_size: 1000, on_duplicate_key_update: {conflict_target: [:metric_type_id, :isochrone_id], columns: [:metric_value]}
+		  		items = []
+		  	end
 		    #item = Metric.find_or_initialize_by(metric_type_id: row[:metric_type_id], isochrone_id: row[:isochrone_id])
 		    #item.update!(row)
 		  end

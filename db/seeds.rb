@@ -91,7 +91,6 @@ files.each do |file_name|
   items = []
   CSV.foreach(file_name, :headers => true, :col_sep => ";") do |row|
     #puts(row.to_hash)
-    puts row['polygon']
     station = Station.find_or_create_by(source_id: row['global_id'])
     row = {
       station_id: station.id,
@@ -104,11 +103,14 @@ files.each do |file_name|
       geo_data: JSON.parse(row['polygon']),
       properties: JSON.parse(row['properties'])
     }
-    puts row
     #item = Isochrone.find_or_initialize_by(unique_code: row[:unique_code])
     #item.update!(row)
 
     items << Isochrone.new(row)
+    if items.length == 1000
+      Isochrone.import items, batch_size: 1000, on_duplicate_key_update: {conflict_target: [:unique_code], columns: [:station_id, :geo_data, :properties]}
+      items = []
+    end
   end
   Isochrone.import items, batch_size: 1000, on_duplicate_key_update: {conflict_target: [:unique_code], columns: [:station_id, :geo_data, :properties]}
 end
@@ -223,6 +225,10 @@ files.each do |file_name|
       metric_value: row['metric_value']
     }
     items << Metric.new(row)
+    if items.length == 1000
+      Metric.import items, batch_size: 1000, on_duplicate_key_update: {conflict_target: [:metric_type_id, :isochrone_id], columns: [:metric_value]}
+      items = []
+    end
     #item = Metric.find_or_initialize_by(metric_type_id: row[:metric_type_id], isochrone_id: row[:isochrone_id])
     #item.update!(row)
   end
