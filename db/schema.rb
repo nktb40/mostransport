@@ -10,15 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_29_161658) do
+ActiveRecord::Schema.define(version: 2020_07_09_082208) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "cities", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.float "latitude"
+    t.float "longitude"
+    t.json "bbox"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "tile_url"
+  end
+
   create_table "isochrones", force: :cascade do |t|
     t.integer "station_id"
     t.string "unique_code"
-    t.integer "source_station_id"
+    t.string "source_station_id"
     t.integer "contour"
     t.string "profile"
     t.boolean "with_interval"
@@ -26,9 +37,11 @@ ActiveRecord::Schema.define(version: 2020_06_29_161658) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "route_id"
-    t.integer "source_route_id"
+    t.string "source_route_id"
     t.boolean "with_changes"
     t.json "properties"
+    t.integer "city_id"
+    t.index ["city_id"], name: "index_isochrones_on_city_id"
     t.index ["unique_code"], name: "index_isochrones_on_unique_code", unique: true
   end
 
@@ -39,6 +52,7 @@ ActiveRecord::Schema.define(version: 2020_06_29_161658) do
     t.datetime "updated_at", null: false
     t.integer "seq_no"
     t.integer "track_no"
+    t.string "route_type"
   end
 
   create_table "metric_types", force: :cascade do |t|
@@ -61,14 +75,10 @@ ActiveRecord::Schema.define(version: 2020_06_29_161658) do
   end
 
   create_table "routes", force: :cascade do |t|
-    t.integer "global_id"
     t.string "route_number"
     t.string "route_code"
     t.string "route_name"
-    t.text "track_of_following"
-    t.text "reverse_track_of_following"
     t.string "type_of_transport"
-    t.string "carrier_name"
     t.json "geo_data"
     t.float "route_interval"
     t.float "route_length"
@@ -77,19 +87,23 @@ ActiveRecord::Schema.define(version: 2020_06_29_161658) do
     t.datetime "updated_at", null: false
     t.float "straightness"
     t.json "bbox"
-    t.integer "source_id"
+    t.string "source_id"
+    t.integer "city_id"
+    t.boolean "circular_flag"
+    t.index ["city_id"], name: "index_routes_on_city_id"
   end
 
   create_table "stations", force: :cascade do |t|
-    t.integer "source_id"
-    t.string "name"
+    t.string "source_id"
     t.float "latitude"
     t.float "longitude"
-    t.text "route_numbers"
+    t.json "route_ids"
     t.string "station_name"
     t.json "geo_data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "city_id"
+    t.index ["city_id"], name: "index_stations_on_city_id"
   end
 
 end

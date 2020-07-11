@@ -9,7 +9,11 @@ Paloma.controller('Isochrones',
     var publicToken = 'pk.eyJ1Ijoibmt0YiIsImEiOiJjazhscjEwanEwZmYyM25xbzVreWMyYTU1In0.dcztuEUgjlhgaalrc_KLMw';
 
     // Остановки ОТ
-    var pointsTileset = "nktb.bev2q4f8" //ID tileset объектов
+    var station_tiles = [
+      {city_code: 'MSK', tile_url: 'nktb.bev2q4f8'},
+      {city_code: 'USH', tile_url: 'nktb.6v5aby4g'},
+    ];
+    var pointsTileset = $("#city_select").find(':selected').data('tile_url'); //ID tileset объектов
     var pointsSourceLayer = "bus_stops"; //Название SourceLayer
 
     // Данные по вспомогательным объектам
@@ -32,6 +36,24 @@ Paloma.controller('Isochrones',
       center: [37.618936,55.754388],
       zoom: 11.5
     });
+
+    // Выбранный город
+    var selected_city_id = $("#city_select").val();
+
+    // Функция обработки события переключения города
+    $("#city_select").on('click',function(e){
+      selected_city_id = e.target.value;
+
+      // Загружаем источник данных для остановок
+      pointsTileset = $(this).find(':selected').data('tile_url');
+      init_stations_layer();
+
+      // Перемещаем карту в границу, выбранного города
+      bbox = $(this).find(':selected').data('bbox');
+      map.fitBounds(bbox, {
+        padding: {top: 10, bottom:10, left: 10, right: 10}
+      });
+    });
      
     // create the marker
     var marker = new mapboxgl.Marker();
@@ -41,6 +63,56 @@ Paloma.controller('Isochrones',
     var point_popup = new mapboxgl.Popup();
 
     // Загрузка Tileset-ов для отображения объектов на карте
+    function init_stations_layer(){
+
+      if (map.getLayer("points")) {
+          map.removeLayer("points");
+          map.removeLayer("selected_points");
+      }
+
+      if (map.getSource("points")) {
+          map.removeSource("points");
+      }
+
+      map.addSource("points", {
+          "type": "vector",
+          "url": "mapbox://"+pointsTileset,
+          "tileSize": 512
+        }
+      );
+
+      // Слой для отображения всех станций
+      map.addLayer({
+        'id': 'points',
+        'type': 'circle',
+        'source': 'points',
+        'source-layer': pointsSourceLayer,
+        //'filter': false,
+        'paint': {
+          'circle-radius': {
+            'stops': [[9, 2], [22, 15]]
+          },
+          'circle-color': '#3976bc'
+        }
+      });
+
+      // Слой для отображения выбранных станций
+      map.addLayer({
+        'id': 'selected_points',
+        'type': 'circle',
+        'source': 'points',
+        'source-layer': pointsSourceLayer,
+        'filter': false,
+        'paint': {
+          'circle-radius': {
+            'stops': [[9, 2], [22, 15]]
+          },
+          'circle-color': '#3976bc'
+        }
+      });
+    }
+
+    // Загрузка слоёв данных
     map.on('load', function() {
 
       // Слой для отображения индивидуальных изохронов
@@ -110,41 +182,7 @@ Paloma.controller('Isochrones',
       });
 
       // Загружаем слой с остановками
-      map.addSource("points", {
-          "type": "vector",
-          "url": "mapbox://"+pointsTileset,
-          "tileSize": 512
-        }
-      );
-
-      map.addLayer({
-        'id': 'points',
-        'type': 'circle',
-        'source': 'points',
-        'source-layer': pointsSourceLayer,
-        //'filter': false,
-        'paint': {
-          'circle-radius': {
-            'stops': [[9, 2], [22, 15]]
-          },
-          'circle-color': '#3976bc'
-        }
-      });
-
-      // Слой для отображения выбранных точек
-      map.addLayer({
-        'id': 'selected_points',
-        'type': 'circle',
-        'source': 'points',
-        'source-layer': pointsSourceLayer,
-        'filter': false,
-        'paint': {
-          'circle-radius': {
-            'stops': [[9, 2], [22, 15]]
-          },
-          'circle-color': '#3976bc'
-        }
-      });
+      init_stations_layer();
 
 
       // Change the cursor to a pointer when it enters a feature in the 'points' layer.
@@ -170,6 +208,8 @@ Paloma.controller('Isochrones',
           .setHTML(
             "<div class='loading loading--s none'></div>"
             +
+            "<span><b>ID:</b> "+e.features[0].properties.global_id+"</span><br>"
+            +
             "<p>Остановка: "+e.features[0].properties.StationName+"</p>"
             +
             "<p>Маршруты: "+e.features[0].properties.RouteNumbers+"</p>"
@@ -189,6 +229,8 @@ Paloma.controller('Isochrones',
           // create the popup
           var popup = new mapboxgl.Popup({ offset: 40 }).setHTML(
             "<div class='loading loading--s none'></div>"
+            +
+            "<span><b>ID:</b> "+selected_point.properties.global_id+"</span><br>"
             +
             "<p>Остановка: "+selected_point.properties.StationName+"</p>"
             +
@@ -213,6 +255,7 @@ Paloma.controller('Isochrones',
       
 
     });
+
 
     //=========================================
     // Построение изохрона для выбранной точки
@@ -307,7 +350,8 @@ Paloma.controller('Isochrones',
         station_id: [selected_point.properties.global_id],
         profile: profile,
         with_interval: use_intervals,
-        with_changes: use_changes
+        with_changes: use_changes,
+        city_id: selected_city_id
       }
 
       console.log(params);
@@ -321,17 +365,19 @@ Paloma.controller('Isochrones',
         console.log(isoFeatures);
         map.getSource('pointIsochrones').setData(isoFeatures);
         
-        isochrone_codes = data.map(function(i){return i.unique_code});
-        getMetrics(isochrone_codes);
+        isochrone_ids = data.map(function(i){return i.id});
+        getMetrics(isochrone_ids);
 
         // Подсвечиваем остановки выбранных маршрутов
-        selected_stops = Array.from(new Set(data.map(function(d){return d.properties.stop_ids}).reduce(function(a, b){return a.concat(b)})));
-        console.log(selected_stops);
-        map.setFilter('selected_points', ["in",["get","global_id"], ["literal",selected_stops]]);
-
-        // Получаем линии пересадочных маршрутов
-        route_codes = Array.from(new Set(data.map(function(d){return d.properties.routes}).reduce(function(a, b){return a.concat(b)})));
-        getChangesRoutes(route_codes);
+        if(profile == "public_transport"){
+          selected_stops = Array.from(new Set(data.map(function(d){return d.properties.station_ids}).reduce(function(a, b){return a.concat(b)})));
+          console.log(selected_stops);
+          map.setFilter('selected_points', ["in",["get","global_id"], ["literal",selected_stops]]);
+          
+          // Получаем линии пересадочных маршрутов
+          route_codes = Array.from(new Set(data.map(function(d){return d.properties.routes}).reduce(function(a, b){return a.concat(b)})));
+          getChangesRoutes(route_codes);
+        }
   	  })
   	  .always(function() {
   	    $('.loading').addClass('none');
@@ -341,7 +387,8 @@ Paloma.controller('Isochrones',
     // Отправка запроса для получения координат маршрутов
     function getRoutes(){
       params = {
-        station_id: selected_point.properties.global_id
+        station_id: selected_point.properties.global_id,
+        city_id: selected_city_id
       }
 
       $.get("/isochrones/get_routes", params)
@@ -359,7 +406,8 @@ Paloma.controller('Isochrones',
     // Отправка запроса для получения координат пересадочных маршрутов
     function getChangesRoutes(route_codes){
       params = {
-        route_codes: route_codes
+        route_codes: route_codes,
+        city_id: selected_city_id
       }
 
       $.get("/isochrones/get_changes_routes", params)
@@ -375,9 +423,9 @@ Paloma.controller('Isochrones',
     }
 
     // Отправка запроса для получения метрик изохрона
-    function getMetrics(isochrone_codes){
+    function getMetrics(isochrone_ids){
       params = {
-        isochrone_codes: isochrone_codes
+        isochrone_ids: isochrone_ids
       }
 
       $.get("/isochrones/get_metrics", params)
@@ -448,121 +496,6 @@ Paloma.controller('Isochrones',
       return data;
     }
 
-    // Функция добавления доп. информации к изохронам
-    function addFeatureInfo(featureCollection){
-      featureCollection.features.forEach(function(feature){
-        feature.properties.area =  getFeatureArea(feature);
-        feature.properties.area_unit = "км";
-      });
-
-      data_layers.forEach(function(layer){
-        featureCollection = getInfoFromObjectsInside(featureCollection, layer.name);
-        //feature.properties[layer.name] = data.quantity;
-        //feature.properties[layer.name + "-population"] = data.population;
-      });
-
-      return featureCollection;
-    } 
-
-    // Функция расчёта площади изохрона
-    function getFeatureArea(feature){
-      var area = 0;
-
-      polygon = feature.geometry.coordinates;
-
-      if (feature.geometry.type == "Polygon"){
-        p = turf.polygon(polygon);
-        area += turf.area(p);
-      } else if (feature.geometry.type == "MultiPolygon"){
-        p = turf.multiPolygon(polygon);
-        area += turf.area(p);
-      }
-
-      return (area/1000000).toFixed(2);
-    }
-
-    // Функция расчёта кол-ва объектов и кол-ва людей внутри изохрона
-    function getInfoFromObjectsInside(featureCollection, source_name){
-      console.log("getInfoFromObjectsInside");
-      console.log(source_name);
-
-      minutes_sorted = times.sort(function(a, b){return b - a});
-      filtered_arr = [];
-
-      minutes_sorted.forEach(function(m,i){
-        feature = featureCollection.features.find(function(f){return f.properties.contour == m});
-        filtered = []
-
-        if(i == 0){
-          filtered = getObjectsInside(feature, source_name);
-        } else {
-          filtered = turf.pointsWithinPolygon(filtered_arr[i-1], feature);
-        }
-
-        filtered_arr.push(filtered);
-        //console.log(filtered);
-
-        quantity = filtered.features.length;
-
-        if(quantity > 0){
-          populations = filtered.features.map(function(f){return f.properties.population});
-          //console.log(populations);
-
-          population = populations.reduce(function(total, p){return total + p});
-
-          data = {quantity: quantity, population: population};
-        } else {
-          data = {quantity: 0, population: 0};
-        }
-
-        feature.properties[source_name] = data.quantity;
-        feature.properties[source_name + "-population"] = data.population;
-      });
-
-      return featureCollection;
-    }
-
-    // Функция расчёта кол-ва объектов и кол-ва людей внутри изохрона
-    function getObjectsInside(feature, source_name){
-      console.log("getObjectsInside");
-
-      points = map.querySourceFeatures(source_name, { sourceLayer: source_name});
-      
-      points = turf.featureCollection(points);
-      filtered = turf.pointsWithinPolygon(points, feature);
-
-      // Убираем дубликаты точек
-      filtered_points = [];
-      filtered.features.forEach(function(p){
-        ids = filtered_points.map(function(m){return m.properties.id});
-        if (filtered_points.length == 0 || ids.includes(p.properties.id) == false){
-          filtered_points.push(p);
-        }
-      });
-
-      return turf.featureCollection(filtered_points);
-    }
-
-    // Функция отображения доп. информации об изохроне
-    function displayInfo(featureCollection){
-      featureCollection.features.forEach(function(feature){
-        p = feature.properties;
-        $('.info.area').find('.time-'+p.contour).html(p.area);
-        $('.info.area').removeClass('none');
-
-        data_layers.forEach(function(layer){
-          $('.info.'+layer.name).find('.time-'+p.contour).html(p[layer.name]);
-          $('.info.'+layer.name).removeClass('none');
-
-          if(p[layer.name+'-population'] > 0){
-            $('.info.'+layer.name+'-population').find('.time-'+p.contour).html(p[layer.name+'-population']);
-            $('.info.'+layer.name+'-population').removeClass('none');
-          }
-        });
-      });
-      $('#info-box').removeClass('none');
-    }
-
     // Функция отображения метрик изохрорна
     function displayMetrics(metrics){
       $('#stop_stat').find('tbody').html("");
@@ -609,20 +542,6 @@ Paloma.controller('Isochrones',
       $('#info-box').addClass('none');  
       $('#info-box').find('info').addClass('none');
       $('.info').find('.time').html("");
-    }
-
-    // Функция фильтрации объектов, которые попали в изохрон
-    function filter_objects(featureCollection){
-      last_min = minutes.sort(function(a, b){return b - a})[0];
-      feature = featureCollection.features.find(function(f){return f.properties.contour == last_min});
-
-      data_layers.forEach(function(l){
-        filtered = getObjectsInside(feature, l.name);
-        filtered_ids = filtered.features.map(function(f){return f.properties.id});
-        if(filtered_ids.length > 0){
-          map.setFilter(l.name,["match",["get","id"],filtered_ids,true,false])
-        }
-      });
     }
   }
 });
