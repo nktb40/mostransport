@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_11_142832) do
+ActiveRecord::Schema.define(version: 2020_07_15_034846) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,9 @@ ActiveRecord::Schema.define(version: 2020_07_11_142832) do
     t.integer "seq_no"
     t.integer "track_no"
     t.string "route_type"
+    t.index ["route_id"], name: "index_lnk_station_routes_on_route_id"
+    t.index ["station_id", "route_id", "track_no"], name: "lnk_station_routes_main_index", unique: true
+    t.index ["station_id"], name: "index_lnk_station_routes_on_station_id"
   end
 
   create_table "metric_types", force: :cascade do |t|
