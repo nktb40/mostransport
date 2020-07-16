@@ -370,7 +370,7 @@ Paloma.controller('Isochrones',
 
         // Подсвечиваем остановки выбранных маршрутов
         if(profile == "public_transport"){
-          selected_stops = Array.from(new Set(data.map(function(d){return d.properties.station_ids}).reduce(function(a, b){return a.concat(b)})));
+          selected_stops = Array.from(new Set(data.map(function(d){return d.properties.stop_ids}).reduce(function(a, b){return a.concat(b)})));
           console.log(selected_stops);
           map.setFilter('selected_points', ["in",["get","global_id"], ["literal",selected_stops]]);
           
