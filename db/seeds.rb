@@ -99,8 +99,9 @@ require 'net/http'
 puts "LnkStationRoutes: begin"
 file = "seeds/route2stops/route2stops.csv"
 
-items = []
 CSV.foreach(file, :headers => true, :col_sep => ";") do |row|
+  #puts "#{row['route_code']} #{row['station_ids']}"
+  #items = []
   city = City.find_by_code(row['city_code'])
   route = Route.find_by(source_id: row['route_id'], city_id: city.id)
   
@@ -110,11 +111,15 @@ CSV.foreach(file, :headers => true, :col_sep => ";") do |row|
     station_ids.each_with_index do |id,i|
       station = Station.find_by(source_id: id, city_id: city.id)
       item = {station_id: station.id, route_id: route.id, track_no: row['track_no'], route_type: row['route_type'], seq_no: i+1}
-      items << LnkStationRoute.new(item)
+      #items << LnkStationRoute.new(item)
+      s2r = LnkStationRoute.find_or_initialize_by(station_id: station.id, route_id: route.id, track_no: row['track_no'])
+      s2r.update!(item)
     end
+
+    #LnkStationRoute.import items, batch_size: 1000, on_duplicate_key_update: {conflict_target: [:station_id, :route_id, :track_no], columns: [:seq_no, :route_type]}
   end
 end
-LnkStationRoute.import items, batch_size: 1000, on_duplicate_key_update: {conflict_target: [:station_id, :route_id, :track_no], columns: [:seq_no, :route_type]}
+
 puts "LnkStationRoutes: done"
 
 # # ====================================
