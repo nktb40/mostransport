@@ -1,17 +1,5 @@
 <% content_for :side_bar do %>
-
-  <p class='mt-3 mb-2'>Город:</p>
-  <div class='select-container rounded-pill'>
-    <select id="city_select" class='custom-select rounded-pill px-3'>
-      <% City.all.each do |city| %>
-      <option value='<%= city.id %>' data-bbox='<%= city.bbox %>' data-tile_url='<%= city.tile_url %>'>
-        <%= city.name %>
-      </option>
-      <% end %>
-    </select>
-    <div class='select-arrow'></div>
-  </div>
-
+  <p class="h4 mt-3 pb-3 border-bottom text-blue text-center">Изохроны</p>
   <form id='params'>
     <p class='my-4'>Cпособ перемещения:</p>
     <div class='select-container bg-blue rounded-pill'>

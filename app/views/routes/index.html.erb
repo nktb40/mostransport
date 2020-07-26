@@ -1,12 +1,7 @@
 <% content_for :side_bar do %>
-  <div id="search_menu" class="pt-3">
-    <p>Поиск маршрутов:</p>
-    <select id="route_search" class="selectpicker" data-live-search="true" data-style="rounded-pill btn-blue px-3" multiple title="Выберите маршруты" data-size="10" data-width="360px" data-actions-box="true" data-deselect-all-text="Очистить" data-select-all-text="Выбрать все" data-selected-text-format="count > 5" data-header="Маршруты">
-      <% Route.all.order(:route_code).each do |route| %>
-        <option title="<%= route.route_code %>" data-content='<span class="text-truncate d-inline-block" style="max-width:265px"><%= route.route_code %> - <small><%= route.route_name %></small></span'><%= route.route_code %></option>
-      <% end %>
-    </select>
-  </div>
+  <p class="h4 mt-3 pb-3 border-bottom text-blue text-center">Поиск маршрутов</p>
+
+  <div id="search_menu" class="mt-4"></div>
 
   <div class="w360 mt-4">
     <p class="mb-0">Выбранные маршруты:</p>

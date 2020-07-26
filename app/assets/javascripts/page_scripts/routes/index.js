@@ -2,15 +2,14 @@ var map;
 Paloma.controller('Routes',
 {
   index: function(){
-    // Инициализация selectpicker
-    $('.selectpicker').selectpicker();
 
   	// ключ для Mapbox
     var publicToken = 'pk.eyJ1Ijoibmt0YiIsImEiOiJjazhscjEwanEwZmYyM25xbzVreWMyYTU1In0.dcztuEUgjlhgaalrc_KLMw';
 
-    // Выходы метро
-    var pointsTileset = "nktb.bev2q4f8" //tileset объекты выходы метро
-    var pointsSourceLayer = "bus_stops";
+    // Остановки
+    var pointsTileset = $("#city_select").find(':selected').data('tile_stations_url'); //ID tileset объектов
+    // Маршруты
+    var routesTileset = $("#city_select").find(':selected').data('tile_routes_url'); //ID tileset объектов
 
     // Добавялем ключ для Mapbox
     mapboxgl.accessToken = publicToken;
@@ -25,6 +24,96 @@ Paloma.controller('Routes',
       center: [37.618936,55.754388],
       zoom: 11.5
     });
+
+    // Выбранный город
+    var selected_city_id = $("#city_select").val();
+    
+    // Загружаем список маршрутов
+    getCityRoutes();
+
+    // Функция обработки события переключения города
+    $("#city_select").on('click',function(e){
+      selected_city_id = e.target.value;
+
+      // Загружаем список маршрутов
+      getCityRoutes();
+
+      // Перемещаем карту в границу, выбранного города
+      bbox = $(this).find(':selected').data('bbox');
+      map.fitBounds(bbox, {
+        padding: {top: 10, bottom:10, left: 10, right: 10}
+      });
+
+      // Загружаем источник данных для остановок
+      pointsTileset = $(this).find(':selected').data('tile_stations_url');
+      routesTileset = $("#city_select").find(':selected').data('tile_routes_url');
+      init_stations_layer();
+
+    });
+
+    // Загрузка Tileset-ов для отображения объектов на карте
+    function init_stations_layer(){
+
+      if (map.getLayer("points")) {
+          map.removeLayer("points");
+      }
+
+      if (map.getSource("points")) {
+          map.removeSource("points");
+      }
+
+
+      map.addSource("points", {
+          "type": "vector",
+          "url": "mapbox://"+pointsTileset,
+          "tileSize": 512
+        }
+      );
+
+      // Слой для отображения всех станций
+      map.addLayer({
+        'id': 'points',
+        'type': 'circle',
+        'source': 'points',
+        'source-layer': 'bus_stops',
+        //'filter': false,
+        'paint': {
+          'circle-radius': {
+            'stops': [[9, 2], [22, 15]]
+          },
+          'circle-color': '#3976bc'
+        }
+      });
+
+
+      if (map.getLayer("routes")) {
+          map.removeLayer("routes");
+      }
+
+      if (map.getSource("routes")) {
+          map.removeSource("routes");
+      }
+
+      // Слой для отображения линий маршрутов
+      map.addSource('routes', {
+        "type": "vector",
+        "url": "mapbox://"+routesTileset,
+        "tileSize": 512
+      });
+
+      map.addLayer({
+        'id': 'routes',
+        'type': 'line',
+        'source': 'routes',
+        'source-layer': 'routes',
+        'filter': false,
+        'paint': {
+          'line-width': 4,
+          'line-color': '#F7455D'
+        }
+      });
+
+    }
 
     // Loading Points data layer when map is ready
     map.on('load', function() {
@@ -50,24 +139,6 @@ Paloma.controller('Routes',
         }
       });
 
-      // Слой для отображения линий маршрутов
-      map.addSource('routes', {
-        "type": "vector",
-        "url": "mapbox://nktb.4pzcpmcq",
-        "tileSize": 512
-      });
-
-      map.addLayer({
-        'id': 'routes',
-        'type': 'line',
-        'source': 'routes',
-        'source-layer': 'routes',
-        'filter': false,
-        'paint': {
-          'line-width': 4,
-          'line-color': '#F7455D'
-        }
-      });
 
       // Загружаем слои с рёбрами графа
       map.addSource('relations', {
@@ -93,27 +164,8 @@ Paloma.controller('Routes',
         }
       });
 
-      // Загружаем слой с точками
-      map.addSource("points", {
-          "type": "vector",
-          "url": "mapbox://"+pointsTileset,
-          "tileSize": 512
-        }
-      );
-
-      map.addLayer({
-        'id': 'points',
-        'type': 'circle',
-        'source': 'points',
-        'source-layer': pointsSourceLayer,
-        //'filter': false,
-        'paint': {
-          'circle-radius': {
-            'stops': [[9, 2], [22, 15]]
-          },
-          'circle-color': '#3976bc'
-        }
-      });
+      // Загружаем слой с остановками
+      init_stations_layer();
 
     });
 
@@ -154,7 +206,7 @@ Paloma.controller('Routes',
     }
 
     // Обработчик события выбора маршрутов в строке поиска
-    $('#route_search').on('changed.bs.select', function (e, clickedIndex, isSelected) {
+    $(document).on('changed.bs.select', '#route_search', function (e, clickedIndex, isSelected) {
     	route_codes = $('#route_search').val();
     	showRoutes(route_codes);
       getRoutesInfo(route_codes);
@@ -169,9 +221,19 @@ Paloma.controller('Routes',
     // Функция получения ифнормации о маршруте
     function getRoutesInfo(route_codes){
       params = {
-        route_codes: route_codes
+        route_codes: route_codes,
+        city_id: selected_city_id
       };
       $.get('/routes/show', params);
+    }
+
+    // Функция подгрузки списка маршрутов для выбранного города
+    function getCityRoutes(){
+      params = {
+        city_id: selected_city_id
+      };
+      $.get('/routes/get_city_routes',params);
+      $('#selected_routes').html("");
     }
 
   } 

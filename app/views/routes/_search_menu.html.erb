@@ -1,0 +1,7 @@
+<select id="route_search" class="selectpicker" data-live-search="true" data-style="rounded-pill btn-blue px-3" multiple title="Выберите маршруты" data-size="10" data-width="360px" data-actions-box="true" data-deselect-all-text="Очистить" data-select-all-text="Выбрать все" data-selected-text-format="count > 5" data-header="Маршруты">
+  <% @routes.order(:route_code).each do |route| %>
+    <option title="<%= route.route_code %>" data-content='<span class="text-truncate d-inline-block" style="max-width:265px"><%= route.route_code %> - <small><%= route.route_name %></small></span'>
+      <%= route.route_code %>
+    </option>
+  <% end %>
+</select>

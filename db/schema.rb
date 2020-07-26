@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_15_034846) do
+ActiveRecord::Schema.define(version: 2020_07_26_160615) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,7 +23,8 @@ ActiveRecord::Schema.define(version: 2020_07_15_034846) do
     t.json "bbox"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "tile_url"
+    t.string "tile_stations_url"
+    t.string "tile_routes_url"
   end
 
   create_table "isochrones", force: :cascade do |t|

@@ -13,7 +13,7 @@ Paloma.controller('Isochrones',
       {city_code: 'MSK', tile_url: 'nktb.bev2q4f8'},
       {city_code: 'USH', tile_url: 'nktb.6v5aby4g'},
     ];
-    var pointsTileset = $("#city_select").find(':selected').data('tile_url'); //ID tileset объектов
+    var pointsTileset = $("#city_select").find(':selected').data('tile_stations_url'); //ID tileset объектов
     var pointsSourceLayer = "bus_stops"; //Название SourceLayer
 
     // Данные по вспомогательным объектам
@@ -45,7 +45,7 @@ Paloma.controller('Isochrones',
       selected_city_id = e.target.value;
 
       // Загружаем источник данных для остановок
-      pointsTileset = $(this).find(':selected').data('tile_url');
+      pointsTileset = $(this).find(':selected').data('tile_stations_url');
       init_stations_layer();
 
       // Перемещаем карту в границу, выбранного города

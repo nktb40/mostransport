@@ -1,0 +1,14 @@
+<svg class="bi bi-geo-alt text-blue mr-2" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+</svg>
+<div class='select-container rounded-pill w250'>
+  <select id="city_select" class='custom-select rounded-pill px-3'>
+    <% cities = City.all %>
+    <% cities.each do |city| %>
+    <option value='<%= city.id %>' data-bbox='<%= city.bbox %>' data-tile_stations_url='<%= city.tile_stations_url %>' data-tile_routes_url='<%= city.tile_routes_url %>'>
+      <%= city.name %>
+    </option>
+    <% end %>
+  </select>
+  <div class='select-arrow'></div>
+</div>

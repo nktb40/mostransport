@@ -34,12 +34,10 @@
   </head>
 
   <body class="h-100">
-
-    <div class='d-flex h-100'>
+    <%= render "shared/navbar" %>
+    <div class='d-flex h-100  pt-75'>
       <%= render "shared/menu" %>
       <div class='pb-3 w400 d-flex flex-column'>
-
-        <%= render "shared/logo" %>
 
         <div class="h-100 overflow-auto px-3">
           <%= yield :side_bar %>
@@ -49,8 +47,6 @@
         <div id='map' class="h-100 w-100"></div>
       </div>
     </div>
-
-    <%= render "shared/social_links" %>
 
     <%= yield :scripts %>
     <%= insert_paloma_hook %>

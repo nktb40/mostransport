@@ -11,7 +11,11 @@ Rails.application.routes.draw do
      end
   end
 
-  resources :routes
+  resources :routes do
+    collection do
+      get :get_city_routes
+     end
+  end
 
   resources :constructor
 
