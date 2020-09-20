@@ -14,7 +14,8 @@ class IsochronesController < ApplicationController
 		params[:with_interval] = nil if params[:with_interval].blank?
 		
 		#@isochrones = Station.where(source_id: params[:station_id]).
-		@isochrones = Isochrone.where(source_station_id: params[:station_id], profile: params[:profile], city_id: params[:city_id])
+		@isochrones = Isochrone.where(profile: params[:profile], city_id: params[:city_id])
+		@isochrones = @isochrones.where(source_station_id: params[:station_id]) if params[:station_id].present?
 		@isochrones = @isochrones.where(with_interval: params[:with_interval]) if params[:with_interval].present?
 		@isochrones = @isochrones.where(with_changes: params[:with_changes]) if params[:with_changes].present?
 		@isochrones = @isochrones.where(contour: params[:contour]) if params[:contour].present?
@@ -39,4 +40,5 @@ class IsochronesController < ApplicationController
 
 		render json: @results, status: :ok
 	end
+
 end

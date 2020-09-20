@@ -13,9 +13,8 @@
 //= require paloma
 //= require_tree ./page_scripts
 //= require rails-ujs
-// require activestorage
 //= require turbolinks
-//= require_tree .
+// require_tree .
 
 
 $(document).ready(function(){

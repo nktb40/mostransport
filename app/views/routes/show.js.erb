@@ -5,5 +5,6 @@ $('#selected_routes').html("<%= j render partial: 'selected_routes' %>");
 	<% isochrones = isochrones.concat(route.isochrones.where(profile: "route_cover", contour: 5)) %>
 <% end %>
 geo_data = <%= raw isochrones.map(&:geo_data).to_json() %>;
+
 features = turf.featureCollection(geo_data.map(function(d){return turf.feature(d)}));
 map.getSource('isochrones').setData(features);

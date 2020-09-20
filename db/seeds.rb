@@ -20,7 +20,11 @@ items = [
   {name: "Нижний-Новгород", code: "NNG", tile_stations_url: 'nktb.9rbfma6e', tile_routes_url: 'nktb.2gsyq2nz', longitude:43.7857419, latitude: 56.2921286},
   {name: "Самара", code: "SAM", tile_stations_url: 'nktb.9fb34p6e', tile_routes_url: 'nktb.be0kl4tk', longitude:50.0576522, latitude: 53.2610309},
   {name: "Волгоград", code: "VLG", tile_stations_url: 'nktb.48sxho4n', tile_routes_url: 'nktb.8uls4msn', longitude:44.2258444, latitude: 48.6705316},
-  {name: "Пермь", code: "PRM", tile_stations_url: 'nktb.41zv4yqe', tile_routes_url: 'nktb.9ownhtj0', longitude:56.0938513, latitude: 58.0205905}
+  {name: "Пермь", code: "PRM", tile_stations_url: 'nktb.41zv4yqe', tile_routes_url: 'nktb.9ownhtj0', longitude:56.0938513, latitude: 58.0205905},
+  {name: "Челябинск", code: "CHLB", tile_stations_url: 'nktb.0dwrfe7c', tile_routes_url: 'nktb.1mwldo19', longitude:61.2681459, latitude: 55.1521245},
+  {name: "Санкт-Петербург", code: "SPB", tile_stations_url: 'nktb.60lrqf8u', tile_routes_url: 'nktb.cz6vgyki', longitude:29.8138143, latitude: 59.9404595},
+  {name: "Красноярск", code: "KRS", tile_stations_url: 'nktb.60lrqf8u', tile_routes_url: 'nktb.cz6vgyki', longitude:92.7256524, latitude:56.0266501},
+  {name: "Ижевск", code: "IZH", tile_stations_url: 'nktb.60lrqf8u', tile_routes_url: 'nktb.cz6vgyki', longitude:53.0880191, latitude:56.8637312}
 ]
 
 items.each do |row|
@@ -237,28 +241,28 @@ end
 
 puts "Isohrones/route_cover: done"
 
-# # ====================================
-# # Metric types
-# # ====================================
-# puts "Metric Type: begin"
-# rows = [
-#   {metric_code: "isochrone_area", metric_name: "Площадь изохрона (км2)", unit_code: "км2."},
+# ====================================
+# Metric types
+# ====================================
+puts "Metric Type: begin"
+rows = [
+  {metric_code: "isochrone_area", metric_name: "Площадь изохрона (км2)", unit_code: "км2."},
 
-#   {metric_code: "houses_cnt", metric_name: "Кол-во домов", unit_code: ""},
-#   {metric_code: "houses_population", metric_name: "Кол-во жителей", unit_code: ""},
+  {metric_code: "houses_cnt", metric_name: "Кол-во домов", unit_code: ""},
+  {metric_code: "houses_population", metric_name: "Кол-во жителей", unit_code: ""},
 
-#   {metric_code: "offices_cnt", metric_name: "Кол-во офисов", unit_code: ""},
-#   {metric_code: "offices_population", metric_name: "Кол-во работников", unit_code: ""},
+  {metric_code: "offices_cnt", metric_name: "Кол-во офисов", unit_code: ""},
+  {metric_code: "offices_population", metric_name: "Кол-во работников", unit_code: ""},
 
-#   {metric_code: "universities_cnt", metric_name: "Кол-во университетов", unit_code: ""},
-#   {metric_code: "universities_population", metric_name: "Кол-во студентов", unit_code: ""}
-# ]
+  {metric_code: "universities_cnt", metric_name: "Кол-во университетов", unit_code: ""},
+  {metric_code: "universities_population", metric_name: "Кол-во студентов", unit_code: ""}
+]
 
-# rows.each do |row|
-#   item = MetricType.find_or_initialize_by(metric_code: row[:metric_code])
-#   item.update!(row)
-# end
-# puts "Metric Type: done"
+rows.each do |row|
+  item = MetricType.find_or_initialize_by(metric_code: row[:metric_code])
+  item.update!(row)
+end
+puts "Metric Type: done"
 
 # ====================================
 # Metris

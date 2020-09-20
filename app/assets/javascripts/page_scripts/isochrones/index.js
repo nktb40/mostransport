@@ -2,6 +2,7 @@ var map;
 Paloma.controller('Isochrones',
 {
   index: function(){
+
     //=========================================
     // Инициализация карты и её слоёв
     //=========================================
@@ -47,6 +48,7 @@ Paloma.controller('Isochrones',
       // Загружаем источник данных для остановок
       pointsTileset = $(this).find(':selected').data('tile_stations_url');
       init_stations_layer();
+      getAvailability();
 
       // Перемещаем карту в границу, выбранного города
       bbox = $(this).find(':selected').data('bbox');
@@ -181,9 +183,31 @@ Paloma.controller('Isochrones',
         }
       });
 
+      // Слой для отображения транспортной доступности
+      map.addSource("availability", {
+        type: 'geojson',
+        data: {
+           'type': 'FeatureCollection',
+           'features': []
+         }
+      });
+
+      map.addLayer({
+        'id': 'availability',
+        'type': 'fill',
+        'source': 'availability',
+        //'filter': false,
+        'paint': {
+          'fill-color': '#00ceff',
+          'fill-opacity': 0.3
+        }
+      });
+
       // Загружаем слой с остановками
       init_stations_layer();
 
+      // Отображаем транспортную доступность
+      getAvailability();
 
       // Change the cursor to a pointer when it enters a feature in the 'points' layer.
       data_layers.map(function(l){return l.name}).concat('points').forEach(function(l){
@@ -245,9 +269,11 @@ Paloma.controller('Isochrones',
 
           // Скрываем другие точки
           map.setPaintProperty('points', 'circle-color', '#aeaeae');
+          display_availability(false);
         } else {
           // Если не выбрана остановка, то показываем все точки
           map.setPaintProperty('points', 'circle-color', '#3976bc');
+          display_availability(null);
         }
 
         filterMap();
@@ -542,6 +568,41 @@ Paloma.controller('Isochrones',
       $('#info-box').addClass('none');  
       $('#info-box').find('info').addClass('none');
       $('.info').find('.time').html("");
+    }
+
+    // Функция получения изохронов Трансп. доступности
+    function getAvailability(){
+
+      params = {
+        profile: 'walking',
+        contour: 5,
+        city_id: selected_city_id
+      }
+
+      $.get("/isochrones/get_isochrones", params)
+      .done(function(data) {
+        console.log("Availability:");
+        console.log(data);
+        isoFeatures = getIsochroneFeatures(data);
+
+        /*unionFeature = isoFeatures.features[0];
+
+        isoFeatures.features.forEach(function(f){
+          console.log(unionFeature);
+          unionFeature = turf.union(unionFeature,f);
+        });*/
+
+        map.getSource('availability').setData(isoFeatures);
+        //display_availability(data);
+      })
+      .always(function() {
+        $('.loading').addClass('none');
+      });
+    }
+
+    // Функция отображения изохронов транспортной доступности
+    function display_availability(flag){
+      map.setFilter('availability',flag);
     }
   }
 });
