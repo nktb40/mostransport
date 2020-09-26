@@ -13,18 +13,21 @@ require 'net/http'
 # ====================================
 puts "Cities: begin"
 items = [
-  {name: "Москва", code: "MSK", tile_stations_url: 'nktb.bev2q4f8', tile_routes_url: 'nktb.4pzcpmcq', longitude:37.6092076, latitude: 55.7548403},
-  {name: "Южно-Сахалинск", code: "USH", tile_stations_url: 'nktb.bqt0c4vg', tile_routes_url: 'nktb.3kwvx7ka', longitude:142.7246706, latitude: 46.9613965},
-  {name: "Тула", code: "TUL", tile_stations_url: 'nktb.5ddsaiot', tile_routes_url: 'nktb.4bxbgu2q', longitude:37.4870222, latitude: 54.1849333},
-  {name: "Белгород", code: "BEL", tile_stations_url: 'nktb.7uolu0mp', tile_routes_url: 'nktb.1c6vp99c', longitude:36.5029235, latitude: 50.5895904},
-  {name: "Нижний-Новгород", code: "NNG", tile_stations_url: 'nktb.9rbfma6e', tile_routes_url: 'nktb.2gsyq2nz', longitude:43.7857419, latitude: 56.2921286},
-  {name: "Самара", code: "SAM", tile_stations_url: 'nktb.9fb34p6e', tile_routes_url: 'nktb.be0kl4tk', longitude:50.0576522, latitude: 53.2610309},
-  {name: "Волгоград", code: "VLG", tile_stations_url: 'nktb.48sxho4n', tile_routes_url: 'nktb.8uls4msn', longitude:44.2258444, latitude: 48.6705316},
-  {name: "Пермь", code: "PRM", tile_stations_url: 'nktb.41zv4yqe', tile_routes_url: 'nktb.9ownhtj0', longitude:56.0938513, latitude: 58.0205905},
-  {name: "Челябинск", code: "CHLB", tile_stations_url: 'nktb.0dwrfe7c', tile_routes_url: 'nktb.1mwldo19', longitude:61.2681459, latitude: 55.1521245},
-  {name: "Санкт-Петербург", code: "SPB", tile_stations_url: 'nktb.60lrqf8u', tile_routes_url: 'nktb.cz6vgyki', longitude:29.8138143, latitude: 59.9404595},
-  {name: "Красноярск", code: "KRS", tile_stations_url: 'nktb.60lrqf8u', tile_routes_url: 'nktb.cz6vgyki', longitude:92.7256524, latitude:56.0266501},
-  {name: "Ижевск", code: "IZH", tile_stations_url: 'nktb.60lrqf8u', tile_routes_url: 'nktb.cz6vgyki', longitude:53.0880191, latitude:56.8637312}
+  {name: "Москва", code: "MSK", tile_stations_url: 'nktb.bev2q4f8', tile_routes_url: 'nktb.4pzcpmcq', longitude:37.6092$
+  {name: "Южно-Сахалинск", code: "USH", tile_stations_url: 'nktb.bqt0c4vg', tile_routes_url: 'nktb.3kwvx7ka', longitude$
+  {name: "Тула", code: "TUL", tile_stations_url: 'nktb.5ddsaiot', tile_routes_url: 'nktb.4bxbgu2q', longitude:37.487022$
+  {name: "Белгород", code: "BEL", tile_stations_url: 'nktb.7uolu0mp', tile_routes_url: 'nktb.1c6vp99c', longitude:36.50$
+  {name: "Нижний-Новгород", code: "NNG", tile_stations_url: 'nktb.9rbfma6e', tile_routes_url: 'nktb.2gsyq2nz', longitud$
+  {name: "Самара", code: "SAM", tile_stations_url: 'nktb.9fb34p6e', tile_routes_url: 'nktb.be0kl4tk', longitude:50.0576$
+  {name: "Волгоград", code: "VLG", tile_stations_url: 'nktb.48sxho4n', tile_routes_url: 'nktb.8uls4msn', longitude:44.2$
+  {name: "Пермь", code: "PRM", tile_stations_url: 'nktb.41zv4yqe', tile_routes_url: 'nktb.9ownhtj0', longitude:56.09385$
+  {name: "Челябинск", code: "CHLB", tile_stations_url: 'nktb.0dwrfe7c', tile_routes_url: 'nktb.1mwldo19', longitude:61.$
+  {name: "Санкт-Петербург", code: "SPB", tile_stations_url: 'nktb.60lrqf8u', tile_routes_url: 'nktb.cz6vgyki', longitud$
+  {name: "Красноярск", code: "KRS", tile_stations_url: 'nktb.8k5i1lhg', tile_routes_url: 'nktb.4lie71yx', longitude:92.$
+  {name: "Ижевск", code: "IZH", tile_stations_url: 'nktb.26wu56d7', tile_routes_url: 'nktb.cz1da0xm', longitude:53.0880$
+  {name: "Чебоксары", code: "CHB", tile_stations_url: 'nktb.5jiq7p00', tile_routes_url: 'nktb.60z6vzwg', longitude:47.1$
+  {name: "Омск", code: "OMS", tile_stations_url: 'nktb.22k1ka1u', tile_routes_url: 'nktb.c1sius1t', longitude:73.075964$
+  {name: "Иркутск", code: "IRK", tile_stations_url: 'nktb.70zxrdt5', tile_routes_url: 'nktb.47t18wuw', longitude:104.12$
 ]
 
 items.each do |row|

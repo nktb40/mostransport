@@ -10,10 +10,6 @@ Paloma.controller('Isochrones',
     var publicToken = 'pk.eyJ1Ijoibmt0YiIsImEiOiJjazhscjEwanEwZmYyM25xbzVreWMyYTU1In0.dcztuEUgjlhgaalrc_KLMw';
 
     // Остановки ОТ
-    var station_tiles = [
-      {city_code: 'MSK', tile_url: 'nktb.bev2q4f8'},
-      {city_code: 'USH', tile_url: 'nktb.6v5aby4g'},
-    ];
     var pointsTileset = $("#city_select").find(':selected').data('tile_stations_url'); //ID tileset объектов
     var pointsSourceLayer = "bus_stops"; //Название SourceLayer
 
@@ -593,7 +589,7 @@ Paloma.controller('Isochrones',
         });*/
 
         map.getSource('availability').setData(isoFeatures);
-        //display_availability(data);
+        display_availability(true);
       })
       .always(function() {
         $('.loading').addClass('none');
