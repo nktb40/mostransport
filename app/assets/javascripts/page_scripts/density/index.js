@@ -12,6 +12,9 @@ Paloma.controller('Density',
     var pointsTileset = $("#city_select").find(':selected').data('tile_stations_url'); //ID tileset объектов
     var pointsSourceLayer = "bus_stops"; //Название SourceLayer
 
+    // Плотность маршрутов
+    var densityTileset = $("#city_select").find(':selected').data('tile_density_url');
+
     // Добавялем ключ для Mapbox
     mapboxgl.accessToken = publicToken;
 
@@ -32,6 +35,10 @@ Paloma.controller('Density',
 
       // Загружаем источник данных для остановок
       pointsTileset = $(this).find(':selected').data('tile_stations_url');
+	  init_stations_layer();
+      // Загружаем источник данных для плотности маршрутов
+      densityTileset = $(this).find(':selected').data('tile_density_url');
+      init_density_layer();
 
       // Перемещаем карту в границу, выбранного города
       bbox = $(this).find(':selected').data('bbox');
@@ -55,7 +62,6 @@ Paloma.controller('Density',
 
       if (map.getLayer("points")) {
           map.removeLayer("points");
-          map.removeLayer("selected_points");
       }
 
       if (map.getSource("points")) {
@@ -84,6 +90,45 @@ Paloma.controller('Density',
         }
       });
 
+    }
+
+    // Загрузка Tileset-ов для отображения плотности маршрутов на карте
+    function init_density_layer(){
+      if (map.getLayer("density")) {
+          map.removeLayer("density");
+      }
+
+      if (map.getSource("density")) {
+          map.removeSource("density");
+      }
+
+      map.addSource("density", {
+          "type": "vector",
+          "url": "mapbox://"+densityTileset,
+          "tileSize": 512
+        }
+      );
+
+      map.addLayer({
+        'id': 'density',
+        'type': 'line',
+        'source': 'density',
+        'source-layer': 'density',
+        'paint': {
+          'line-width': ["case",
+                          ["all",[">=",["get","field_2"],1],["<",["get","field_2"],5]],3,
+                          ["all",[">=",["get","field_2"],5],["<",["get","field_2"],10]],5,
+                          ["all",[">=",["get","field_2"],10],["<",["get","field_2"],15]],7,
+                          9
+                        ],
+          'line-color': ["case",
+                          ["all",[">=",["get","field_2"],1],["<",["get","field_2"],5]],'#42d103',
+                          ["all",[">=",["get","field_2"],5],["<",["get","field_2"],10]],'#efee0a',
+                          ["all",[">=",["get","field_2"],10],["<",["get","field_2"],15]],'#f3b307',
+                          '#e13d02'
+                        ]
+        }
+      });
     }
 
     // Загрузка слоёв данных
