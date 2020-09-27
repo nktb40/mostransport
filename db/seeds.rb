@@ -36,7 +36,7 @@ items.each do |row|
   result = JSON.parse(Net::HTTP.get(uri))
   bbox = result['features'][0]['bbox']
   item = City.find_or_initialize_by(code: row[:code])
-  item.update!(name: row[:name], longitude: row[:longitude], latitude: row[:latitude], bbox: bbox, tile_stations_url: row[:tile_stations_url], tile_routes_url: row[:tile_routes_url])
+  item.update!(name: row[:name], longitude: row[:longitude], latitude: row[:latitude], bbox: bbox, tile_stations_url: row[:tile_stations_url], tile_routes_url: row[:tile_routes_url], tile_density_url: row[:tile_density_url])
 end
 puts "Cities: done"
 

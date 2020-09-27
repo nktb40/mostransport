@@ -79,21 +79,6 @@ Paloma.controller('Isochrones',
         }
       );
 
-      // Слой для отображения всех станций
-      map.addLayer({
-        'id': 'points',
-        'type': 'circle',
-        'source': 'points',
-        'source-layer': pointsSourceLayer,
-        //'filter': false,
-        'paint': {
-          'circle-radius': {
-            'stops': [[9, 2], [22, 15]]
-          },
-          'circle-color': '#3976bc'
-        }
-      });
-
       // Слой для отображения выбранных станций
       map.addLayer({
         'id': 'selected_points',
@@ -107,11 +92,29 @@ Paloma.controller('Isochrones',
           },
           'circle-color': '#3976bc'
         }
-      });
+      },'building-number-label');
+
+      // Слой для отображения всех станций
+      map.addLayer({
+        'id': 'points',
+        'type': 'circle',
+        'source': 'points',
+        'source-layer': pointsSourceLayer,
+        //'filter': false,
+        'paint': {
+          'circle-radius': {
+            'stops': [[9, 2], [22, 15]]
+          },
+          'circle-color': '#3976bc'
+        }
+      },'selected_points');
     }
 
     // Загрузка слоёв данных
     map.on('load', function() {
+
+      // Загружаем слой с остановками
+      init_stations_layer();
 
       // Слой для отображения индивидуальных изохронов
       map.addSource('pointIsochrones', {
@@ -138,7 +141,7 @@ Paloma.controller('Isochrones',
           //["concat",'cycling-',["get","contour"]]
           'fill-opacity': 0.5
         }
-      });
+      },'points');
       
 
       // Слой для отображения пересадочных маршрутов на карте
@@ -158,7 +161,7 @@ Paloma.controller('Isochrones',
           'line-width': 3,
           'line-color': '#979797'
         }
-      });
+      },'points');
 
       // Слой для отображения маршрутов на карте
       map.addSource('routes', {
@@ -177,7 +180,7 @@ Paloma.controller('Isochrones',
           'line-width': 3,
           'line-color': '#F7455D'
         }
-      });
+      },'points');
 
       // Слой для отображения транспортной доступности
       map.addSource("availability", {
@@ -197,14 +200,12 @@ Paloma.controller('Isochrones',
           'fill-color': '#00ceff',
           'fill-opacity': 0.3
         }
-      });
-
-      // Загружаем слой с остановками
-      init_stations_layer();
+      },'points');
 
       // Отображаем транспортную доступность
       getAvailability();
 
+     
       // Change the cursor to a pointer when it enters a feature in the 'points' layer.
       data_layers.map(function(l){return l.name}).concat('points').forEach(function(l){
         map.on('mouseenter', l, function(e) {

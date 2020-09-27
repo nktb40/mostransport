@@ -88,7 +88,7 @@ Paloma.controller('Density',
           },
           'circle-color': '#3976bc'
         }
-      });
+      },'building-number-label');
 
     }
 
@@ -128,12 +128,13 @@ Paloma.controller('Density',
                           '#e13d02'
                         ]
         }
-      });
+      },'points');
     }
 
     // Загрузка слоёв данных
     map.on('load', function() {
-
+      // Загружаем слой с плотностью
+      init_density_layer();
       // Загружаем слой с остановками
       init_stations_layer();
 
