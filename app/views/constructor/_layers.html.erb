@@ -1,0 +1,7 @@
+<select id="layers_search" class="selectpicker" data-live-search="true" data-style="rounded-pill btn-blue px-3" multiple title="Выберите слои" data-size="10" data-width="360px" data-actions-box="true" data-deselect-all-text="Очистить" data-select-all-text="Выбрать все" data-selected-text-format="count > 5" data-header="Слои">
+  <%= @layers.each do |layer| %>
+    <option title="<%= layer.layer_type.name %>" data-content='<span class="text-truncate d-inline-block" style="max-width:265px"><%= layer.layer_type.name %></span'>
+      <%= JSON.generate({:layer_code => layer.layer_type.code, :tile_url => layer.tile_url, :source_name => layer.layer_type.source_name, :draw_type => layer.layer_type.draw_type, :paint_rule => layer.layer_type.paint_rule}) %>
+    </option>
+  <% end %>
+</select>

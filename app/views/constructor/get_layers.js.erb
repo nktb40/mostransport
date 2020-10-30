@@ -1,0 +1,7 @@
+$('#layers_container').html("<%= j render partial: 'layers' %>");
+
+// Инициализация selectpicker
+$('#layers_search').selectpicker();
+
+// Параметр доступных слоёв для выбранного города
+availableLayers = <%= raw @layers.map{|l| l.layer_type.code} %>;

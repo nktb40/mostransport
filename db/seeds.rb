@@ -13,7 +13,7 @@ require 'net/http'
 # ====================================
 puts "Cities: begin"
 items = [
-  {name: "Москва", code: "MSK", tile_stations_url: 'nktb.bev2q4f8', tile_routes_url: 'nktb.4pzcpmcq', tile_density_url: '', longitude:37.6092076, latitude: 55.7548403},
+  {name: "Москва", code: "MSK", tile_stations_url: 'nktb.bev2q4f8', tile_routes_url: 'nktb.4pzcpmcq', tile_density_url: 'nktb.1z61v7du', longitude:37.6092076, latitude: 55.7548403},
   {name: "Южно-Сахалинск", code: "USH", tile_stations_url: 'nktb.bqt0c4vg', tile_routes_url: 'nktb.3kwvx7ka', tile_density_url: 'nktb.9kw4dho7', longitude:142.7246706, latitude: 46.9613965},
   {name: "Тула", code: "TUL", tile_stations_url: 'nktb.5ddsaiot', tile_routes_url: 'nktb.4bxbgu2q', tile_density_url: '', longitude:37.4870222, latitude: 54.1849333},
   {name: "Белгород", code: "BEL", tile_stations_url: 'nktb.7uolu0mp', tile_routes_url: 'nktb.1c6vp99c', tile_density_url: '', longitude:36.5029235, latitude: 50.5895904},
@@ -22,12 +22,16 @@ items = [
   {name: "Волгоград", code: "VLG", tile_stations_url: 'nktb.48sxho4n', tile_routes_url: 'nktb.8uls4msn', tile_density_url: 'nktb.9c9d6799', longitude:44.2258444, latitude: 48.6705316},
   {name: "Пермь", code: "PRM", tile_stations_url: 'nktb.41zv4yqe', tile_routes_url: 'nktb.9ownhtj0', tile_density_url: 'nktb.ch3vv1rz', longitude:56.0938513, latitude: 58.0205905},
   {name: "Челябинск", code: "CHLB", tile_stations_url: 'nktb.0dwrfe7c', tile_routes_url: 'nktb.1mwldo19', tile_density_url: 'nktb.6itaoccn', longitude:61.2681459, latitude: 55.1521245},
-  {name: "Санкт-Петербург", code: "SPB", tile_stations_url: 'nktb.60lrqf8u', tile_routes_url: 'nktb.cz6vgyki', tile_density_url: '', longitude:29.8138143, latitude: 59.9404595},
+  {name: "Санкт-Петербург", code: "SPB", tile_stations_url: 'nktb.60lrqf8u', tile_routes_url: 'nktb.cz6vgyki', tile_density_url: 'nktb.3xka12kh', longitude:29.8138143, latitude: 59.9404595},
   {name: "Красноярск", code: "KRS", tile_stations_url: 'nktb.8k5i1lhg', tile_routes_url: 'nktb.4lie71yx', tile_density_url: 'nktb.dat75syb', longitude:92.7256524, latitude:56.0266501},
   {name: "Ижевск", code: "IZH", tile_stations_url: 'nktb.26wu56d7', tile_routes_url: 'nktb.cz1da0xm', tile_density_url: '', longitude:53.0880191, latitude:56.8637312},
   {name: "Чебоксары", code: "CHB", tile_stations_url: 'nktb.5jiq7p00', tile_routes_url: 'nktb.60z6vzwg', tile_density_url: 'nktb.1yknjs0w', longitude:47.1893787, latitude:56.1041997},
   {name: "Омск", code: "OMS", tile_stations_url: 'nktb.22k1ka1u', tile_routes_url: 'nktb.c1sius1t', tile_density_url: 'nktb.6s7okxvr', longitude:73.075964, latitude:54.985554},
-  {name: "Иркутск", code: "IRK", tile_stations_url: 'nktb.70zxrdt5', tile_routes_url: 'nktb.47t18wuw', tile_density_url: '', longitude:104.1270759, latitude:52.2982526}
+  {name: "Иркутск", code: "IRK", tile_stations_url: 'nktb.70zxrdt5', tile_routes_url: 'nktb.47t18wuw', tile_density_url: '', longitude:104.1270759, latitude:52.2982526},
+  {name: "Екатеринбург", code: "EKT", tile_stations_url: 'nktb.6tb6c67r', tile_routes_url: 'nktb.6ebd2f3k', tile_density_url: 'nktb.dka2dr7x', longitude:104.1270759, latitude:52.2982526},
+  {name: "Якутск", code: "YKT", tile_stations_url: 'nktb.aybaqs3f', tile_routes_url: 'nktb.1lsjnm5c', tile_density_url: 'nktb.dka2dr7x', longitude:129.5617053, latitude:62.0312626},
+  {name: "Кемерово", code: "KEM", tile_stations_url: 'nktb.bo4ax1g9', tile_routes_url: 'nktb.91lylb9f', tile_density_url: 'nktb.4t4hl7ly', longitude:85.9425084, latitude:55.4042374},
+  {name: "Нижневартовск", code: "NZV", tile_stations_url: 'nktb.6hgu3ier', tile_routes_url: 'nktb.1eop9ovk', tile_density_url: 'nktb.dka2dr7x', longitude:76.5073705, latitude:60.9222496}
 ]
 
 
@@ -39,6 +43,48 @@ items.each do |row|
   item.update!(name: row[:name], longitude: row[:longitude], latitude: row[:latitude], bbox: bbox, tile_stations_url: row[:tile_stations_url], tile_routes_url: row[:tile_routes_url], tile_density_url: row[:tile_density_url])
 end
 puts "Cities: done"
+
+# ====================================
+# LayerTypes
+# ====================================
+puts "LayerTypes: begin"
+items = [
+  {name: "Остановки", code: "STATIONS", source_name: "bus_stops", draw_type: "circle", paint_rule:'{"circle-radius": {"stops": [[9, 2], [22, 15]]},"circle-color": "#3976bc"}', default: true},
+  {name: "Маршруты", code: "ROUTES", source_name: "routes", draw_type: "line", paint_rule:'{"line-width": 3,"line-color": "#F7455D"}', default: false},
+  {name: "Плотность маршрутов", code: "DENSITY", source_name: "density", draw_type: "line", paint_rule:'{"line-width": ["case",["all",[">=",["get","field_2"],1],["<",["get","field_2"],5]],3,["all",[">=",["get","field_2"],5],["<",["get","field_2"],10]],5,["all",[">=",["get","field_2"],10],["<",["get","field_2"],15]],7,9],"line-color": ["case",["all",[">=",["get","field_2"],1],["<",["get","field_2"],5]],"#42d103",["all",[">=",["get","field_2"],5],["<",["get","field_2"],10]],"#efee0a",["all",[">=",["get","field_2"],10],["<",["get","field_2"],15]],"#f3b307","#e13d02"]}', default: false},
+  {name: "Пешие изохроны 5 мин", code: "WALK_ISO_5MIN", source_name: "isochrones", draw_type: "fill", paint_rule:'{"fill-color": "#00ceff","fill-opacity": 0.3}', default: false}
+]
+items.each do |row|
+  item = LayerType.find_or_initialize_by(code: row[:code])
+  item.update!(name: row[:name], source_name: row[:source_name], draw_type: row[:draw_type], paint_rule: row[:paint_rule], default: row[:default])
+end
+puts "LayerTypes: done"
+
+# ====================================
+# Layers
+# ====================================
+puts "Layers: begin"
+items = [
+  {city_code: "MSK", layer_type_code: "STATIONS", tile_url: "nktb.bev2q4f8"},
+  {city_code: "MSK", layer_type_code: "ROUTES", tile_url: "nktb.4pzcpmcq"},
+  {city_code: "MSK", layer_type_code: "DENSITY", tile_url: "nktb.1z61v7du"},
+
+  {city_code: "USH", layer_type_code: "STATIONS", tile_url: "nktb.bqt0c4vg"},
+  {city_code: "USH", layer_type_code: "ROUTES", tile_url: "nktb.3kwvx7ka"},
+  {city_code: "USH", layer_type_code: "DENSITY", tile_url: "nktb.9kw4dho7"},
+
+  {city_code: "TUL", layer_type_code: "STATIONS", tile_url: "nktb.5ddsaiot"},
+  {city_code: "TUL", layer_type_code: "ROUTES", tile_url: "nktb.4bxbgu2q"},
+  {city_code: "TUL", layer_type_code: "DENSITY", tile_url: ""}
+]
+items.each do |row|
+  city_id = City.find_by_code(row[:city_code]).id
+  layer_type_id = LayerType.find_by_code(row[:layer_type_code]).id
+
+  item = Layer.find_or_initialize_by(city_id: city_id, layer_type_id: layer_type_id)
+  item.update!(tile_url: row[:tile_url])
+end
+puts "Layers: done"
 
 # ====================================
 # Stations

@@ -17,7 +17,11 @@ Rails.application.routes.draw do
      end
   end
 
-  resources :constructor
+  resources :constructor do
+    collection do
+      get :get_layers
+     end
+  end
 
   resources :density
 

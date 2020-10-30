@@ -1,12 +1,12 @@
+var map;
+// Параметр доступных слоёв для выбранного города
+var availableLayers = [];
+
 Paloma.controller('Constructor',
 {
   index: function(){
   	// ключ для Mapbox
     var publicToken = 'pk.eyJ1Ijoibmt0YiIsImEiOiJjazhscjEwanEwZmYyM25xbzVreWMyYTU1In0.dcztuEUgjlhgaalrc_KLMw';
-
-    // Остановки ОТ
-    var pointsTileset = "nktb.bev2q4f8" //ID tileset объектов
-    var pointsSourceLayer = "bus_stops"; //Название SourceLayer
 
     // Слои с объектами на карте
     var data_layers = [
@@ -27,12 +27,31 @@ Paloma.controller('Constructor',
     var metrics = [];
 
     // Инициализируем карту
-    var map = new mapboxgl.Map({
+    map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v11',
       center: [37.618936,55.754388],
       zoom: 11.5
     });
+
+    // Выбранный город
+    var selected_city_id = $("#city_select").val();
+
+    // Функция обработки события переключения города
+    $("#city_select").on('click',function(e){
+      selected_city_id = e.target.value;
+
+      getCityLayers();
+
+      // Перемещаем карту в границу, выбранного города
+      bbox = $(this).find(':selected').data('bbox');
+      map.fitBounds(bbox, {
+        padding: {top: 10, bottom:10, left: 10, right: 10}
+      });
+    });
+
+    // Загрузка слоёв для выбранного города
+    getCityLayers();
 
     map.on('load', function() {
 
@@ -95,28 +114,6 @@ Paloma.controller('Constructor',
         }
       });
 
-    	// Слой с остановками
-  		map.addSource("points", {
-  			  "type": "vector",
-  			  "url": "mapbox://"+pointsTileset,
-  			  "tileSize": 512
-  			}
-  		);
-
-  		map.addLayer({
-    			'id': 'points',
-    			'type': 'circle',
-    			'source': 'points',
-    			'source-layer': pointsSourceLayer,
-    			//'filter': false,
-    			'paint': {
-    			  'circle-radius': {
-    			    'stops': [[9, 2], [22, 15]]
-    			  },
-    			  'circle-color': '#3976bc'
-    			}
-    	});
-
       // Загружаем слои с доп. данными
       data_layers.forEach(function(layer){
         map.addSource(layer.name, {
@@ -143,13 +140,13 @@ Paloma.controller('Constructor',
     });
 
     // Change the cursor to a pointer when it enters a feature in the 'points' layer.
-    map.on('mouseenter', 'points', function(e) {
+    map.on('mouseenter', 'STATIONS', function(e) {
       map.getCanvas().style.cursor = 'pointer';
       addPointPopup(e);
     });
 
     // Change it back to a pointer when it leaves.
-    map.on('mouseleave', 'points', function() {
+    map.on('mouseleave', 'STATIONS', function() {
       map.getCanvas().style.cursor = '';
       point_popup.remove();
     });
@@ -170,7 +167,7 @@ Paloma.controller('Constructor',
     }
 
     map.on('click', function(event) {
-      selected_point = map.queryRenderedFeatures(event.point, { layers: ['points']})[0];
+      selected_point = map.queryRenderedFeatures(event.point, { layers: ['STATIONS']})[0];
       $('.route_stop').removeClass('active_item');
       
       if(selected_point != null){
@@ -416,5 +413,90 @@ Paloma.controller('Constructor',
       }
     }
 
+    // ========== Управление отображением слоёв на карте ============//
+
+    // Функция подгрузки  URL слоёв города
+    function getCityLayers(){
+      // Удаляем загруженные слои текущего города
+      availableLayers.forEach(function(l){
+        if (map.getLayer(l)) {
+          map.removeLayer(l);
+          map.removeSource(l);
+        }
+      });
+
+      params = {
+        city_id: selected_city_id
+      }
+
+      $.get("/constructor/get_layers", params)
+        .done(function(data) {
+          //console.log(data);
+        });
+    }
+
+    // Обработчик события выбора маршрутов в строке поиска
+    $(document).on('changed.bs.select', '#layers_search', function (e, clickedIndex, isSelected) {
+      layer_params = $('#layers_search').val();
+      
+      selected_layers = layer_params.map(function(l){return JSON.parse(l).layer_code});
+
+      // Отображаем выбранные слои
+      layer_params.forEach(function(p){
+        showLayer(JSON.parse(p));
+      });
+
+      // Скрываем, те которые не выбраны
+      availableLayers.forEach(function(l){
+        if(!selected_layers.includes(l)){
+          hideLayer(l);
+        }
+      });
+    });
+
+    // Функция отображения слоя
+    function showLayer(params){
+      layer_code = params.layer_code;
+
+      // Если слой уже загружен, делаем его видимым
+      if (map.getLayer(layer_code)) {
+        map.setFilter(layer_code,true);
+      }
+      // Иначе загружаем слой
+      else {
+        drawLayer(params);
+      }
+    }
+
+    // Функция скрытия слоя
+    function hideLayer(layer_code){
+      if (map.getLayer(layer_code)) {
+        map.setFilter(layer_code,false);
+      }
+    }
+
+    // Функция загрузки нового слоя
+    function drawLayer(params){
+      layer_code = params.layer_code;
+      tile_url = params.tile_url;
+      source_name = params.source_name;
+      draw_type = params.draw_type;
+      paint_rule = JSON.parse(params.paint_rule);
+
+      map.addSource(layer_code, {
+          "type": "vector",
+          "url": "mapbox://"+tile_url,
+          "tileSize": 512
+        }
+      );
+
+      map.addLayer({
+          'id': layer_code,
+          'type': draw_type,
+          'source': layer_code,
+          'source-layer': source_name,
+          'paint': paint_rule
+      });
+    }
   }
 });

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_27_161257) do
+ActiveRecord::Schema.define(version: 2020_10_18_162905) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,25 @@ ActiveRecord::Schema.define(version: 2020_09_27_161257) do
     t.integer "city_id"
     t.index ["city_id"], name: "index_isochrones_on_city_id"
     t.index ["unique_code"], name: "index_isochrones_on_unique_code", unique: true
+  end
+
+  create_table "layer_types", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.string "source_name"
+    t.string "draw_type"
+    t.json "paint_rule"
+    t.boolean "default"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "layers", force: :cascade do |t|
+    t.integer "layer_type_id"
+    t.string "tile_url"
+    t.integer "city_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "lnk_station_routes", force: :cascade do |t|
