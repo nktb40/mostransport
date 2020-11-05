@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html class="h-100">
+<!doctype html>
+<html lang="en">
   <head>
-
     <title>Mostransport</title>
     <meta name="description" content="Анализ маршрутной сети городов"/>
     <meta charset='utf-8' />
@@ -9,16 +8,10 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Import Mapbox GL JS  -->
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.9.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.9.0/mapbox-gl.css' rel='stylesheet' />
     <!-- Import jQuery -->
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
-    <!-- Import Turfjs for poligon simplification -->
-    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-    <!-- Bootstrap -->
+     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <!--script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script-->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -31,38 +24,39 @@
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
+
+    <style>
+      body, html {
+        height: 100%;
+      }
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
   </head>
+  <body>
+    <nav class="navbar fixed-top navbar-light bg-light border-bottom pl-1">
+      <%= render "shared/logo" %>
+      <%= render "shared/social_links" %>
+    </nav>
 
-  <body class="h-100">
-    <% if current_page?(:controller => 'about', :action => 'index') %>
-      <nav class="navbar fixed-top navbar-light bg-light border-bottom pl-1">
-        <%= render "shared/logo" %>
-        <%= render "shared/social_links" %>
-      </nav>
-      <div class='d-flex h-100 w-100  pt-75'>
-        <%= render "shared/menu" %>
-        <div class='pb-3 w-100 d-flex flex-column'>
-          <%= yield %>
-        </div>
+    <div class='d-flex h-100 w-100  pt-75'>
+      <%= render "shared/menu" %>
+      <div class='pb-3 w-100 d-flex flex-column'>
+        <%= yield %>
       </div>
-    <% else %>
-
-      <%= render "shared/navbar" %>
-      <div class='d-flex h-100  pt-75'>
-        <%= render "shared/menu" %>
-        <div class='pb-3 w400 d-flex flex-column'>
-          <div class="h-100 overflow-auto px-3">
-            <%= yield :side_bar %>
-          </div>
-        </div>
-        <div class='flex-grow-1'>
-          <div id='map' class="h-100 w-100"></div>
-        </div>
-      </div>
-
-    <% end %>
-
-    <%= yield :scripts %>
-    <%= insert_paloma_hook %>
+    </div>
   </body>
 </html>

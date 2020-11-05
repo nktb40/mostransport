@@ -127,7 +127,7 @@
 
 .vertical-nav{
 	overflow: hidden;
-	width: 200px;
+	width: 240px;
 	transition: width 0.3s ease;
 	-webkit-transition: width 0.3s ease;
 	-moz-transition: width 0.3s ease;
@@ -137,4 +137,50 @@
 
 .vertical-nav.collapsed{
 	width: 0px;
+}
+
+#about_bg{
+	height: 100vh;
+	background-attachment: scroll;
+	background-image: url("about_bg.webp");
+
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    
+    transform: translate3d(0,0,0);
+    -webkit-transform: translate3d(0,0,0);
+    -moz-transform: unset;
+}
+
+#about_text {
+	height: 100%;
+    background-image: -moz-linear-gradient(top, rgba(54,158,255,0.50), rgba(54,158,255,0.80));
+    background-image: -webkit-linear-gradient(top, rgba(54,158,255,0.50), rgba(54,158,255,0.80));
+}
+
+#about_text p{
+	font-size: 35px;
+}
+
+#about_text h1{
+	font-size: 82px;
+	margin-top:80px;
+	margin-bottom:100px;
+	max-width: 1000px;
+}
+
+.p-text{
+	line-height: 30px;
+    font-size: 20px;
+}
+
+.partner-cards div{
+	min-height: 220px;
 }

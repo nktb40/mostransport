@@ -5,12 +5,13 @@
       <path fill-rule="evenodd" d="M2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
     </svg>
   </button>
-
-  <%= image_tag"logo.png", :class=>"ico rounded-circle ml-1" %>
-  <div class="d-flex flex-column ml-3">
+  <%= link_to root_path do %>
+    <%= image_tag "logo.png", :class=>"ico rounded-circle ml-1" %>
+  <% end %>
+  <%= link_to root_path, :class=>"d-flex flex-column ml-3" do %>
     <span class="text-l text-bold text-blue">mostransport.info</span>
-    <small >Анализ маршрутной сети городов</small>
-  </div>
+    <small class="text-dark">Анализ маршрутной сети городов</small>
+  <% end %>
 </div>
 
 <script type="text/javascript">

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  root 'isochrones#index'
+  root 'about#index'
 
   resources :isochrones do
     collection do
@@ -23,6 +23,6 @@ Rails.application.routes.draw do
      end
   end
 
-  resources :density
+  resources :about
 
 end
