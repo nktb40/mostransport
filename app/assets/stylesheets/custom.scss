@@ -142,7 +142,7 @@
 #about_bg{
 	height: 100vh;
 	background-attachment: scroll;
-	background-image: url("about_bg.webp");
+	background-image: url(asset_path("about_bg.webp"));
 
     background-size: cover;
     -webkit-background-size: cover;
@@ -183,4 +183,8 @@
 
 .partner-cards div{
 	min-height: 220px;
+}
+
+.navbar-brand small{
+	font-size: 0.8rem;
 }

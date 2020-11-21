@@ -1,0 +1,13 @@
+// Формируем шаблон с информцией об остановке
+$('#station_info .panel').html("<%= j render partial: 'display_station_info' %>");
+
+// Отображаем изохрон вокруг остановки
+map.getSource('isochrones').setData(<%= raw @isochrone.geo_data.to_json %>);
+
+// Отображаем маршруты остановки
+routes_data = <%= raw @routes.to_json %>;
+console.log(routes_data);
+routes = turf.featureCollection(routes_data.map(function(i){return turf.feature(i.geo_data,{route_id:i.id, color:i.color})}));
+map.getSource('routes').setData(routes);
+
+map.setFilter('routes', false);

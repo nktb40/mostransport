@@ -1,0 +1,81 @@
+<p>
+  <small class="text-muted">Остановка:</small>
+  <br>
+  <%= @station.station_name %>
+</p>
+
+<p class="mt-4">
+  <small class="text-muted">Метрики:</small>
+  <br>
+  <div class="row">
+  <% @metrics.each do |m| %>
+    <div class="col-6 d-flex flex-column align-items-center ">
+      <small><%= m[:metric_name] %></small>
+      <div class="mt-3 border-primary rounded-circle d-flex align-items-center justify-content-center" style="height: 100px; width: 100px; border: 2px solid;">
+        <span><%= "#{m[:metric_value]} #{m[:unit_code]}" %></span>
+      </div>
+    </div>
+  <% end %>
+  </div>
+</p>
+
+<p class="mt-4">
+  <small class="text-muted">Маршруты:</small>
+  <div class="mt-3">
+  <% @routes.each do |r| %>
+    <button class="btn btn-sm route-badge rounded-pill px-3 mb-2 route-<%= r[:id] %>" data-route_id=<%= r[:id] %> >
+      <b><%= r[:route_code] %></b>
+    </button>
+  <% end %>
+  </div>
+</p>
+
+<script type="text/javascript">
+  var map_routes = [];
+  $('.route-badge').on('click',function(){
+    route_id = $(this).data('route_id');
+
+    if($(this).hasClass('active') == true){
+      $(this).removeClass('active');
+      map_routes = map_routes.filter(function(r){return r != route_id});
+    } else {
+      $(this).addClass('active');
+      map_routes.push(route_id);
+    }
+
+    // Устанавливаем фильтры на слой с маршрутами
+    if(map_routes.length == 0){
+      filter = false;
+    } else{
+      filter = ["match",["get", "route_id"], map_routes, true, false];
+    }
+    map.setFilter('routes', filter);
+  });
+</script>
+
+<style type="text/css">
+  <% @routes.each do |r| %>
+    .route-<%= r[:id] %>.active{
+      background-color: <%= r[:color] %>;
+      border-color: <%= r[:color] %>;
+      color: #fff;
+    }
+    .route-<%= r[:id] %>.active:hover{
+      background-color: #fff;
+      border-color: <%= r[:color] %>;
+      color: <%= r[:color] %>;
+    }
+
+    .route-<%= r[:id] %>{
+      background-color: #fff;
+      border-color: <%= r[:color] %>;
+      color: <%= r[:color] %>;
+    }
+
+    .route-<%= r[:id] %>:hover{
+      background-color: <%= r[:color] %>;
+      border-color: <%= r[:color] %>;
+      color: #fff;
+    }
+  <% end %>
+</style>

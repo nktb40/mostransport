@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   resources :constructor do
     collection do
       get :get_layers
+      get :get_station_info
      end
   end
 

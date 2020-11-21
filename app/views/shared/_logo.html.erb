@@ -1,4 +1,4 @@
-<div class="logo d-flex align-items-center pb-2 px-2 w400">
+<div class="logo d-flex align-items-center px-2 w400">
   <!--span class='ico txt-h2 txt-bold border round-full bg-blue-light color-white'>M</span-->
   <button class="toggle-btn btn px-2" type="button" data-target="#collapseMenu">
     <svg class="bi bi-justify" width="2em" height="2em" viewBox="0 0 16 16" fill="#9b9b9b" xmlns="http://www.w3.org/2000/svg">
@@ -8,7 +8,7 @@
   <%= link_to root_path do %>
     <%= image_tag "logo.png", :class=>"ico rounded-circle ml-1" %>
   <% end %>
-  <%= link_to root_path, :class=>"d-flex flex-column ml-3" do %>
+  <%= link_to root_path, :class=>"navbar-brand d-flex flex-column ml-3" do %>
     <span class="text-l text-bold text-blue">mostransport.info</span>
     <small class="text-dark">Анализ маршрутной сети городов</small>
   <% end %>

@@ -19,10 +19,12 @@ Paloma.controller('Constructor',
     mapboxgl.accessToken = publicToken;
 
     // Popup для остановки
+    var obj_popup = new mapboxgl.Popup();
     var point_popup = new mapboxgl.Popup();
 
     // Выбранные точки маршрута
     var selected_points = [];
+    var marker = new mapboxgl.Marker();
     var map_markers = [];
     var metrics = [];
 
@@ -36,22 +38,20 @@ Paloma.controller('Constructor',
 
     // Выбранный город
     var selected_city_id = $("#city_select").val();
+    // Центруем карту по границам выбранного города
+    centerMap();
+
+    // Загрузка слоёв для выбранного города
+    getCityLayers();
 
     // Функция обработки события переключения города
     $("#city_select").on('click',function(e){
       selected_city_id = e.target.value;
-
       getCityLayers();
-
-      // Перемещаем карту в границу, выбранного города
-      bbox = $(this).find(':selected').data('bbox');
-      map.fitBounds(bbox, {
-        padding: {top: 10, bottom:10, left: 10, right: 10}
-      });
+      centerMap();
+      city_code = $('#city_select').find(':selected').data('code');
+      window.history.pushState('constructor', 'Mostransport', 'constructor?city='+city_code);
     });
-
-    // Загрузка слоёв для выбранного города
-    getCityLayers();
 
     map.on('load', function() {
 
@@ -71,7 +71,7 @@ Paloma.controller('Constructor',
        'source': 'isochrones',
        'layout': {},
        'paint': {
-          'fill-color': '#63d125',
+          'fill-color': '#00ceff',//'#63d125',
           'fill-opacity': 0.5
         }
       });
@@ -110,7 +110,7 @@ Paloma.controller('Constructor',
         'source': 'routes',
         'paint': {
           'line-width': 6,
-          'line-color': '#F7455D'
+          'line-color': ["case",["has","color"],["get","color"],'#F7455D']
         }
       });
 
@@ -142,7 +142,7 @@ Paloma.controller('Constructor',
     // Change the cursor to a pointer when it enters a feature in the 'points' layer.
     map.on('mouseenter', 'STATIONS', function(e) {
       map.getCanvas().style.cursor = 'pointer';
-      addPointPopup(e);
+      addPointPopup(point_popup,e);
     });
 
     // Change it back to a pointer when it leaves.
@@ -151,13 +151,19 @@ Paloma.controller('Constructor',
       point_popup.remove();
     });
 
+    // Перемещаем карту в границу, выбранного города
+    function centerMap(){
+      bbox = $('#city_select').find(':selected').data('bbox');
+      map.fitBounds(bbox, {
+        padding: {top: 10, bottom:10, left: 10, right: 10}
+      });
+    }
+
     // Добавление popup для остановок
-    function addPointPopup(e){
-      point_popup.setLngLat(e.lngLat)
+    function addPointPopup(popup, e){
+      popup.setLngLat(e.lngLat)
         .setHTML(
           "<div class='loading loading--s none'></div>"
-          +
-          "<span><b>ID:</b> "+e.features[0].properties.global_id+"</span><br>"
           +
           "<span><b>Остановка:</b> "+e.features[0].properties.StationName+"</span><br>"
           +
@@ -166,30 +172,64 @@ Paloma.controller('Constructor',
         .addTo(map);
     }
 
+    // ========== Переключение инструментов ==========//
+
+    var selected_tool = $('#tools_btns .btn.active').data('target');
+    $('#tools_btns .btn').on('click',function(){
+      $('#tools_btns .btn').removeClass('active');
+      $(this).addClass('active');
+
+      active_id = $(this).data('target');
+      $('.tool_panel').addClass('d-none');
+      $('#'+active_id).removeClass('d-none');
+
+      selected_tool = active_id;
+    });
+
+
+    // Обработчик события клика на карте
     map.on('click', function(event) {
-      selected_point = map.queryRenderedFeatures(event.point, { layers: ['STATIONS']})[0];
+      event.features = map.queryRenderedFeatures(event.point, { layers: ['STATIONS']});
+      selected_point = event.features[0];
+
       $('.route_stop').removeClass('active_item');
-      
+
+      // Маршрутизация по функциям в зависимости от выбранного инструмента
       if(selected_point != null){
-        global_id = selected_point.properties.global_id;
+        if(selected_tool == 'station_info'){
+          marker.setLngLat(selected_point.geometry.coordinates).setPopup(obj_popup).addTo(map);
+          // create the popup
+          addPointPopup(obj_popup,event);
 
-        if(selected_points.filter(function(p){return p.properties.global_id == global_id}).length == 0){
-          selected_points.push(selected_point);
-          marker = new mapboxgl.Marker().setLngLat(selected_point.geometry.coordinates).addTo(map);
-          marker.stop_id = global_id;
-          map_markers.push(marker);
-
-          drawRouteList();
-          drawLineRoute();
-
-          $('#constr_btns').addClass('d-flex');
-        } else {
-          $('.route_stop[data-stop-id='+global_id+']').addClass('active_item');
+          getStationInfo(selected_point);
         }
-        
+        else if(selected_tool == 'constructor'){
+          drawPoint(selected_point);
+        }
       }
 
     });
+
+    // ========== Функции конструктора маршрутов ==========//
+
+    // Функция установки нового маркера для маршрута
+    function drawPoint(selected_point){
+      global_id = selected_point.properties.global_id;
+
+      if(selected_points.filter(function(p){return p.properties.global_id == global_id}).length == 0){
+        selected_points.push(selected_point);
+        marker = new mapboxgl.Marker().setLngLat(selected_point.geometry.coordinates).addTo(map);
+        marker.stop_id = global_id;
+        map_markers.push(marker);
+
+        drawRouteList();
+        drawLineRoute();
+
+        $('#constr_btns').addClass('d-flex');
+      } else {
+        $('.route_stop[data-stop-id='+global_id+']').addClass('active_item');
+      }
+    }
 
     // Обработчик нажатия конпки очистки маршрута
     $('#clean_route').on('click',function(e){
@@ -297,6 +337,7 @@ Paloma.controller('Constructor',
       } else {
         map.getSource('routes').setData(turf.featureCollection([]));
       }
+      map.setFilter('routes', true);
     }
 
     // Расчёт коэф. прямолинейности
@@ -413,7 +454,7 @@ Paloma.controller('Constructor',
       }
     }
 
-    // ========== Управление отображением слоёв на карте ============//
+    // ========== Управление отображениея слоёв на карте ============//
 
     // Функция подгрузки  URL слоёв города
     function getCityLayers(){
@@ -497,6 +538,18 @@ Paloma.controller('Constructor',
           'source-layer': source_name,
           'paint': paint_rule
       });
+    }
+
+    // ========== Информация об остановках ============//
+    function getStationInfo(selected_station){
+      params = {
+        station_source_id: selected_station.properties.global_id,
+        selected_city_id: selected_city_id
+      }
+
+      $.get("/constructor/get_station_info", params)
+        .done(function(data) {
+        });
     }
   }
 });

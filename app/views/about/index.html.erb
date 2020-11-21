@@ -3,7 +3,7 @@
     <div id="about_text" class="d-flex flex-column justify-content-center align-items-center text-white">
       <p><b>НАШ НОВЫЙ ПРОЕКТ</b></p>
       <h1><b>По анализу маршрутной сети городов России</b></h1>
-      
+
       <div class="d-flex justify-content-center">
         <%= link_to "constructor", class: "btn btn-lg btn-success rounded-pill px-5" do %>
           Попробовать
@@ -146,8 +146,8 @@
         </p>
         <div class="row">
           <% City.all.order(:name).each do |city| %>
-            <p class="h3 mr-3"><span class="badge badge-pill badge-primary"><%= city.name %></span></p>
-          <% end %> 
+            <p class="h3 mr-3"><%= link_to city.name, constructor_index_path(city: city.code), class: "badge badge-pill badge-primary" %></p>
+          <% end %>
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@
   <select id="city_select" class='custom-select rounded-pill px-3'>
     <% cities = City.all.order(:name) %>
     <% cities.each do |city| %>
-    <option value='<%= city.id %>' data-bbox='<%= city.bbox %>' data-tile_stations_url='<%= city.tile_stations_url %>' data-tile_routes_url='<%= city.tile_routes_url %>' data-tile_density_url='<%= city.tile_density_url %>' <%= 'selected' if city.code == 'MSK' %> >
+    <option value='<%= city.id %>' data-code='<%= city.code %>' data-bbox='<%= city.bbox %>' data-tile_stations_url='<%= city.tile_stations_url %>' data-tile_routes_url='<%= city.tile_routes_url %>' data-tile_density_url='<%= city.tile_density_url %>' <%= 'selected' if city.code == @default_city %> >
       <%= city.name %>
     </option>
     <% end %>
