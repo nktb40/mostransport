@@ -32,6 +32,7 @@ Paloma.controller('Constructor',
     map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v11',
+      //style: 'mapbox://styles/nktb/ckhz47ok9163u19mvnu6494pl',
       center: [37.618936,55.754388],
       zoom: 11.5
     });

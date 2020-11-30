@@ -1,0 +1,41 @@
+#=== Для работы с БД под пользователе postgres
+
+1. Зайти на сервер под учёткой ansible 
+	ssh ansible@mostransport.info
+2. Переключиться на пользователя postgres 
+	sudo su - postgres
+3. Залогиниться в БД
+	psql
+
+Создание пользователя:
+	\connect mostransport
+	CREATE USER readonly WITH PASSWORD '***';
+	GRANT CONNECT ON DATABASE mostransport TO readonly;
+	GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly;
+
+Удаление пользователя:
+	DROP OWNED BY "readonly";
+	DROP USER "readonly";
+
+#=== Перезапуск сервера Puma
+$HOME/.rbenv/bin/rbenv exec bundle exec pumactl -F config/puma/server_config.rb start
+
+#=== Установка сертификата для нового домена
+1. Зайти на сервер под пользователем ansible и выполнить:
+	sudo certbot certonly -n --webroot -w /var/www/letsencrypt -m nktb.open@gmail.com --agree-tos -d transmetrika.com
+
+2. Поправить конфиги для NGNIX
+	Открыть файл:
+		sudo nano /etc/nginx/sites-available/mostransport 
+	Заменить адрес домена в строках
+		ssl_certificate /etc/letsencrypt/live/transmetrika.com/fullchain.pem;
+  		ssl_certificate_key /etc/letsencrypt/live/transmetrika.com/privkey.pem;
+  		ssl_trusted_certificate /etc/letsencrypt/live/transmetrika.com/fullchain.pem;
+ 	Перезагрузить ngnix
+ 		systemctl reload nginx
+
+3. Поправить CRON JOB
+	sudo crontab -e
+	#Ansible: letsencrypt_renewal
+	@weekly letsencrypt --renew certonly -n --webroot -w /var/www/letsencrypt -m nktb.open@gmail.com --agree-tos -d mostransport.info && systemctl reload nginx
+

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_20_204430) do
+ActiveRecord::Schema.define(version: 2020_11_30_170959) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2020_11_20_204430) do
     t.json "properties"
     t.integer "city_id"
     t.index ["city_id"], name: "index_isochrones_on_city_id"
+    t.index ["station_id", "contour", "profile"], name: "index_isochrones_on_station_id_and_contour_and_profile"
     t.index ["unique_code"], name: "index_isochrones_on_unique_code", unique: true
   end
 
@@ -139,6 +140,7 @@ ActiveRecord::Schema.define(version: 2020_11_20_204430) do
     t.datetime "updated_at", null: false
     t.integer "city_id"
     t.index ["city_id"], name: "index_stations_on_city_id"
+    t.index ["source_id", "city_id"], name: "index_stations_on_source_id_and_city_id", unique: true
   end
 
 end
