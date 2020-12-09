@@ -1,30 +1,23 @@
-<div id="tools_btns" class="d-flex py-3 justify-content-begin">
+<div id="tools_btns" class="d-flex flex-column ml-3 mt-3 justify-content-begin tools_btn_set">
 
-    <%= button_tag class:"btn btn-lg btn-outline-primary active", title:"Информация об остановке", "data-target":"station_info" do %>
-      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-        <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/>
-        <circle cx="8" cy="4.5" r="1"/>
-      </svg>
+    <%= button_tag class:"btn btn btn-outline-primary active", title:"Остановки", "data-target":"station_info" do %>
+      <%= fa_icon "map-marker-alt" %>
     <% end %>
 
-    <%= button_tag class:"btn btn-lg btn-outline-primary ml-3", title:"Поиск маршрутов", "data-target":"route_search" do %>
-      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
-        <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
-      </svg>
+    <%= button_tag class:"btn btn btn-outline-primary mt-3", title:"Маршруты", "data-target":"route_search" do %>
+      <%= fa_icon "bus" %>
     <% end %>
 
-    <%= button_tag class:"btn btn-lg btn-outline-primary ml-3", title:"Редактор маршрутов", "data-target":"constructor" do %>
-      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-      </svg>
+    <%= button_tag class:"btn btn btn-outline-primary mt-3", title:"Конструтор маршрутов", "data-target":"constructor" do %>
+      <%= fa_icon "route" %>
     <% end %>
 
-    <%= button_tag class:"btn btn-lg btn-outline-primary ml-3", title:"Изохроны", "data-target":"isochrone" do %>
-      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pentagon" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" d="M8 1.288l-6.842 5.56L3.733 15h8.534l2.575-8.153L8 1.288zM16 6.5L8 0 0 6.5 3 16h10l3-9.5z"/>
-      </svg>
+    <%= button_tag class:"btn btn btn-outline-primary mt-3", title:"Изохроны", "data-target":"isochrone" do %>
+      <i class="far fa-circle"></i>
+    <% end %>
+
+    <%= button_tag class:"btn btn btn-outline-primary mt-3", title:"ДТП", "data-target":"accidents" do %>
+      <%= fa_icon "car-crash" %>
     <% end %>
 
 </div>

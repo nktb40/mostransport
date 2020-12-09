@@ -5,3 +5,5 @@ $('#layers_search').selectpicker();
 
 // Параметр доступных слоёв для выбранного города
 availableLayers = <%= raw @layers.map{|l| l.layer_type.code} %>;
+
+default_layers = <%= raw @layers.select{|l| l.layer_type.default == true}.map{|l| l.layer_type.code}  %>;

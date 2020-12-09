@@ -64,7 +64,9 @@ if seeds_params.include? 'cities'
     {name: "Саратов", code: "SRV", tile_stations_url: 'nktb.0fa4dnxi', tile_routes_url: 'nktb.05la62go', tile_density_url: 'nktb.2lb631sa', longitude:46.034158, latitude:51.533103},
     {name: "Томск", code: "TSK", tile_stations_url: 'nktb.dhx67pwf', tile_routes_url: 'nktb.9wckylbh', tile_density_url: 'nktb.akc9ibxb', longitude:84.948197, latitude:56.484680},
     {name: "Владивосток", code: "VDK", tile_stations_url: 'nktb.3v9v2y3m', tile_routes_url: 'nktb.3xuvucos', tile_density_url: 'nktb.dizax8et', longitude:131.873530, latitude:43.1056200},
-    {name: "Новосибирск", code: "NSK", tile_stations_url: 'nktb.7nw3jf28', tile_routes_url: 'nktb.c6i7om4i', tile_density_url: 'nktb.5j9wr6q0', longitude:82.920430, latitude:55.030199}
+    {name: "Новосибирск", code: "NSK", tile_stations_url: 'nktb.7nw3jf28', tile_routes_url: 'nktb.c6i7om4i', tile_density_url: 'nktb.5j9wr6q0', longitude:82.920430, latitude:55.030199},
+    {name: "Великий Новгород", code: "VNO", tile_stations_url: 'nktb.VNO-bus_stops', tile_routes_url: 'nktb.VNO-routes', tile_density_url: 'nktb.doqruynk', longitude:31.275475, latitude:58.521475},
+    {name: "Мурманск", code: "MNK", tile_stations_url: 'nktb.MNK-bus_stops', tile_routes_url: 'nktb.MNK-routes', tile_density_url: 'nktb.4i13e8lt', longitude:33.074540, latitude:68.969563}
   ]
 
   items.each do |row|
@@ -88,14 +90,14 @@ if seeds_params.include? 'layer_types'
     {name: "Остановки", code: "STATIONS", source_name: "bus_stops", draw_type: "circle", paint_rule:'{"circle-radius": {"stops": [[9, 2], [22, 15]]},"circle-color": "#3976bc"}', default: true},
     {name: "Маршруты", code: "ROUTES", source_name: "routes", draw_type: "line", paint_rule:'{"line-width": 3,"line-color": "#F7455D"}', default: false},
     {name: "Выделенные полосы", code: "bus_lines", source_name: "bus_lines", draw_type: "line", paint_rule:'{"line-width": 3,"line-color": "#ffd800"}', default: false},
-    {name: "Подходы к остановкам", code: "stops_availability", source_name: "stops_availability", draw_type: "line", paint_rule:'{"line-width":2,"line-color":["case",["==",["get","Distance"],200],"#42d103",["==",["get","Distance"],300],"#f3b307",["==",["get","Distance"],400],"#ffa500",["==",["get","Distance"],500],"#ff4700","#e13d02"]}', default: false},
-    {name: "Расстояние между остановками", code: "stops_length", source_name: "stops_length", draw_type: "line", paint_rule:'{"line-width": 3, "line-color": "#42d103"}', default: false},
     {name: "Плотность маршрутов", code: "DENSITY", source_name: "density", draw_type: "line", paint_rule:'{"line-width": ["case",["all",[">=",["get","field_2"],1],["<",["get","field_2"],5]],3,["all",[">=",["get","field_2"],5],["<",["get","field_2"],10]],5,["all",[">=",["get","field_2"],10],["<",["get","field_2"],15]],7,9],"line-color": ["case",["all",[">=",["get","field_2"],1],["<",["get","field_2"],5]],"#42d103",["all",[">=",["get","field_2"],5],["<",["get","field_2"],10]],"#efee0a",["all",[">=",["get","field_2"],10],["<",["get","field_2"],15]],"#f3b307","#e13d02"]}', default: false},
     {name: "Плотность рейсов", code: "DENSITY2", source_name: "density2", draw_type: "line",  paint_rule:'{"line-width": ["case",["all",[">=",["get","field_2"],1],["<",["get","field_2"],5]],3,["all",[">=",["get","field_2"],5],["<",["get","field_2"],10]],5,["all",[">=",["get","field_2"],10],["<",["get","field_2"],15]],7,9],"line-color": ["case",["all",[">=",["get","field_2"],1],["<",["get","field_2"],5]],"#42d103",["all",[">=",["get","field_2"],5],["<",["get","field_2"],10]],"#efee0a",["all",[">=",["get","field_2"],10],["<",["get","field_2"],15]],"#f3b307","#e13d02"]}', default: false},
     {name: "Пешие изохроны 5 мин", code: "WALK_ISO_5MIN", source_name: "isochrones", draw_type: "fill", paint_rule:'{"fill-color": "#00ceff","fill-opacity": 0.3}', default: false},
-    {name: "Расстояние между остановками", code: "bus_stops3", source_name: "bus_stops3", draw_type: "line", paint_rule:'{"line-width":2,"line-color":["case",["==",["get","Distance"],200],"#42d103",["==",["get","Distance"],300],"#f3b306",["==",["get","Distance"],400],"#ffa501",["==",["get","Distance"],500],"#ff4700","#e13d02"]}', default: false},
     {name: "Диаграмма Вороного", code: "voronoi", source_name: "voronoi", draw_type: "line", paint_rule:'{"line-color": "#242323","line-opacity": 0.3}', default: false},
-    {name: "Покрытие остановками", code: "stops_cover", source_name: "stops_cover", draw_type: "fill", paint_rule:'{"fill-color": "#00ceff","fill-opacity": 0.3}', default: false}
+    {name: "Покрытие остановками", code: "stops_cover", source_name: "stops_cover", draw_type: "fill", paint_rule:'{"fill-color": "#00ceff","fill-opacity": 0.3}', default: false},
+    {name: "Дома далеко от остановок", code: "houses", source_name: "houses", draw_type: "circle", paint_rule:'{"circle-radius": 3, "circle-color":["case", ["<", ["get", "distance"], 500], "#FFCC00", [">=", ["get", "distance"], 500], "#CC0000", "#CC0000"]}', default: false},
+    {name: "ДТП", code: "DTP", source_name: "dtp", draw_type: "circle", paint_rule:'{"circle-radius": 5,"circle-color": "#EE2C0E"}', default: true},
+    {name: "Подходы к остановкам", code: 'stop_route', source_name: "stop_route", draw_type: "line", paint_rule: '{"line_width": 3, "line-color":["case",["==",["get", "Distance"],200], "#42d103", ["==", ["get", "Distance"], 300], "#f3b307", ["==", ["get","Distance"], 400], "#ffa500", ["==", ["get", "Distance"], 500], "ff4700", "#e13d02"]}', default: false} 
   ]
   items.each do |row|
     item = LayerType.find_or_initialize_by(code: row[:code])
@@ -116,6 +118,7 @@ if seeds_params.include? 'layers'
     {city_code: "MSK", layer_type_code: "ROUTES", tile_url: "nktb.4pzcpmcq"},
     {city_code: "MSK", layer_type_code: "DENSITY", tile_url: "nktb.cwpmw7ol"},
     {city_code: "MSK", layer_type_code: "bus_lines", tile_url: "nktb.9zwnwosv"},
+    {city_code: "MSK", layer_type_code: "stops_cover", tile_url: "nktb.MSK-stops_cover"},
 
     {city_code: "USH", layer_type_code: "STATIONS", tile_url: "nktb.bqt0c4vg"},
     {city_code: "USH", layer_type_code: "ROUTES", tile_url: "nktb.3kwvx7ka"},
@@ -135,10 +138,7 @@ if seeds_params.include? 'layers'
     {city_code: "YKT", layer_type_code: "ROUTES", tile_url: "nktb.1lsjnm5c"},
     {city_code: "YKT", layer_type_code: "DENSITY", tile_url: "nktb.bxzje18l"},
     {city_code: "YKT", layer_type_code: "bus_lines", tile_url: "nktb.9zwnwosv"},
-#    {city_code: "YKT", layer_type_code: "stops_availability", tile_url: "nktb.9j70sf6u"},
     {city_code: "YKT", layer_type_code: "DENSITY2", tile_url: "nktb.797o7umz"},
-#    {city_code: "YKT", layer_type_code: "stops_length", tile_url: "nktb.2txb3r92"},
-    {city_code: "YKT", layer_type_code: "bus_stops3", tile_url: "nktb.67xf3t1u"},
     {city_code: "YKT", layer_type_code: "voronoi", tile_url: "nktb.1nxaw7c4"},
     {city_code: "YKT", layer_type_code: "stops_cover", tile_url: "nktb.YKT-stops_cover"},
 
@@ -198,6 +198,7 @@ if seeds_params.include? 'layers'
     {city_code: "KRS", layer_type_code: "bus_lines", tile_url: "nktb.9zwnwosv"},
     {city_code: "KRS", layer_type_code: "voronoi", tile_url: "nktb.0d66nmvs"},
     {city_code: "KRS", layer_type_code: "stops_cover", tile_url: "nktb.KRS-stops_cover"},
+    {city_code: "KRS", layer_type_code: "DTP", tile_url: ""},
 
     {city_code: "IZH", layer_type_code: "STATIONS", tile_url: "nktb.26wu56d7"},
     {city_code: "IZH", layer_type_code: "ROUTES", tile_url: "nktb.cz1da0xm"},
@@ -303,6 +304,7 @@ if seeds_params.include? 'layers'
     {city_code: "SRV", layer_type_code: "DENSITY", tile_url: "nktb.2lb631sa"},
     {city_code: "SRV", layer_type_code: "bus_lines", tile_url: "nktb.9zwnwosv"},
     {city_code: "SRV", layer_type_code: "voronoi", tile_url: "nktb.1nxaw7c4"},
+    {city_code: "SRV", layer_type_code: "stops_availability", tile_url: "nktb.a8kmq2no"},
     {city_code: "SRV", layer_type_code: "stops_cover", tile_url: "nktb.SRV-stops_cover"},
 
     {city_code: "TSK", layer_type_code: "STATIONS", tile_url: "nktb.dhx67pwf"},
@@ -322,7 +324,23 @@ if seeds_params.include? 'layers'
     {city_code: "NSK", layer_type_code: "ROUTES", tile_url: "nktb.c6i7om4i"},
     {city_code: "NSK", layer_type_code: "DENSITY", tile_url: "nktb.5j9wr6q0"},
     {city_code: "NSK", layer_type_code: "bus_lines", tile_url: "nktb.9zwnwosv"},
-    {city_code: "NSK", layer_type_code: "stops_cover", tile_url: "nktb.NSK-stops_cover"}
+    {city_code: "NSK", layer_type_code: "stops_cover", tile_url: "nktb.NSK-stops_cover"},
+    {city_code: "NSK", layer_type_code: "houses", tile_url: "nktb.2pn1xsa2"},
+
+    {city_code: "VNO", layer_type_code: "DTP", tile_url: "nktb.cdee1iun"},
+    {city_code: "VNO", layer_type_code: "STATIONS", tile_url: "nktb.VNO-bus_stops"},
+    {city_code: "VNO", layer_type_code: "ROUTES", tile_url: "nktb.VNO-routes"},
+    {city_code: "VNO", layer_type_code: "DENSITY", tile_url: "nktb.doqruynk"},
+    {city_code: "VNO", layer_type_code: "bus_lines", tile_url: "nktb.9zwnwosv"},
+    {city_code: "VNO", layer_type_code: "stops_cover", tile_url: "nktb.VNO-stops_cover"},
+
+    {city_code: "MNK", layer_type_code: "STATIONS", tile_url: "nktb.MNK-bus_stops"},
+    {city_code: "MNK", layer_type_code: "ROUTES", tile_url: "nktb.MNK-routes"},
+    {city_code: "MNK", layer_type_code: "DENSITY", tile_url: "nktb.4i13e8lt"},
+    {city_code: "MNK", layer_type_code: "DENSITY2", tile_url: "nktb.3gae5mx7"},
+    {city_code: "MNK", layer_type_code: "bus_lines", tile_url: "nktb.9zwnwosv"},
+    {city_code: "MNK", layer_type_code: "stops_cover", tile_url: "nktb.MNK-stops_cover"}
+
 
   ]
   items.each do |row|

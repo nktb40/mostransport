@@ -1,7 +1,7 @@
 <p>
   <small class="text-muted">Остановка:</small>
   <br>
-  <%= @station.station_name %>
+  <b><%= @station.station_name %></b>
 </p>
 
 <p class="mt-4">
@@ -49,7 +49,7 @@
     } else{
       filter = ["match",["get", "route_id"], map_routes, true, false];
     }
-    map.setFilter('routes', filter);
+    map.setFilter('station_routes', filter);
   });
 </script>
 

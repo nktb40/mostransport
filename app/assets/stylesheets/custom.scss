@@ -188,3 +188,12 @@
 .navbar-brand small{
 	font-size: 0.8rem;
 }
+
+.tools_btn_set {
+   position: absolute;
+   z-index: 1;
+}
+
+.tools_btn_set button {
+	background-color: #fff;
+}

@@ -10,6 +10,7 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+//= require font_awesome5
 //= require paloma
 //= require_tree ./page_scripts
 //= require rails-ujs
