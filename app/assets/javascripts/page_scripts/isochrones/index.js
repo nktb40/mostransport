@@ -405,7 +405,7 @@ Paloma.controller('Isochrones',
   	  .always(function() {
   	    $('.loading').addClass('none');
   	  });
-      }
+    }
 
     // Отправка запроса для получения координат маршрутов
     function getRoutes(){

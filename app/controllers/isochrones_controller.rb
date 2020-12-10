@@ -13,14 +13,15 @@ class IsochronesController < ApplicationController
 	def get_isochrones
 		params[:with_interval] = nil if params[:with_interval].blank?
 		
-		#@isochrones = Station.where(source_id: params[:station_id]).
 		@isochrones = Isochrone.where(profile: params[:profile], city_id: params[:city_id])
 		@isochrones = @isochrones.where(source_station_id: params[:station_id]) if params[:station_id].present?
 		@isochrones = @isochrones.where(with_interval: params[:with_interval]) if params[:with_interval].present?
 		@isochrones = @isochrones.where(with_changes: params[:with_changes]) if params[:with_changes].present?
 		@isochrones = @isochrones.where(contour: params[:contour]) if params[:contour].present?
 
-		render json: @isochrones.to_json, status: :ok
+		@routes = []
+		@routes = Station.find_by(source_id: params[:station_id], city_id: params[:city_id]).routes if params[:show_routes]
+
 	end
 
 	def get_metrics

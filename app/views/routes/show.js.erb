@@ -4,12 +4,6 @@ routes_data = <%= raw @routes.to_json %>;
 route_features = turf.featureCollection(routes_data.map(function(i){return turf.feature(i.geo_data,{route_id:i.id})}));
 map.getSource('route_search').setData(route_features);
 
-
-<% isochrones = [] %>
-<% @routes.each_with_index do |route, i| %>
-	<% isochrones = isochrones.concat(route.isochrones.where(profile: "route_cover", contour: 5)) %>
-<% end %>
-
-geo_data = <%= raw isochrones.map(&:geo_data).to_json() %>;
+geo_data = <%= raw @isochrones.to_json() %>;
 iso_features = turf.featureCollection(geo_data.map(function(d){return turf.feature(d)}));
 map.getSource('route_search_iso').setData(iso_features);

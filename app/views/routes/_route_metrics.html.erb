@@ -25,10 +25,10 @@
         <td><%= route.route_cost %> руб</td>
       </tr>
 
-      <% route.isochrones.first.metrics.each do |metric| %>
+      <% @isochrone_metrics.select{|m| m.route_id == route.id}.each do |metric| %>
         <tr>
-          <td><%= metric.metric_type.metric_name %></td>
-          <td><%= metric.metric_value %></td>
+          <td><%= metric.metric_name %></td>
+          <td><%= metric_value %></td>
         </tr>
       <% end %>
 

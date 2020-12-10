@@ -1,0 +1,10 @@
+// Отображаем изохроны на карте
+isochrones_data = <%= raw @isochrones.map{|i| {geo_data: i.geo_data, contour: i.contour}}.to_json() %>;
+console.log(isochrones_data);
+iso_features = turf.featureCollection(isochrones_data.map(function(d){return turf.feature(d.geo_data, {contour: d.contour})}));
+map.getSource('isochrones_iso').setData(iso_features);
+
+// Отображаем маршруты на карте
+routes_data = <%= raw @routes.map(&:geo_data).to_json() %>;
+routes_features = turf.featureCollection(routes_data.map(function(d){return turf.feature(d)}));
+map.getSource('isochrones_routes').setData(routes_features);
