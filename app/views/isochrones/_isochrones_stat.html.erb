@@ -1,0 +1,21 @@
+<p class='mb-3 text-bold'>Статистика изохрона:</p>
+<table class="table table-hover">
+  <thead class="text-secondary">
+    <tr>
+      <th>Метрика</th>
+      <th>10 мин</th>
+      <th>20 мин</th>
+      <th>30 мин</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @metrics.each do |m| %>
+    <tr>
+      <td><%= m[:name] %></td>
+      <td><%= m['metrics']['10'] %></td>
+      <td><%= m['metrics']['20'] %></td>
+      <td><%= m['metrics']['30'] %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

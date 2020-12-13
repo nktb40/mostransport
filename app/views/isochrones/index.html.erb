@@ -32,37 +32,8 @@
 
   </form>
 
-  <div id="info-box" class="mt-5 pb-3 none">
-    <p class='mb-3 text-bold'>Статистика изохрона:</p>
-    <table id="stop_stat" class="table table-hover">
-      <thead class="text-secondary">
-        <tr>
-          <th>Метрика</th>
-          <th>10 мин</th>
-          <th>20 мин</th>
-          <th>30 мин</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
+  <div id="isochrones_stat" class="mt-5 pb-3 none"></div>
 
-    <p class='mb-3 mt-5 text-bold'>Статистика маршрутов:</p>
-    <div class="table-responsive">
-      <table id="routes_stat" class="table table-hover">
-        <thead class="text-secondary">
-          <tr>
-            <th>Маршрут</th>
-            <th>Интервал</th>
-            <th>Длина</th>
-            <th>Стоимость</th>
-            <th>Прямолин.</th>
-          </tr>
-        </thead>
-        <tbody class="text-nowrap"></tbody>
-      </table>
-    </div>
-  </div>
 <% end %>
 
 <% content_for :scripts do %>

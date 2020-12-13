@@ -118,6 +118,7 @@ Paloma.controller('Constructor',
     var selected_tool = $('#tools_btns .btn.active').data('target');
 
     $('#tools_btns .btn').on('click',function(){
+
       $('#tools_btns .btn').removeClass('active');
       $(this).addClass('active');
 
@@ -140,31 +141,48 @@ Paloma.controller('Constructor',
         initIsochronesLayers();
       }
 
+      // Перекоючаем слои
+      switch_tools_layers(selected_tool);
+
     });
+
+    // Переключение слоёв инструментов
+    function switch_tools_layers(selected_tool){
+      console.log(toolsLayers);
+      selected_layers = toolsLayers.filter(function(l){return l.startsWith(selected_tool) == true});
+      selected_layers.forEach(function(l){
+        map.setFilter(l,true);
+      });
+
+      unselected_layers = toolsLayers.filter(function(l){return l.startsWith(selected_tool) == false});
+      unselected_layers.forEach(function(l){
+        map.setFilter(l,false);
+      });
+    }
 
 
     // Обработчик события клика на карте
     map.on('click', function(event) {
       event.features = map.queryRenderedFeatures(event.point, { layers: ['STATIONS']});
-      selected_point = event.features[0];
 
       $('.route_stop').removeClass('active_item');
 
       // Маршрутизация по функциям в зависимости от выбранного инструмента
-      if(selected_point != null){
+      if(event.features[0] != null){
+        selected_point = event.features[0];
+        
         if(selected_tool == 'station_info'){
           marker.setLngLat(selected_point.geometry.coordinates).setPopup(obj_popup).addTo(map);
-          // create the popup
           addPointPopup(obj_popup,event);
-
           getStationInfo(selected_point);
         }
         else if(selected_tool == 'constructor'){
           drawPoint(selected_point);
         }
         else if(selected_tool == 'isochrones'){
+          marker.setLngLat(selected_point.geometry.coordinates).setPopup(obj_popup).addTo(map);
+          addPointPopup(obj_popup,event);
           getIsochrones(selected_point);
-
         }
       }
 
@@ -176,14 +194,14 @@ Paloma.controller('Constructor',
     // Функция инициализации слоёв для отображения информции об остановках
     function initStationInfoLayers(){
       // Изохроны
-      addNewLayer("station_iso", 'fill', 
+      addNewLayer("station_info_iso", 'fill', 
         {
           'fill-color': '#00ceff',
           'fill-opacity': 0.5
         });
 
       // Маршруты
-      addNewLayer('station_routes', 'line', 
+      addNewLayer('station_info_routes', 'line', 
         {
           'line-width': 6,
           'line-color': ["get","color"]
@@ -263,6 +281,7 @@ Paloma.controller('Constructor',
     var minutes = [0,10,20,30];
     var use_intervals = false;
     var use_changes = false;
+    var selected_point;
 
     // Функция инициализации слоёв для отображения Изохронов
     function initIsochronesLayers(){
@@ -276,7 +295,14 @@ Paloma.controller('Constructor',
                           '#efac00'
                         ],
           'fill-opacity': 0.5
-        });
+        },'isochrones_change_routes');
+
+      // Пересадочные маршруты
+      addNewLayer('isochrones_change_routes', 'line', 
+        {
+          'line-width': 3,
+          'line-color': '#979797'
+        },'isochrones_routes');
 
       // Маршруты
       addNewLayer('isochrones_routes', 'line', 
@@ -285,23 +311,6 @@ Paloma.controller('Constructor',
           'line-color': ["case",["has","color"],["get","color"],'#F7455D']
         });
 
-      // Пересадочные маршруты
-      addNewLayer('isochrones_change_routes', 'line', 
-        {
-          'line-width': 3,
-          'line-color': '#979797'
-        });
-    }
-
-    // Функция фильтрации изохронов на карте в зависимости от выбранных парметров
-    function filterMap(){
-
-      // Фильтры
-      filter_minutes = ["match",["get", "contour"], minutes, true, false];
-      filter_profile = ["==",["get", "profile"], profile];
-      
-      // Устанавливаем фильтры на слой с остановками
-      map.setFilter('pointIsoLayer', ["all",filter_profile, filter_minutes]);
     }
 
     // Отправка запроса для получения изохронов по выбранной точке
@@ -316,14 +325,47 @@ Paloma.controller('Constructor',
         show_routes: (profile == 'public_transport')
       }
 
-      console.log(params);
-
-      $.get("/isochrones/get_isochrones", params)
-      .done(function(data) {
-
-      });
+      $.get("/isochrones/show", params);
 
     }
+
+    // Обработка событий переключения параметров изохронов
+    $('#params').on('change', function(e) {
+      if (e.target.name === 'profile') {
+        profile = e.target.value;
+      } 
+      
+      if(profile == 'public_transport'){
+        use_intervals = document.getElementById('use_intervals').checked;
+        use_changes = document.getElementById('use_changes').checked;
+      } else {
+        use_intervals = null;
+        use_changes = null;
+      }
+
+      getIsochrones(selected_point);
+
+    });
+
+    // Функция обработки событий переключения времени изохронов
+    $('button[name="duration"]').on('click',function(e){
+      e.preventDefault();
+      btn = e.target;
+      val = $(btn).data("value");
+
+      if(minutes.includes(val)){
+        minutes = minutes.filter(function(el){return el != val});
+        $(btn).removeClass("active");
+      } else{
+        minutes.push(val);
+        $(btn).addClass("active");
+      }
+      
+      // Устанавливаем фильтры на слой с остановками
+      filter_minutes = ["match",["get", "contour"], minutes, true, false];
+      map.setFilter('isochrones_iso', filter_minutes);
+
+    });
 
 
     // ========== Функции конструктора маршрутов ==========//
@@ -344,7 +386,7 @@ Paloma.controller('Constructor',
           'line-color': '#448ee4'
         });
 
-      addNewLayer('compute_routes', 'line', 
+      addNewLayer('constructor_compute_routes', 'line', 
         {
           'line-width': 6,
           'line-color': '#F7455D'
@@ -466,7 +508,7 @@ Paloma.controller('Constructor',
         .done(function(data) {
           route = data.routes[0]
           line = turf.feature(route.geometry);
-          map.getSource('compute_routes').setData(line);
+          map.getSource('constructor_compute_routes').setData(line);
 
           metrics.push({name:"Длина",value: (route.distance/1000).toFixed(2)+" км", order:0})
           displayMetrics();
@@ -474,9 +516,9 @@ Paloma.controller('Constructor',
           getStraightness();
         });
       } else {
-        map.getSource('compute_routes').setData(turf.featureCollection([]));
+        map.getSource('constructor_compute_routes').setData(turf.featureCollection([]));
       }
-      map.setFilter('compute_routes', true);
+      map.setFilter('constructor_compute_routes', true);
     }
 
     // Расчёт коэф. прямолинейности
@@ -687,7 +729,9 @@ Paloma.controller('Constructor',
           'source': layer_code,
           'source-layer': source_name,
           'paint': paint_rule
-      });
+      },
+      (layer_code == 'STATIONS') ? 'building-number-label' : 'STATIONS' 
+      );
     }
 
   }

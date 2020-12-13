@@ -2,14 +2,7 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'about#index'
 
-  resources :isochrones do
-    collection do
-      get :get_routes
-      get :get_changes_routes
-      get :get_isochrones
-      get :get_metrics
-     end
-  end
+  resources :isochrones
 
   resources :routes do
     collection do

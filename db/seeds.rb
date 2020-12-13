@@ -95,9 +95,10 @@ if seeds_params.include? 'layer_types'
     {name: "Пешие изохроны 5 мин", code: "WALK_ISO_5MIN", source_name: "isochrones", draw_type: "fill", paint_rule:'{"fill-color": "#00ceff","fill-opacity": 0.3}', default: false},
     {name: "Диаграмма Вороного", code: "voronoi", source_name: "voronoi", draw_type: "line", paint_rule:'{"line-color": "#242323","line-opacity": 0.3}', default: false},
     {name: "Покрытие остановками", code: "stops_cover", source_name: "stops_cover", draw_type: "fill", paint_rule:'{"fill-color": "#00ceff","fill-opacity": 0.3}', default: false},
-    {name: "Дома далеко от остановок", code: "houses", source_name: "houses", draw_type: "circle", paint_rule:'{"circle-radius": 3, "circle-color":["case", ["<", ["get", "distance"], 500], "#FFCC00", [">=", ["get", "distance"], 500], "#CC0000", "#CC0000"]}', default: false},
+    {name: "Дома далеко от остановок", code: "houses_far_stops", source_name: "houses_far_stops", draw_type: "circle", paint_rule:'{"circle-radius": 3, "circle-color":["case", ["<", ["get", "distance"], 500], "#FFCC00", [">=", ["get", "distance"], 500], "#CC0000", "#CC0000"]}', default: false},
     {name: "ДТП", code: "DTP", source_name: "dtp", draw_type: "circle", paint_rule:'{"circle-radius": 5,"circle-color": "#EE2C0E"}', default: true},
-    {name: "Подходы к остановкам", code: 'stop_route', source_name: "stop_route", draw_type: "line", paint_rule: '{"line_width": 3, "line-color":["case",["==",["get", "Distance"],200], "#42d103", ["==", ["get", "Distance"], 300], "#f3b307", ["==", ["get","Distance"], 400], "#ffa500", ["==", ["get", "Distance"], 500], "ff4700", "#e13d02"]}', default: false} 
+    {name: "Подходы к остановкам", code: 'stop_routes', source_name: "stop_routes", draw_type: "line", paint_rule: '{"line_width": 3, "line-color":["case",["==",["get", "distance"],200], "#42d103", ["==", ["get", "distance"], 300], "#f3b307", ["==", ["get","distance"], 400], "#ffa500", ["==", ["get", "distance"], 500], "ff4700", "#e13d02"]}', default: true},
+    {name: "Расстояние между остановками", code: 'stops_distance', source_name: 'stops_distance', draw_type: 'line', paint_rule: '{"line_width": 3, "line-color": "#42d103"}', default: false}
   ]
   items.each do |row|
     item = LayerType.find_or_initialize_by(code: row[:code])
@@ -183,6 +184,7 @@ if seeds_params.include? 'layers'
     {city_code: "CHLB", layer_type_code: "bus_lines", tile_url: "nktb.9zwnwosv"},
     {city_code: "CHLB", layer_type_code: "voronoi", tile_url: "nktb.1nxaw7c4"},
     {city_code: "CHLB", layer_type_code: "stops_cover", tile_url: "nktb.CHLB-stops_cover"},
+    {city_code: "CHLB", layer_type_code: "stop_routes", tile_url: "nktb.bbla47bw"},
 
     {city_code: "SPB", layer_type_code: "STATIONS", tile_url: "nktb.60lrqf8u"},
     {city_code: "SPB", layer_type_code: "ROUTES", tile_url: "nktb.cz6vgyki"},
