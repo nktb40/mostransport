@@ -57,18 +57,6 @@ Paloma.controller('Constructor',
       getCityRoutes();
     });
 
-    // Change the cursor to a pointer when it enters a feature in the 'points' layer.
-    map.on('mouseenter', 'STATIONS', function(e) {
-      map.getCanvas().style.cursor = 'pointer';
-      addPointPopup(point_popup,e);
-    });
-
-    // Change it back to a pointer when it leaves.
-    map.on('mouseleave', 'STATIONS', function() {
-      map.getCanvas().style.cursor = '';
-      point_popup.remove();
-    });
-
     // Перемещаем карту в границу, выбранного города
     function centerMap(){
       bbox = $('#city_select').find(':selected').data('bbox');
@@ -110,6 +98,7 @@ Paloma.controller('Constructor',
           'source': name,
           'paint': paint
         }, 'STATIONS');
+
       }
     }
 
@@ -729,9 +718,33 @@ Paloma.controller('Constructor',
           'source': layer_code,
           'source-layer': source_name,
           'paint': paint_rule
-      },
-      (layer_code == 'STATIONS') ? 'building-number-label' : 'STATIONS' 
-      );
+      },(layer_code == 'STATIONS') ? 'building-number-label' : 'STATIONS');
+
+      // Change the cursor to a pointer when it enters a feature in the 'points' layer.
+      map.on('mouseenter', layer_code, function(e) {
+        map.getCanvas().style.cursor = 'pointer';
+        addPopup(point_popup,e);
+      });
+
+      // Change it back to a pointer when it leaves.
+      map.on('mouseleave', layer_code, function() {
+        map.getCanvas().style.cursor = '';
+        point_popup.remove();
+      });
+    }
+
+    // Добавление popup для всех слоёв
+    function addPopup(popup, e){
+      html = "";
+      props = e.features[0].properties
+
+      for (p in props) {
+        html += "<span><b>"+p+":</b> "+props[p]+"</span><br>"
+      }
+
+      popup.setLngLat(e.lngLat)
+        .setHTML(html)
+        .addTo(map);
     }
 
   }
