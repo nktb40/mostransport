@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_10_201728) do
+ActiveRecord::Schema.define(version: 2021_01_05_170940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,9 +23,30 @@ ActiveRecord::Schema.define(version: 2020_12_10_201728) do
     t.json "bbox"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "tile_stations_url"
-    t.string "tile_routes_url"
-    t.string "tile_density_url"
+    t.string "region_name"
+    t.index ["code"], name: "index_cities_on_code", unique: true
+  end
+
+  create_table "houses", force: :cascade do |t|
+    t.integer "city_id"
+    t.integer "source_id"
+    t.text "street_name"
+    t.string "house_number"
+    t.string "building"
+    t.string "block"
+    t.string "letter"
+    t.text "address"
+    t.integer "floor_count_min"
+    t.integer "floor_count_max"
+    t.integer "entrance_count"
+    t.float "area_total"
+    t.float "area_residential"
+    t.integer "population"
+    t.json "geometry"
+    t.boolean "far_from_stops_flag"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["city_id", "source_id"], name: "index_houses_on_city_id_and_source_id", unique: true
   end
 
   create_table "isochrones", force: :cascade do |t|
@@ -66,6 +87,7 @@ ActiveRecord::Schema.define(version: 2020_12_10_201728) do
     t.integer "city_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["city_id", "layer_type_id"], name: "index_layers_on_city_id_and_layer_type_id", unique: true
   end
 
   create_table "lnk_station_routes", force: :cascade do |t|
@@ -76,6 +98,8 @@ ActiveRecord::Schema.define(version: 2020_12_10_201728) do
     t.integer "seq_no"
     t.integer "track_no"
     t.string "route_type"
+    t.float "route_time"
+    t.float "distance"
     t.index ["route_id"], name: "index_lnk_station_routes_on_route_id"
     t.index ["station_id", "route_id", "track_no"], name: "lnk_station_routes_main_index", unique: true
     t.index ["station_id"], name: "index_lnk_station_routes_on_station_id"
@@ -117,6 +141,7 @@ ActiveRecord::Schema.define(version: 2020_12_10_201728) do
     t.string "source_id"
     t.integer "city_id"
     t.boolean "circular_flag"
+    t.index ["city_id", "source_id"], name: "index_routes_on_city_id_and_source_id", unique: true
     t.index ["city_id"], name: "index_routes_on_city_id"
     t.index ["route_code", "city_id"], name: "index_routes_on_route_code_and_city_id"
   end
