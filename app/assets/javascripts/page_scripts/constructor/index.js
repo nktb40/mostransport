@@ -16,6 +16,9 @@ Paloma.controller('Constructor',
     var obj_popup = new mapboxgl.Popup();
     var point_popup = new mapboxgl.Popup();
 
+    var selectpickerWhiteList = $.fn.selectpicker.Constructor.DEFAULTS.whiteList;
+    selectpickerWhiteList.span = ['title'];
+
     // Выбранные точки маршрута
     var selected_points = [];
     var marker = new mapboxgl.Marker();
@@ -129,6 +132,9 @@ Paloma.controller('Constructor',
       else if(active_id == 'isochrones'){
         initIsochronesLayers();
       }
+      else if(active_id == 'dtp_map'){
+        initDtpMapLayers();
+      }
 
       // Перекоючаем слои
       switch_tools_layers(selected_tool);
@@ -161,6 +167,7 @@ Paloma.controller('Constructor',
         selected_point = event.features[0];
         
         if(selected_tool == 'station_info'){
+          $('#choose_stops_alert').addClass('d-none');
           marker.setLngLat(selected_point.geometry.coordinates).setPopup(obj_popup).addTo(map);
           addPointPopup(obj_popup,event);
           getStationInfo(selected_point);
@@ -356,6 +363,65 @@ Paloma.controller('Constructor',
 
     });
 
+    // ========== Функции карты ДТП ==========//
+
+    // Функция инициализации фильтров для карты ДТП
+    function initDtpMapLayers(){
+      // Включаем слой с картой ДТП
+      params = JSON.parse($('#layers_search option[name="dtp_map"]').html());
+      showLayer(params);
+      toolsLayers.push("dtp_map");
+
+      // Добавляем Обработчики для фильтров
+      $(document).on('changed.bs.select', '.dtp-filter', function (e, clickedIndex, isSelected) {
+        filterDtpMap();
+      });
+
+    }
+
+    function filterDtpMap(){
+      // Получаем список выбранных значений
+      dtp_year = $('#dtp_year').val();
+      dtp_category = $('#dtp_category').val();
+      dtp_severity = $('#dtp_severity').val();
+      dtp_light = $('#dtp_light').val();
+      dtp_participant_categories = $('#dtp_participant_categories').val();
+
+      // Готовим параметры фильтров
+      if(dtp_year.length > 0){
+        filter_year = ["match",["slice",["get", "datetime"],0,4], dtp_year, true, false];
+      } else {
+        filter_year = true;
+      }
+
+      if(dtp_category.length > 0){
+        filter_category = ["match",["get", "category"], dtp_category, true, false];
+      } else {
+        filter_category = true;
+      }
+
+      if(dtp_severity.length > 0){
+        filter_severity = ["match",["get", "severity"], dtp_severity, true, false];
+      } else {
+        filter_severity = true;
+      }
+
+      if(dtp_light.length > 0){
+        filter_light = ["match",["get", "light"], dtp_light, true, false];
+      } else {
+        filter_light = true;
+      }
+
+      if(dtp_participant_categories.length > 0){
+        filter_participant_categories = ["in",dtp_participant_categories,["get", "participant_categories"]];
+        //filter_participant_categories = ["any"]
+      } else {
+        filter_participant_categories = true;
+      }
+
+      // Добавляем фильтры на слой с дтп
+      map.setFilter('dtp_map', ["all",filter_year, filter_category, filter_severity, filter_light, filter_participant_categories]);
+    }
 
     // ========== Функции конструктора маршрутов ==========//
 
@@ -657,7 +723,7 @@ Paloma.controller('Constructor',
         });
     }
 
-    // Обработчик события выбора маршрутов в строке поиска
+    // Обработчик события выбора слоя
     $(document).on('changed.bs.select', '#layers_search', function (e, clickedIndex, isSelected) {
       layer_params = $('#layers_search').val();
       

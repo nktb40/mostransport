@@ -1,0 +1,76 @@
+<div id="dtp_map" class= "tool_panel d-none">
+  <p class="h5 mt-4 pb-3 border-bottom text-blue text-left">Карта ДТП</p>
+  <div class="panel px-2">
+    <p class="mt-4 mb-2">
+      <%= fa_icon "calendar-alt", :class=>"text-secondary mr-2" %>
+      Отчётный год
+    </p>
+    <select id="dtp_year" class="selectpicker dtp-filter" data-style="border px-3" multiple title="Выберите год" data-size="5" data-width="100%">
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">2020</span'>2020</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">2019</span'>2019</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">2018</span'>2018</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">2017</span'>2017</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">2016</span'>2016</option>
+    </select>
+
+    <p class="mt-4 mb-2">
+      <%= fa_icon "user-friends", :class=>"text-secondary mr-2" %>
+      Участники
+    </p>
+    <select id="dtp_participant_categories" class="selectpicker dtp-filter" data-style="border px-3" title="Выберите участников" data-size="5" data-width="100%">
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Все участники</span'>Все участники</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Пешеходы</span'>Пешеходы</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Велосипедисты</span'>Велосипедисты</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Мотоциклисты</span'>Мотоциклисты</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Общ. транспорт</span'>Общ. транспорт</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Дети</span'>Дети</option>
+    </select>
+
+    <p class="mt-4 mb-2">
+      <%= fa_icon "car-crash", :class=>"text-secondary mr-2" %>
+      Категория ДТП
+    </p>
+    <select id="dtp_category" class="selectpicker dtp-filter" data-style="border px-3" multiple title="Категория ДТП" data-size="5" data-width="100%">
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Наезд на пешехода</span'>Наезд на пешехода</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Падение пассажира</span'>Падение пассажира</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Наезд на препятствие</span'>Наезд на препятствие</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Съезд с дороги</span'>Съезд с дороги</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Наезд на велосипедиста</span'>Наезд на велосипедиста</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Столкновение</span'>Столкновение</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Опрокидывание</span'>Опрокидывание</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Иной вид ДТП</span'>Иной вид ДТП</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Наезд на стоящее ТС</span'>Наезд на стоящее ТС</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Отбрасывание предмета</span'>Отбрасывание предмета</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Наезд на лицо, не являющееся участником дорожного движения, осуществляющее несение службы</span'>Наезд на лицо, не являющееся участником дорожного движения, осуществляющее несение службы</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Наезд на лицо, не являющееся участником дорожного движения, осуществляющее производство работ</span'>Наезд на лицо, не являющееся участником дорожного движения, осуществляющее производство работ</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Наезд на животное</span'>Наезд на животное</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Падение груза</span'>Падение груза</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Наезд на гужевой транспорт</span'>Наезд на гужевой транспорт</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Наезд на внезапно возникшее препятствие</span'>Наезд на внезапно возникшее препятствие</option>
+    </select>
+
+    <p class="mt-4 mb-2">
+      <%= fa_icon "ambulance", :class=>"text-secondary mr-2" %>
+      Тяжесть
+    </p>
+    <select id="dtp_severity" class="selectpicker dtp-filter" data-style="border px-3" multiple title="Тяжесть ДТП" data-size="5" data-width="100%">
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Легкий</span'>Легкий</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Тяжёлый</span'>Тяжёлый</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">С погибшими</span'>С погибшими</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px">Нет данных</span'>Нет данных</option>
+    </select>
+
+    <p class="mt-4 mb-2">
+      <%= fa_icon "clock", :class=>"text-secondary mr-2" %>
+      Время суток
+    </p>
+    <select id="dtp_light" class="selectpicker dtp-filter" data-style="border px-3" multiple title="Время суток" data-size="5" data-width="100%">
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px" title="Светлое время суток">Светлое время суток</span>'>Светлое время суток</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px" title="Сумерки">Сумерки</span>'>Сумерки</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px" title="В темное время суток, освещение включено">В темное время суток, освещение включено</span>'>В темное время суток, освещение включено</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px" title="В темное время суток, освещение не включено">В темное время суток, освещение не включено</span>'>В темное время суток, освещение не включено</option>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:265px" title="В темное время суток, освещение отсутствует">В темное время суток, освещение отсутствует</span>'>В темное время суток, освещение отсутствует</option>
+    </select>
+  </div>
+</div>
+
