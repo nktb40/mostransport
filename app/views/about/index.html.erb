@@ -142,45 +142,16 @@
         </p>
         <br>
         <p class="text-center h2 mb-5">
-          <b>Уже подключено более 20-ти гордов</b>
+          <b><%= City.all.length %> городов уже подключено</b>
         </p>
         <div class="row">
           <% City.all.order(:name).each do |city| %>
-            <p class="h3 mr-3"><%= link_to city.name, constructor_index_path(city: city.code), class: "badge badge-pill badge-primary" %></p>
+            <p class="h3 mr-3"><%= link_to city.name, constructor_index_path(city: city.code), class: "badge badge-pill badge-primary pb-2 px-3" %></p>
           <% end %>
         </div>
       </div>
     </div>
     <br>
-    <br>
-
-    <!-- Наши друзья и партнёры -->
-    <div class="row mb-5">
-      <div class="col">
-        <p class="h1 mb-5">Наши друзья и партнёры</p>
-        <br>
-        <div class="row partner-cards">
-          <div class="col-md-6 col-lg-4 col-xl-3 d-flex border justify-content-center align-items-center">
-            <%= image_tag "strelka.webp" %>
-          </div>
-          <div class="col-md-6 col-lg-4 col-xl-3 d-flex border justify-content-center align-items-center">
-            <%= image_tag "veb_rf.webp" %>
-          </div>
-          <div class="col-md-6 col-lg-4 col-xl-3 d-flex border justify-content-center align-items-center">
-            <%= image_tag "mosgortrans.webp" %>
-          </div>
-          <div class="col-md-6 col-lg-4 col-xl-3 d-flex border justify-content-center align-items-center">
-            <%= image_tag "univer_tula.webp" %>
-          </div>
-          <div class="col-md-6 col-lg-4 col-xl-3 d-flex border justify-content-center align-items-center">
-            <%= image_tag "crgs.webp" %>
-          </div>
-          <div class="col-md-6 col-lg-4 col-xl-3 d-flex border justify-content-center align-items-center">
-            <%= image_tag "asi.webp" %>
-          </div>
-        </div>
-      </div>
-    </div>
     <br>
 
   </div><!-- /.container -->
