@@ -1,10 +1,14 @@
-<div id="route_search" class= "tool_panel d-none">
-  <p class="h5 mt-4 pb-3 border-bottom text-blue text-left">Маршруты</p>
+<div id="route_search" class= "tool_panel h-100 d-none px-3 w600">
+  <p class="h5 mb-0 pb-3 border-bottom text-blue text-left">
+    Маршруты общественного транспорта
+    <button type="button" class="close close-tool" aria-label="Close" title="Закрыть">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </p>
 
-  <div id="search_menu" class="mt-4"></div>
+  <div id="search_menu" class="mt-2"></div>
 
-  <div class="w360 mt-4">
-    <p class="mb-0">Выбранные маршруты:</p>
-    <div id="selected_routes"></div>
+  <div class="pt-3 h-100 pb-100">
+    <div id="selected_routes" class="h-100 overflow-auto pr-2"></div>
   </div>
 </div>

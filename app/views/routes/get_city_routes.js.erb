@@ -1,4 +1,8 @@
 $('#search_menu').html("<%= j render partial: 'search_menu' %>");
 
+$('#selected_routes').html("<%= j render partial: 'selected_routes' %>");
+
 // Инициализация selectpicker
 $('#route_select').selectpicker();
+
+$('[data-toggle="tooltip"]').tooltip({trigger:"hover"});

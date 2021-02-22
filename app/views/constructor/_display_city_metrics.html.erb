@@ -1,0 +1,48 @@
+<div class="row mx-0">
+  <div class="area-chart col-4">
+      <p class="text-center mt-4" style="min-height: 48px;">Площадь покрытия остановками</p>
+  </div>
+  <div class="houses-chart col-4">
+      <p class="text-center mt-4" style="min-height: 48px;">Доля домов в зоне покрытия</p>
+  </div>
+  <div class="population-chart col-4">
+      <p class="text-center mt-4" style="min-height: 48px;">Доля населения в зоне покрытия</p>
+  </div>
+</div>
+
+<table class="table table-hover mt-3">
+  <thead class="text-secondary">
+    <tr>
+      <th>Показатель</th>
+      <th>Значение</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Площадь</td>
+      <td><%= @city.area %> км2</td>
+    </tr>
+    <tr>
+      <td>Кол-во жителей</td>
+      <td><%= @city.population %> чел</td>
+    </tr>
+
+    <tr>
+      <td>Кол-во остановок</td>
+      <td><%= @city.stations.length %> шт</td>
+    </tr>
+
+    <tr>
+      <td>Кол-во маршрутов</td>
+      <td><%= @city.routes.length %> шт</td>
+    </tr>
+
+    <% @city_metrics.each do |metric| %>
+      <tr>
+        <td><%= metric.metric_name %></td>
+        <td><%= "#{metric.metric_value} #{metric.unit_code}" %></td>
+      </tr>
+    <% end %>
+
+  </tbody>
+</table>

@@ -2,12 +2,10 @@
 $('#station_info .panel').html("<%= j render partial: 'display_station_info' %>");
 
 // Отображаем изохрон вокруг остановки
-map.getSource('station_info_iso').setData(<%= raw @isochrone.geo_data.to_json %>);
+map.getSource('station_info_iso').setData(<%= raw @isochrones_collection.to_json %>);
 
 // Отображаем маршруты остановки
 routes_data = <%= raw @routes.to_json %>;
-console.log(routes_data);
 routes = turf.featureCollection(routes_data.map(function(i){return turf.feature(i.geo_data,{route_id:i.id, color:i.color})}));
 map.getSource('station_info_routes').setData(routes);
-
 map.setFilter('station_info_routes', false);

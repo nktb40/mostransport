@@ -3,16 +3,23 @@
 <% end %>
 
 <% content_for :side_bar do %>
-  <%= render 'constructor/side_bar/station_info' %>
-  <%= render 'constructor/side_bar/constructor' %>
-  <%= render 'constructor/side_bar/isochrones' %>
-  <%= render 'constructor/side_bar/route_search' %>
-  <%= render 'constructor/side_bar/accidents' %>
-
+  <div class="d-flex flex-row h-100">
+    <div class="px-2 border-right">
+      <%= render 'tools' %>
+    </div>
+  </div>
 <% end %>
 
 <% content_for :map do %>
-  <%= render 'tools' %>
+  <div class="h-100 panel-container">
+      <%= render 'constructor/side_bar/city_metrics' %>
+      <%= render 'constructor/side_bar/station_info' %>
+      <%= render 'constructor/side_bar/constructor' %>
+      <%= render 'constructor/side_bar/isochrones' %>
+      <%= render 'constructor/side_bar/route_info' %>
+      <%= render 'constructor/side_bar/route_search' %>
+      <%= render 'constructor/side_bar/accidents' %>
+  </div>
 <% end %>
 
 <% content_for :scripts do %>

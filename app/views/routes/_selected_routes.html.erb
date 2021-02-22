@@ -1,12 +1,28 @@
-<% @routes.each_with_index do |route, i| %>
-  <div class="list-group accordion" id="route_list_<%= route.id %>">
-    <button type="button" class="list-group-item list-group-item-action mt-3 route-item" data-toggle="collapse" data-target="#route_collapse_<%= route.id %>" aria-expanded="false" data-route-bbox="<%= route.bbox %>">
-      <span class="text-truncate d-inline-block" style="max-width:300px">
-        <%= route.route_code %> - <small><%= route.route_name %></small></button>
-      </span>
-    <div id="route_collapse_<%= route.id %>" class="collapse border py-3 px-2" data-parent="#selected_routes">
-      <%= render "route_list", route: route %>
-      <%= render "route_metrics", route: route %>
-    </div>
-  </div>
-<% end %>
+<table class="table table-hover">
+  <thead class="text-secondary">
+    <tr>
+      <th><span data-toggle="tooltip" data-placement="top" title="Номер маршрута">Маршрут</span></th>
+      <th><span data-toggle="tooltip" data-placement="top" title="Длина маршрута">Длина</span></th>
+      <th><span data-toggle="tooltip" data-placement="top" title="Коэффициент прямолинейности">КП</span></th>
+      <th><span data-toggle="tooltip" data-placement="top" title="Стоимость обслуживания маршрута в день (руб)">Стоимость</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @routes.each do |route| %>
+      <tr data-route-code="<%= route.route_code %>">
+        <td>
+          <%= link_to route.route_code, "#", class:"route_link", "data-route_id":route.id, "data-toggle":"tooltip", "data-placement":"right", "title":route.route_name %>
+        </td>
+        <% length = @metrics.find{|m| m.route_id == route.id and m.metric_code == 'route_length'} %>
+        <td class="text-center"><%= "#{length[:metric_value].round} #{length[:unit_code]}" if length.present? %></td>
+
+        <% straight = @metrics.find{|m| m.route_id == route.id and m.metric_code == 'straightness'} %>
+        <td class="text-center"><%= "#{(straight[:metric_value]*100).round} #{straight[:unit_code]}" if straight.present? %></td>
+
+        <% cost = @metrics.find{|m| m.route_id == route.id and m.metric_code == 'route_cost'} %>
+        <td class="text-center"><%= "#{(cost[:metric_value]/1000).round} тыс" if cost.present? %></td>
+      </tr>
+    <% end %>
+
+  </tbody>
+</table>

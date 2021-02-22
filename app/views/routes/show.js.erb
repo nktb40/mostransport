@@ -1,9 +1,20 @@
-$('#selected_routes').html("<%= j render partial: 'selected_routes' %>");
+//$('#route_search').addClass("d-none");
+$('#route_info').removeClass("d-none");
 
-routes_data = <%= raw @routes.to_json %>;
-route_features = turf.featureCollection(routes_data.map(function(i){return turf.feature(i.geo_data,{route_id:i.id})}));
+$('#route_code').html("<%= @route.route_code %>");
+
+$('#stops_list').html("<%= j render partial: 'route_list' %>");
+$('#route_info_metrics').html("<%= j render partial: 'route_metrics' %>");
+
+route_data = <%= raw @route.to_json %>;
+route_features = turf.featureCollection([turf.feature(route_data.geo_data,{route_id:route_data.id})]);
 map.getSource('route_search').setData(route_features);
 
 geo_data = <%= raw @isochrones.to_json() %>;
 iso_features = turf.featureCollection(geo_data.map(function(d){return turf.feature(d)}));
 map.getSource('route_search_iso').setData(iso_features);
+
+// Устанавливаем границы карты в пределах линии маршрута
+map.fitBounds(route_data.bbox, {
+	padding: {top: 10, bottom:10, left: 10, right: 10}
+});

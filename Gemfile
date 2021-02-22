@@ -37,6 +37,12 @@ gem 'jbuilder', '~> 2.5'
 # Fonts
 gem "font_awesome5_rails"
 
+# Гем для отображения svg
+gem "inline_svg"
+
+# Гем для генерации цветов
+gem 'color-generator'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 

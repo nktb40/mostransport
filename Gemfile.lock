@@ -73,6 +73,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
+    color-generator (0.0.4)
     concurrent-ruby (1.1.6)
     connection_pool (2.2.3)
     crass (1.0.6)
@@ -90,6 +91,9 @@ GEM
     hiredis (0.6.3)
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
+    inline_svg (1.7.2)
+      activesupport (>= 3.0)
+      nokogiri (>= 1.6)
     jbuilder (2.10.0)
       activesupport (>= 5.0.0)
     listen (3.1.5)
@@ -213,9 +217,11 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rbenv
   coffee-rails (~> 4.2)
+  color-generator
   dotenv-rails
   font_awesome5_rails
   hiredis
+  inline_svg
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   paloma (~> 6.0.0)

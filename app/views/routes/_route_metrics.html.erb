@@ -1,5 +1,5 @@
-<div class="route_metrics mt-5">
-  <p class="mb-3">Показатели маршрута:</p>
+<div class="route_metrics">
+  <p class="mb-3 text-blue">Показатели маршрута:</p>
   <table id="route_stat" class="table table-hover">
     <thead class="text-secondary">
       <tr>
@@ -8,27 +8,20 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Интервал</td>
-        <td><%= route.route_interval %> мин</td>
-      </tr>
-      <tr>
-        <td>Длина</td>
-        <td><%= route.route_length %> км</td>
-      </tr>
-      <tr>
-        <td>Прямолинейность</td>
-        <td><%= route.straightness %></td>
-      </tr>
-      <tr>
-        <td>Стоимость</td>
-        <td><%= route.route_cost %> руб</td>
-      </tr>
+      <% ['route_length','straightness','route_cost','population_per_track','tracks_per_hour'].each do |metric_code| %>
+        <% metric = @route_metrics.find{|m| m[:metric_code] == metric_code}%>
+        <% if metric.present? %>
+          <tr>
+            <td><%= metric[:metric_name] %></td>
+            <td><%= "#{metric[:metric_value]} #{metric[:unit_code]}" %></td>
+          </tr>
+        <% end %>
+      <% end %>
 
-      <% @isochrone_metrics.select{|m| m.route_id == route.id}.each do |metric| %>
+      <% @isochrone_metrics.each do |metric| %>
         <tr>
-          <td><%= metric.metric_name %></td>
-          <td><%= metric_value %></td>
+          <td><%= metric[:metric_name] %></td>
+          <td><%= "#{metric[:metric_value]} #{metric[:unit_code]}" %></td>
         </tr>
       <% end %>
 

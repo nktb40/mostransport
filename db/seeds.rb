@@ -14,8 +14,8 @@ require 'net/http'
 #=====================================
 seeds_params = [
   #'cities',
-  'layer_types',
-  #'metric_type'
+  #'layer_types',
+  'metric_type'
 ]
 
 # ====================================
@@ -107,18 +107,39 @@ end
 if seeds_params.include? 'metric_type'
   puts "Metric Type: begin"
   rows = [
-    {metric_code: "isochrone_area", metric_name: "Площадь изохрона (км2)", unit_code: "км2."},
+    # Метрики изохронов
+    {metric_code: "isochrone_area", metric_name: "Площадь пешего изохрона 5 мин", unit_code: "км2"},
+    {metric_code: "houses_cnt", metric_name: "Охват домов", unit_code: "шт"},
+    {metric_code: "houses_population", metric_name: "Охват жителей", unit_code: "чел"},
+    {metric_code: "offices_cnt", metric_name: "Охват офисов", unit_code: ""},
+    {metric_code: "offices_population", metric_name: "Охват работников", unit_code: "чел"},
+    {metric_code: "universities_cnt", metric_name: "Охват университетов", unit_code: ""},
+    {metric_code: "universities_population", metric_name: "Охват студентов", unit_code: "чел"},
 
-    {metric_code: "houses_cnt", metric_name: "Кол-во домов", unit_code: ""},
-    {metric_code: "houses_population", metric_name: "Кол-во жителей", unit_code: ""},
+    # Метрики остановок
+    {metric_code: "accessibility", metric_name: "Пешая доступность остановки", unit_code: "%"},  
+    {metric_code: "reachable_stops", metric_name: "Кол-во достижимых остановок на ОТ", unit_code: "шт"},
+    {metric_code: "public_coverage", metric_name: "Площадь покрытия на ОТ без пересадок", unit_code: "км2"},
+    {metric_code: "public_coverage_chng", metric_name: "Площадь покрытия на ОТ с пересадками", unit_code: "км2"},
+    {metric_code: "population_per_track", metric_name: "Число жителей на рейс", unit_code: "чел"},
+    {metric_code: "tracks_per_hour", metric_name: "Число рейсов в час", unit_code: "шт"},
 
-    {metric_code: "offices_cnt", metric_name: "Кол-во офисов", unit_code: ""},
-    {metric_code: "offices_population", metric_name: "Кол-во работников", unit_code: ""},
+    # Метрики маршрутов
+    {metric_code: "avg_interval", metric_name: "Средний интервал", unit_code: "мин"},
+    {metric_code: "route_length", metric_name: "Длина маршрута", unit_code: "км"},
+    {metric_code: "route_cost", metric_name: "Стоимость маршрута", unit_code: "руб"},
+    {metric_code: "straightness", metric_name: "Прямолинейность", unit_code: "%"},
 
-    {metric_code: "universities_cnt", metric_name: "Кол-во университетов", unit_code: ""},
-    {metric_code: "universities_population", metric_name: "Кол-во студентов", unit_code: ""},
+    # Метрики городов
+    {metric_code: "cover_area", metric_name: "Площадь покрытия остановками", unit_code: "км2"},
+    {metric_code: "cover_area_share", metric_name: "Доля площади покрытия остановками", unit_code: "%"},
+    {metric_code: "cover_houses", metric_name: "Дома в зоне покрытия", unit_code: "шт"},
+    {metric_code: "cover_houses_share", metric_name: "Доля домов в зоне покрытия", unit_code: "%"},
+    {metric_code: "cover_population", metric_name: "Население в зоне покрытия", unit_code: "чел"},
+    {metric_code: "cover_population_share", metric_name: "Доля населения в зоне покрытия", unit_code: "%"},
+    {metric_code: "stations_per_100k", metric_name: "Число остановок на 100тыс жителей", unit_code: "шт"},
+    {metric_code: "routes_per_100k", metric_name: "Число маршрутов на 100тыс жителей", unit_code: "шт"},
 
-    {metric_code: "accessibility", metric_name: "Пешеходная доступность", unit_code: ""}    
   ]
 
   rows.each do |row|

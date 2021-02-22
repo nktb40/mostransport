@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     collection do
       get :get_layers
       get :get_station_info
+      get :get_city_metrics
      end
   end
 

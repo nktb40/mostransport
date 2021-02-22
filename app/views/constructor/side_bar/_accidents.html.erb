@@ -1,6 +1,11 @@
-<div id="dtp_map" class= "tool_panel d-none">
-  <p class="h5 mt-4 pb-3 border-bottom text-blue text-left">Карта ДТП</p>
-  <div class="panel px-2">
+<div id="dtp_map" class= "tool_panel h-100 d-none px-3 w400">
+  <p class="h5 mb-0 pb-3 border-bottom text-blue text-left">
+    Карта ДТП
+    <button type="button" class="close close-tool" aria-label="Close" title="Закрыть">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </p>
+  <div class="panel px-2 h-100 overflow-auto">
     <p class="mt-4 mb-2">
       <%= fa_icon "calendar-alt", :class=>"text-secondary mr-2" %>
       Отчётный год

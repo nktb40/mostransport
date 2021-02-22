@@ -1,31 +1,37 @@
-<p>Маршрут:</p>
-<% route_stations = @stations.filter{|s| s.route_id == route.id}.sort_by{|r| [r.track_no, r.seq_no]} %>
+<p class="text-blue">Остановки маршрута:</p>
+<div class="px-3">
+<% route_stations = @stations.filter{|s| s.route_id == @route.id}.sort_by{|r| [r.track_no, r.seq_no]} %>
 <% route_stations.first(4).each_with_index do |s,i| %>
   <% if i > 0 %>
-    <div class="route_line"></div>
+    <div class="route_line pl-4">
+      <span><%= "#{s.route_time.round} мин (#{s.distance.round} м)" %></span>
+    </div>
   <% end %>
 
   <div class="route_stop d-flex align-items-center pr-2 rounded" data-stop-id="<%= s.station_id %>">
     <svg class="bi bi-geo-alt text-blue mr-2" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
       <path fill-rule="evenodd" d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
     </svg>
-    <span class="stop_name ml6"><%= s.station_name %> (<%= s.source_id %>)</span>
+    <span class="stop_name ml6"><%= s.station_name %></span>
   </div>
 <% end %>
 
 <% if  route_stations.length > 4 %>
-  <div id="route_expand_<%= route.id %>" class="collapse">
+  <div id="route_expand_<%= @route.id %>" class="collapse">
     <% route_stations.drop(4).each_with_index do |s,i| %>
-      <div class="route_line"></div>
+      <div class="route_line pl-4">
+        <span><%= "#{s.route_time.round} мин (#{s.distance.round} м)" if s.route_time.present? %></span>
+      </div>
 
       <div class="route_stop d-flex align-items-center pr-2 rounded" data-stop-id="<%= s.station_id %>">
         <svg class="bi bi-geo-alt text-blue mr-2" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
         </svg>
-        <span class="stop_name ml6"><%= s.station_name %> (<%= s.source_id %>) </span>
+        <span class="stop_name ml6"><%= s.station_name %></span>
       </div>
     <% end %>
   </div>
   <div class="route_line"></div>
-  <button type="button" class="btn btn-sm btn-light rounded-pill border mt-2 px-3" data-toggle="collapse" data-target="#route_expand_<%= route.id %>" aria-expanded="false"><%= "Показать все #{route_stations.length} остановок" %></button>
+  <button type="button" class="btn btn-sm btn-light rounded-pill border mt-2 px-3" data-toggle="collapse" data-target="#route_expand_<%= @route.id %>" aria-expanded="false"><%= "Показать все #{route_stations.length} остановок" %></button>
 <% end %>
+</div>

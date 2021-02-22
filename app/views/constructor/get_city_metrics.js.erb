@@ -1,0 +1,38 @@
+$('#city_metrics').removeClass('d-none');
+
+$('#city_metrics .panel').html("<%= j render partial: 'display_city_metrics' %>");
+
+chartsData = <%= raw @chartData.to_json() %>;
+
+chartsData.forEach(function(chartData){generateChart(chartData)});
+
+function generateChart(chartData){
+    name = chartData['name']
+    data = chartData['data']
+    // Инициализируем контейнер для чарта
+    container = d3.select('.'+name);
+    // Инициализируем сам чарт
+    chart = britecharts.donut();
+    // Устанавливаем параметры чарта
+    chart
+    .width(230)
+    .height(230)
+    .highlightSliceById(1)
+    .hasFixedHighlightedSlice(true)
+    .externalRadius(100)
+    .internalRadius(60)
+    .radiusHoverOffset(5)
+    .centeredTextFunction(function(t){return t.percentage + "% " + t.quantity + t.unit});
+    // Добавляем чарт и данные в контейнер
+    container.datum(data).call(chart);
+
+    // Инициализируем легенду для чарта
+    legendChart = britecharts.legend();
+    // Устанавливаем параметры легенды
+    legendChart
+        .isHorizontal(true)
+        .height(80)
+        .width(230);
+    // Добавляем легенду и данные для неё контейнер
+    container.datum(data).call(legendChart);
+}

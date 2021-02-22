@@ -1,23 +1,27 @@
-<div id="tools_btns" class="d-flex flex-column ml-3 mt-3 justify-content-begin tools_btn_set">
+<div id="tools_btns" class="flex-column mt-3 justify-content-begin tools_btn_set d-none">
 
-    <%= button_tag class:"btn btn btn-outline-primary active", title:"Остановки", "data-target":"station_info" do %>
-      <%= fa_icon "map-marker-alt" %>
+    <%= button_tag class:"btn btn btn-outline-primary", "data-target":"city_metrics", "data-toggle":"tooltip", "data-placement":"right", title:"Показатели города" do %>
+      <%= inline_svg_tag "city_metrics.svg" %>
     <% end %>
 
-    <%= button_tag class:"btn btn btn-outline-primary mt-3", title:"Маршруты", "data-target":"route_search" do %>
-      <%= fa_icon "bus" %>
+    <%= button_tag class:"btn btn btn-outline-primary mt-3","data-toggle":"tooltip", "data-placement":"right", title:"Остановки", "data-target":"station_info" do %>
+      <%= inline_svg_tag "bus_stop.svg" %>
     <% end %>
 
-    <%= button_tag class:"btn btn btn-outline-primary mt-3", title:"Конструтор маршрутов", "data-target":"constructor" do %>
-      <%= fa_icon "route" %>
+    <%= button_tag class:"btn btn btn-outline-primary mt-3","data-toggle":"tooltip", "data-placement":"right", title:"Маршруты", "data-target":"route_search" do %>
+      <%= inline_svg_tag "bus_route.svg" %>
     <% end %>
 
-    <%= button_tag class:"btn btn btn-outline-primary mt-3", title:"Изохроны", "data-target":"isochrones" do %>
-      <i class="far fa-circle"></i>
+    <%= button_tag class:"btn btn btn-outline-primary mt-3", "data-toggle":"tooltip", "data-placement":"right", title:"Конструтор маршрутов", "data-target":"constructor" do %>
+      <%= inline_svg_tag "build_route.svg" %>
     <% end %>
 
-    <%= button_tag class:"btn btn btn-outline-primary mt-3", title:"ДТП", "data-target":"dtp_map" do %>
-      <%= fa_icon "car-crash" %>
+    <%= button_tag class:"btn btn btn-outline-primary mt-3", "data-toggle":"tooltip", "data-placement":"right", title:"Изохроны", "data-target":"isochrones" do %>
+      <%= inline_svg_tag "isochrone.svg" %>
+    <% end %>
+
+    <%= button_tag class:"btn btn btn-outline-primary mt-3", "data-toggle":"tooltip", "data-placement":"right", title:"ДТП", "data-target":"dtp_map" do %>
+      <%= inline_svg_tag "accident.svg" %>
     <% end %>
 
 </div>

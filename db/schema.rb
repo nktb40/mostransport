@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_05_170940) do
+ActiveRecord::Schema.define(version: 2021_02_07_184221) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,20 @@ ActiveRecord::Schema.define(version: 2021_01_05_170940) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "region_name"
+    t.integer "population"
+    t.float "area"
     t.index ["code"], name: "index_cities_on_code", unique: true
+  end
+
+  create_table "city_metrics", force: :cascade do |t|
+    t.integer "metric_type_id"
+    t.integer "city_id"
+    t.float "metric_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["city_id"], name: "index_city_metrics_on_city_id"
+    t.index ["metric_type_id", "city_id"], name: "index_city_metrics_on_metric_type_id_and_city_id", unique: true
+    t.index ["metric_type_id"], name: "index_city_metrics_on_metric_type_id"
   end
 
   create_table "houses", force: :cascade do |t|
@@ -123,6 +136,17 @@ ActiveRecord::Schema.define(version: 2021_01_05_170940) do
     t.index ["isochrone_id"], name: "index_metrics_on_isochrone_id"
     t.index ["isochrone_unique_code"], name: "index_metrics_on_isochrone_unique_code"
     t.index ["metric_type_id", "isochrone_id"], name: "index_metrics_on_metric_type_id_and_isochrone_id", unique: true
+  end
+
+  create_table "route_metrics", force: :cascade do |t|
+    t.integer "metric_type_id"
+    t.integer "route_id"
+    t.float "metric_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["metric_type_id", "route_id"], name: "index_route_metrics_on_metric_type_id_and_route_id", unique: true
+    t.index ["metric_type_id"], name: "index_route_metrics_on_metric_type_id"
+    t.index ["route_id"], name: "index_route_metrics_on_route_id"
   end
 
   create_table "routes", force: :cascade do |t|
