@@ -7,7 +7,7 @@ $('#stops_list').html("<%= j render partial: 'route_list' %>");
 $('#route_info_metrics').html("<%= j render partial: 'route_metrics' %>");
 
 route_data = <%= raw @route.to_json %>;
-route_features = turf.featureCollection([turf.feature(route_data.geo_data,{route_id:route_data.id})]);
+route_features = turf.featureCollection([turf.feature(route_data.geo_data,{route_id:route_data.id, 'Номер':route_data.route_code, 'Маршрут':route_data.route_name})]);
 map.getSource('route_search').setData(route_features);
 
 geo_data = <%= raw @isochrones.to_json() %>;

@@ -167,7 +167,7 @@ Paloma.controller('Constructor',
 
     // Обработчик события клика на карте
     map.on('click', function(event) {
-      event.features = map.queryRenderedFeatures(event.point, { layers: ['STATIONS','route_search']});
+      event.features = map.queryRenderedFeatures(event.point, { layers: ['STATIONS']});
 
       $('.route_stop').removeClass('active_item');
 
@@ -189,8 +189,14 @@ Paloma.controller('Constructor',
           addPointPopup(obj_popup,event);
           getIsochrones(selected_point);
         }
-        else if(selected_tool == 'route_search'){
-          getRouteInfo(selected_point.properties.route_id);
+      }
+
+      // Обработка клика по маршруту
+      if(selected_tool == 'route_search'){
+        event.features = map.queryRenderedFeatures(event.point, { layers: ['route_search']});
+        if(event.features[0] != null){
+          selected_route = event.features[0];
+          getRouteInfo(selected_route.properties.route_id);
         }
       }
 
@@ -253,6 +259,18 @@ Paloma.controller('Constructor',
           'line-width': 5,
           'line-color': ["case",["has","color"],["get","color"],'#F7455D']
         });
+
+      map.on('mouseenter', 'route_search', function(e) {
+        map.getCanvas().style.cursor = 'pointer';
+        addPopup(point_popup,e);
+      });
+
+      // Change it back to a pointer when it leaves.
+      map.on('mouseleave', 'route_search', function() {
+        map.getCanvas().style.cursor = '';
+        point_popup.remove();
+      });
+
     }
 
     // Функция подгрузки списка маршрутов для выбранного города
