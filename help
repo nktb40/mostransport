@@ -37,5 +37,5 @@ $HOME/.rbenv/bin/rbenv exec bundle exec pumactl -F config/puma/server_config.rb 
 3. Поправить CRON JOB
 	sudo crontab -e
 	#Ansible: letsencrypt_renewal
-	@weekly letsencrypt --renew certonly -n --webroot -w /var/www/letsencrypt -m nktb.open@gmail.com --agree-tos -d mostransport.info && systemctl reload nginx
+	@weekly letsencrypt --renew certonly -n --webroot -w /var/www/letsencrypt -m nktb.open@gmail.com --agree-tos -d transmetrika.com && systemctl reload nginx
 

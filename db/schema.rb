@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_07_184221) do
+ActiveRecord::Schema.define(version: 2021_03_02_185621) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 2021_02_07_184221) do
     t.string "region_name"
     t.integer "population"
     t.float "area"
+    t.boolean "deleted_flag", default: false
     t.index ["code"], name: "index_cities_on_code", unique: true
   end
 
@@ -35,6 +36,7 @@ ActiveRecord::Schema.define(version: 2021_02_07_184221) do
     t.float "metric_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "deleted_flag", default: false
     t.index ["city_id"], name: "index_city_metrics_on_city_id"
     t.index ["metric_type_id", "city_id"], name: "index_city_metrics_on_metric_type_id_and_city_id", unique: true
     t.index ["metric_type_id"], name: "index_city_metrics_on_metric_type_id"
@@ -59,6 +61,7 @@ ActiveRecord::Schema.define(version: 2021_02_07_184221) do
     t.boolean "far_from_stops_flag"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "deleted_flag", default: false
     t.index ["city_id", "source_id"], name: "index_houses_on_city_id_and_source_id", unique: true
   end
 
@@ -77,6 +80,7 @@ ActiveRecord::Schema.define(version: 2021_02_07_184221) do
     t.boolean "with_changes"
     t.json "properties"
     t.integer "city_id"
+    t.boolean "deleted_flag", default: false
     t.index ["city_id"], name: "index_isochrones_on_city_id"
     t.index ["route_id", "profile", "contour"], name: "index_isochrones_on_route_id_and_profile_and_contour"
     t.index ["station_id", "contour", "profile"], name: "index_isochrones_on_station_id_and_contour_and_profile"
@@ -113,6 +117,7 @@ ActiveRecord::Schema.define(version: 2021_02_07_184221) do
     t.string "route_type"
     t.float "route_time"
     t.float "distance"
+    t.boolean "deleted_flag", default: false
     t.index ["route_id"], name: "index_lnk_station_routes_on_route_id"
     t.index ["station_id", "route_id", "track_no"], name: "lnk_station_routes_main_index", unique: true
     t.index ["station_id"], name: "index_lnk_station_routes_on_station_id"
@@ -133,6 +138,7 @@ ActiveRecord::Schema.define(version: 2021_02_07_184221) do
     t.float "metric_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "deleted_flag", default: false
     t.index ["isochrone_id"], name: "index_metrics_on_isochrone_id"
     t.index ["isochrone_unique_code"], name: "index_metrics_on_isochrone_unique_code"
     t.index ["metric_type_id", "isochrone_id"], name: "index_metrics_on_metric_type_id_and_isochrone_id", unique: true
@@ -144,6 +150,7 @@ ActiveRecord::Schema.define(version: 2021_02_07_184221) do
     t.float "metric_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "deleted_flag", default: false
     t.index ["metric_type_id", "route_id"], name: "index_route_metrics_on_metric_type_id_and_route_id", unique: true
     t.index ["metric_type_id"], name: "index_route_metrics_on_metric_type_id"
     t.index ["route_id"], name: "index_route_metrics_on_route_id"
@@ -165,6 +172,7 @@ ActiveRecord::Schema.define(version: 2021_02_07_184221) do
     t.string "source_id"
     t.integer "city_id"
     t.boolean "circular_flag"
+    t.boolean "deleted_flag", default: false
     t.index ["city_id", "source_id"], name: "index_routes_on_city_id_and_source_id", unique: true
     t.index ["city_id"], name: "index_routes_on_city_id"
     t.index ["route_code", "city_id"], name: "index_routes_on_route_code_and_city_id"
@@ -176,6 +184,7 @@ ActiveRecord::Schema.define(version: 2021_02_07_184221) do
     t.float "metric_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "deleted_flag", default: false
     t.index ["metric_type_id", "station_id"], name: "index_station_metrics_on_metric_type_id_and_station_id", unique: true
     t.index ["metric_type_id"], name: "index_station_metrics_on_metric_type_id"
     t.index ["station_id"], name: "index_station_metrics_on_station_id"
@@ -191,6 +200,7 @@ ActiveRecord::Schema.define(version: 2021_02_07_184221) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "city_id"
+    t.boolean "deleted_flag", default: false
     t.index ["city_id"], name: "index_stations_on_city_id"
     t.index ["source_id", "city_id"], name: "index_stations_on_source_id_and_city_id", unique: true
   end
