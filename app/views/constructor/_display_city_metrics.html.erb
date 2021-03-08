@@ -45,7 +45,7 @@
           <% other_city_metrics = CityMetric.where(metric_type_id: metric[:metric_type_id]).map(&:metric_value).uniq %>
           <% rating_len = other_city_metrics.length %>
           <% rating_val = other_city_metrics.index(metric.metric_value) + 1 %>
-          <% rating = ((1-rating_val/rating_len)*100).round %>
+          <% rating = ((rating_len-rating_val+1)/rating_len.to_f*100).round %>
 
           <% if rating >= 70 %>
             <% rat_col = "bg-success" %>
@@ -59,7 +59,7 @@
           <% title = "#{rating_val} место из #{rating_len} в рейтинге городов по данному показателю" %>
 
           <div class="progress" style="height: 7px;width: 70px;margin-left: 0px;" data-toggle="tooltip" data-placement="right" title="<%= title %>">
-            <div class="progress-bar <%= rat_col %>" role="progressbar" style="width: <%= rating.round %>%" aria-valuenow="<%= rating %>" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar <%= rat_col %>" role="progressbar" style="width: <%= rating %>%" aria-valuenow="<%= rating %>" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
         </td>
       </tr>
