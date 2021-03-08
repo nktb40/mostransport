@@ -42,10 +42,11 @@
         <td><%= metric.metric_name %></td>
         <td class="city-metric-value">
           <%= "#{metric.metric_value} #{metric.unit_code}" %>
-          <% other_city_metrics = CityMetric.where(metric_type_id: metric[:metric_type_id]).map(&:metric_value).uniq %>
+          <% other_city_metrics = CityMetric.where(metric_type_id: metric[:metric_type_id]).map(&:metric_value).uniq.sort!{ |a, b| b <=> a } %>
+
           <% rating_len = other_city_metrics.length %>
-          <% rating_val = other_city_metrics.index(metric.metric_value) + 1 %>
-          <% rating = ((rating_len-rating_val+1)/rating_len.to_f*100).round %>
+          <% rating_val = other_city_metrics.index(metric.metric_value)+1 %>
+          <% rating = 100-((rating_val-1)/rating_len.to_f*100).round %>
 
           <% if rating >= 70 %>
             <% rat_col = "bg-success" %>
