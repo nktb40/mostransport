@@ -40,7 +40,33 @@
     <% @city_metrics.each do |metric| %>
       <tr>
         <td><%= metric.metric_name %></td>
-        <td><%= "#{metric.metric_value} #{metric.unit_code}" %></td>
+        <td class="city-metric-value">
+          <%= "#{metric.metric_value} #{metric.unit_code}" %>
+          <% if  ['stations_per_100k','routes_per_100k'].include?(metric[:metric_code]) %>
+            <% other_city_metrics = CityMetric.where(metric_type_id: metric[:metric_type_id]).map(&:metric_value) %>
+            <% min_metric = other_city_metrics.min %>
+            <% max_metric = other_city_metrics.max %>
+            <% avg_metric = other_city_metrics.sum/other_city_metrics.length %>
+            <% rating = ((metric[:metric_value]-min_metric)/(max_metric-min_metric)*100).round %>
+
+            <% if rating >= 70 %>
+              <% rat_col = "bg-success" %>
+              <% title = "Показатель выше среднего на #{rating-50} %" %>
+            <% elsif rating >= 50 %>
+              <% rat_col = "bg-warning" %>
+              <% title = "Показатель выше среднего на #{rating-50} %" %>
+            <% elsif rating >= 40 %>
+              <% rat_col = "bg-warning" %>
+              <% title = "Показатель ниже среднего на #{50-rating} %" %>
+            <% else %>
+              <% rat_col = "bg-danger" %>
+              <% title = "Показатель ниже среднего на #{50-rating} %" %>
+            <% end %>
+            <div class="progress" style="height: 7px;width: 70px;margin-left: 0px;" data-toggle="tooltip" data-placement="right" title="<%= title %>">
+              <div class="progress-bar <%= rat_col %>" role="progressbar" style="width: <%= rating %>%" aria-valuenow="<%= rating %>" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          <% end %>
+        </td>
       </tr>
     <% end %>
 

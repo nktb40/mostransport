@@ -36,7 +36,7 @@ class ConstructorController < ApplicationController
 
 	def get_city_metrics
 		@city = City.find(params[:selected_city_id])
-		@city_metrics = @city.city_metrics.joins(:metric_type).select("metric_types.metric_code, metric_types.metric_name, city_metrics.metric_value, metric_types.unit_code")
+		@city_metrics = @city.city_metrics.joins(:metric_type).select("metric_types.metric_code, metric_types.metric_name, city_metrics.metric_type_id, city_metrics.metric_value, metric_types.unit_code")
 
 		@chartData = []
 

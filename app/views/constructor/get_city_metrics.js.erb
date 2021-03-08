@@ -36,3 +36,14 @@ function generateChart(chartData){
     // Добавляем легенду и данные для неё контейнер
     container.datum(data).call(legendChart);
 }
+
+// Всплывающие подсказки по метрикам
+$('[data-toggle="tooltip"]').tooltip({trigger:"manual"});
+$('.city-metric-value').mouseenter(function(e){
+    $(this).find('[data-toggle="tooltip"]').tooltip('show');
+    $(this).find('[data-toggle="tooltip"]').css("background-color","#fff");
+});
+$('.city-metric-value').mouseleave(function(e){
+    $(this).find('[data-toggle="tooltip"]').tooltip('hide');
+    $(this).find('[data-toggle="tooltip"]').css("background-color","#e9ecef");
+});
