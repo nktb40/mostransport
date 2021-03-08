@@ -76,7 +76,7 @@ class ConstructorController < ApplicationController
 		}
 		@chartData.append(housesChart)
 
-		@city_metrics = @city_metrics.filter{|m| ['stations_per_100k','routes_per_100k'].include?(m['metric_code'])}
+		@city_metrics = @city_metrics.filter{|m| ['stations_per_100k','routes_per_100k','cover_area_share','cover_population_share','cover_houses_share'].include?(m['metric_code'])}
 
 	end
 
