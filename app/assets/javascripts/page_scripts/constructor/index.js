@@ -41,18 +41,21 @@ Paloma.controller('Constructor',
     map.addControl(new mapboxgl.NavigationControl(),'bottom-right')
 
     // Выбранный город
-    var selected_city_id = $("#city_select").val();
+    var city_params =  JSON.parse($("#city_select").val());
+    var selected_city_id = city_params.city_id;
     // Центруем карту по границам выбранного города
     centerMap();
 
     // Функция обработки события переключения города
-    $("#city_select").on('click',function(e){
-      selected_city_id = e.target.value;
+    $("#city_select").on('change',function(e){
+      city_params =  JSON.parse($("#city_select").val());
+      location = '/constructor?city='+ city_params.city_code;
+      /*selected_city_id = e.target.value;
       getCityLayers();
       getCityRoutes();
       centerMap();
       city_code = $('#city_select').find(':selected').data('code');
-      window.history.pushState('constructor', 'Mostransport', 'constructor?city='+city_code);
+      window.history.pushState('constructor', 'Mostransport', 'constructor?city='+city_code);*/
     });
 
     map.on('load', function() {
@@ -64,7 +67,7 @@ Paloma.controller('Constructor',
 
     // Перемещаем карту в границу, выбранного города
     function centerMap(){
-      bbox = $('#city_select').find(':selected').data('bbox');
+      bbox = city_params.bbox;
       map.fitBounds(bbox, {
         padding: {top: 10, bottom:10, left: 10, right: 10}
       });
