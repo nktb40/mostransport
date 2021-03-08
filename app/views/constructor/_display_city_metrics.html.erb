@@ -50,17 +50,18 @@
 
           <% if rating >= 70 %>
             <% rat_col = "bg-success" %>
-            <% title = "Показатель выше среднего на #{(metric.metric_value-avg_metric).round(2)} #{metric.unit_code}" %>
-          <% elsif metric.metric_value >= avg_metric %>
-            <% rat_col = "bg-warning" %>
-            <% title = "Показатель выше среднего на #{(metric.metric_value-avg_metric).round(2)} #{metric.unit_code}" %>
           <% elsif rating >= 40 %>
             <% rat_col = "bg-warning" %>
-            <% title = "Показатель ниже среднего на #{(avg_metric-metric.metric_value).round(2)} #{metric.unit_code}" %>
           <% else %>
             <% rat_col = "bg-danger" %>
-            <% title = "Показатель ниже среднего на #{(avg_metric-metric.metric_value).round(2)} #{metric.unit_code}" %>
           <% end %>
+
+          <% if metric.metric_value >= avg_metric %>
+            <% title = "Показатель выше среднего на #{(metric.metric_value-avg_metric).round(2)} #{metric.unit_code}" %>
+          <% else %>
+            <% title = "Показатель ниже среднего на #{(avg_metric - metric.metric_value).round(2)} #{metric.unit_code}" %>
+          <% end %>
+
           <div class="progress" style="height: 7px;width: 70px;margin-left: 0px;" data-toggle="tooltip" data-placement="right" title="<%= title %>">
             <div class="progress-bar <%= rat_col %>" role="progressbar" style="width: <%= rating.round %>%" aria-valuenow="<%= rating %>" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
