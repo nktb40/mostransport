@@ -2,5 +2,19 @@
   <%= render "shared/logo" %>
   <%= render "shared/select_city" %>
   <%= yield :menu_bar %>
-  <%= render "shared/social_links" %>
+  <% if user_signed_in? %>
+    <div class="btn-group ml-auto mr-3">
+      <%= button_tag class:"btn btn btn-primary rounded-circle", style:"padding-right: 6px; padding-left: 6px;", id:"dropdownMenu2", "data-toggle":"dropdown", "aria-haspopup":"true", "aria-expanded":"false" do %>
+        <i class="fas fa-robot fa-lg"></i>
+      <% end %>
+      <a class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+        <span class="sr-only"></span>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right mt-2" aria-labelledby="dropdownMenu2">
+        <button class="dropdown-item" type="button"><i class="fas fa-sign-out-alt"></i> Выйти </button>
+      </div>
+    </div>
+  <% else %>
+    <%= render "shared/social_links" %>
+  <% end %>
 </nav>

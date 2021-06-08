@@ -1,0 +1,53 @@
+<div class="not-imported h-100 pt-2 pr-3 col-6">
+  <p class="d-flex justify-content-between">
+    Доступные маршруты
+    <%= link_to import_all_routes_projects_path(project_id: @project.id), class:"btn btn-sm btn-outline-success rounded-pill mr-2", method: 'post', remote:true do %>
+      <i class="fas fa-arrow-circle-right mr-2"></i>Импорт всех
+    <% end %>
+  </p>
+
+  <ul class="list-group h-100 overflow-auto">
+    <% imported_routes = @project.routes %>
+    <% not_imported_routes = @project.city.routes.where.not(id: imported_routes.ids) %>
+    <% if not_imported_routes.present? %>
+      <% not_imported_routes.order(:route_code).each do |route| %>
+        <li class="list-group-item d-flex justify-content-between align-items-center px-3">
+          <div class="mr-2">
+            <%= link_to get_route_line_routes_path(id: route.id), remote: true do %>
+              <p class="mb-0"><%= "#{route.route_code}" %></p>
+            <% end %>
+            <small><%= "#{route.route_name}" %></small>
+          </div>
+          <%= link_to import_route_projects_path(project_id: @project.id, route_id:route.id),method: 'post', remote:true do %>
+            <i class="fas fa-arrow-circle-right fa-2x"></i>
+          <% end %>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>
+
+<div class="imported h-100 pt-2 col-6">
+  <p class="d-flex justify-content-between">
+    Маршруты в проекте
+    <%= link_to remove_all_routes_projects_path(project_id: @project.id), class:"btn btn-sm btn-outline-danger rounded-pill mr-2", method: 'post', remote:true do %>
+      <i class="far fa-times-circle mr-2"></i></i>Очистить все
+    <% end %>
+  </p>
+
+  <ul class="list-group h-100 overflow-auto">
+    <% if imported_routes.present? %>
+      <% imported_routes.order(:route_code).each do |route| %>
+        <li class="list-group-item d-flex justify-content-between align-items-center px-3">
+          <div class="mr-2">
+            <a href><p class="mb-0"><%= "#{route.route_code}" %></p></a>
+            <small><%= "#{route.route_name}" %></small>
+          </div>
+          <%= link_to remove_route_projects_path(project_id: @project.id, route_id:route.id),method: 'post', remote:true do %>
+            <i class="far fa-times-circle ml-2 fa-2x"></i>
+          <% end %>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>

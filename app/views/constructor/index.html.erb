@@ -14,11 +14,16 @@
   <div class="h-100 panel-container">
       <%= render 'constructor/side_bar/city_metrics' %>
       <%= render 'constructor/side_bar/station_info' %>
+      <%= render 'constructor/side_bar/station_search' %>
       <%= render 'constructor/side_bar/constructor' %>
       <%= render 'constructor/side_bar/isochrones' %>
       <%= render 'constructor/side_bar/route_info' %>
       <%= render 'constructor/side_bar/route_search' %>
       <%= render 'constructor/side_bar/accidents' %>
+      <%= render 'constructor/side_bar/user_projects' if user_signed_in? %>
+      <%= render 'constructor/side_bar/new_project' if user_signed_in? %>
+      <%= render 'constructor/side_bar/import_routes' if user_signed_in? %>
+      <%= render 'constructor/side_bar/import_stations' if user_signed_in? %>
   </div>
 <% end %>
 

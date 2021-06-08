@@ -41,7 +41,7 @@ class IsochronesController < ApplicationController
 	# Список маршрутов, проходящих через остановку
 	def get_routes(params)
 		routes = []
-		routes = Station.find_by(source_id: params[:station_id], city_id: params[:city_id]).routes
+		routes = Station.find_by(source_id: params[:station_id], city_id: params[:city_id]).directions
 
 		return routes
 	end

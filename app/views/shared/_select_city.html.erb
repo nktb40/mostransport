@@ -2,11 +2,23 @@
   <path fill-rule="evenodd" d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
 </svg>
 <select id="city_select" class="selectpicker" data-live-search="true" data-style="border rounded-pill px-3" title="Выберите город" data-size="10" data-width="250px" data-selected-text-format="count > 5" data-header="Выберите город">
-  <% cities = City.all.order(:name) %>
-  <%= cities.each do |city| %>
-    <option name="<%= city.code %>" data-content='<%= city.name %>' <%= 'selected' if city.code == @default_city %> >
-        <%= JSON.generate({:city_id=>city.id, :city_code => city.code, :bbox=> city.bbox}) %>
-    </option>
+  <% if user_signed_in? %>
+  <optgroup label="Проекты">
+    <% projects = current_user.projects.order(:created_at) %>
+    <%= projects.each do |proj| %>
+      <option data-content='<%= proj.name %>' <%= 'selected' if proj.id == @default_project %> >
+          <%= JSON.generate({project_id:proj.id, :city_id=>proj.city_id, :city_code => proj.city.code, :bbox=> proj.city.bbox}) %>
+      </option>
+    <% end %>
+  </optgroup>
   <% end %>
+  <optgroup label="Города">
+    <% cities = City.all.order(:name) %>
+    <%= cities.each do |city| %>
+      <option name="<%= city.code %>" data-content='<%= city.name %>' <%= 'selected' if city.code == @default_city %> >
+          <%= JSON.generate({:city_id=>city.id, :city_code => city.code, :bbox=> city.bbox}) %>
+      </option>
+    <% end %>
+  </optgroup>
 </select>
 

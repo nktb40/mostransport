@@ -1,0 +1,18 @@
+<%= form_for @project, html: { class: '' }, remote: true do |f| %>
+  <div class="form-group">
+    <%= f.label 'Название проекта *' %>
+    <%= f.text_field :name, class:'form-control rounded-pill' %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'Город' %>
+    <select id="project_city_id" class="selectpicker form-control" name="project[city_id]" data-live-search="true" data-style="border px-3 rounded-pill" title="Выберите город" data-size="10" data-selected-text-format="count > 5" data-header="Выберите город">
+      <% cities = City.all.order(:name) %>
+      <%= cities.each do |city| %>
+        <option name="<%= city.code %>" data-content='<%= city.name %>' >
+            <%= city.id %>
+        </option>
+      <% end %>
+    </select>
+  </div>
+  <%= f.submit "Сохранить", class: "btn btn-outline-success rounded-pill mt-3" %>
+<% end %>

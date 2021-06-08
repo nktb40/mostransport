@@ -1,0 +1,28 @@
+<%= link_to new_project_path, class:"btn btn btn-outline-primary rounded-pill", remote:true do %>
+  <i class="fas fa-plus mr-2"></i>
+  Создать
+<% end %>
+<div class="row row-cols-2 mt-3">
+  <% current_user.projects.each do |p| %>
+    <div class="col mb-4">
+      <div class="card" style="height: 200px">
+        <div class="card-header bg-transparent d-flex">
+          <span><%= p.name %></span>
+          <a class="ml-auto" href="#" role="button" id="proj-menu-<%= p.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-ellipsis-v"></i>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="proj-menu-<%= p.id %>">
+            <%= link_to "Импорт остановок", get_import_stations_form_projects_path(id: p.id), class:"dropdown-item", remote: true %>
+            <%= link_to "Импорт маршрутов", get_import_routes_form_projects_path(id: p.id), class:"dropdown-item", remote: true %>
+            <a class="dropdown-item" href="#">Удалить</a>
+          </div>
+        </div>
+        <div class="card-body text-center pt-5">
+          <%= link_to "Открыть", constructor_index_path(project_id: p.id), class:"btn btn btn-outline-primary rounded-pill px-3" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+

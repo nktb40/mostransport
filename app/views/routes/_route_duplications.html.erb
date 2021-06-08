@@ -1,0 +1,21 @@
+<div class="d-flex mb-3 pl-3">
+  <div style="width: 200px;">Маршрут</div>
+  <div style="width: 300px;">Процент дублирования</div>
+</div>
+<div class="list-group h-100 overflow-auto rounded-0">
+<% @duplications.each do |d| %>
+  <% bg_class = d.value >= 80 ? "bg-danger" : d.value >= 60 ? "bg-warning" : "bg-success" %>
+    <div class="list-group-item border-0 rounded d-flex w-100 justify-content-between position-relative">
+      <div>
+        <a href class="route_link" data-route_id="<%= d.dupl_route_id %>" title="Перейти к маршруту <%= d.route_code %>"><%= d.route_code %></a>
+      </div>
+      <div class="d-flex align-items-center">
+        <div class="progress" data-toggle="tooltip" data-placement="right" title="" style="width: 260px">
+          <div class="progress-bar <%= bg_class %>" role="progressbar" style="width: <%= d.value %>%" aria-valuenow="<%= d.value %>" aria-valuemin="0" aria-valuemax="100"><%= d.value.round() %>%</div>
+        </div>
+        <a href class="stretched-link show_dupl_segm ml-3" data-dupl_direction_id="<%= d.dupl_direction_id %>" title="Показать пересечения с маршрутом <%= d.route_code %>" style="width: 50px;font-size: 14px;"><%= (d.distance/1000).ceil() %> км</a>
+      </div>
+    </div>
+<% end %>
+</div>
+

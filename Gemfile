@@ -57,6 +57,9 @@ gem 'sidekiq'
 gem 'redis'
 gem 'hiredis'
 
+# Авторизация
+gem 'devise'
+
 group :development do
   #gem "listen"
   gem "capistrano", require: false

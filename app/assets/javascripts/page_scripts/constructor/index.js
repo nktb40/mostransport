@@ -1,4 +1,6 @@
 var map;
+var marker;
+var obj_popup;
 // Параметр доступных слоёв для выбранного города
 var availableLayers = [];
 var default_layers = [];
@@ -14,7 +16,7 @@ Paloma.controller('Constructor',
     mapboxgl.accessToken = publicToken;
 
     // Popup для остановки
-    var obj_popup = new mapboxgl.Popup();
+    obj_popup = new mapboxgl.Popup();
     var point_popup = new mapboxgl.Popup();
 
     var selectpickerWhiteList = $.fn.selectpicker.Constructor.DEFAULTS.whiteList;
@@ -22,7 +24,7 @@ Paloma.controller('Constructor',
 
     // Выбранные точки маршрута
     var selected_points = [];
-    var marker = new mapboxgl.Marker();
+    marker = new mapboxgl.Marker();
     var map_markers = [];
     var metrics = [];
 
@@ -43,25 +45,27 @@ Paloma.controller('Constructor',
     // Выбранный город
     var city_params =  JSON.parse($("#city_select").val());
     var selected_city_id = city_params.city_id;
+    var selected_project_id = city_params.project_id;
+
+    // Выбранный маршрут
+    var selected_route_id;
     // Центруем карту по границам выбранного города
     centerMap();
 
     // Функция обработки события переключения города
     $("#city_select").on('change',function(e){
       city_params =  JSON.parse($("#city_select").val());
-      location = '/constructor?city='+ city_params.city_code;
-      /*selected_city_id = e.target.value;
-      getCityLayers();
-      getCityRoutes();
-      centerMap();
-      city_code = $('#city_select').find(':selected').data('code');
-      window.history.pushState('constructor', 'Mostransport', 'constructor?city='+city_code);*/
+      if (city_params.project_id != undefined) {
+        location = '/constructor?project_id='+ city_params.project_id;
+      } else {
+        location = '/constructor?city='+ city_params.city_code;
+      }
+      //window.history.pushState('constructor', 'Mostransport', 'constructor?city='+city_code);
     });
 
     map.on('load', function() {
       // Загрузка слоёв для выбранного города
       getCityLayers();
-      getCityRoutes();
       $('#tools_btns').removeClass('d-none').addClass('d-flex');
     });
 
@@ -125,11 +129,13 @@ Paloma.controller('Constructor',
 
       selected_tool = active_id;
 
-      if(active_id == 'station_info'){
+      if(active_id == 'station_search'){
         initStationInfoLayers();
+        getCityStations();
       } 
       else if(active_id == 'route_search'){
         initRouteSearchLayers();
+        getCityRoutes();
       }
       else if(active_id == 'constructor'){
         initConstructorLayers();
@@ -205,6 +211,31 @@ Paloma.controller('Constructor',
 
     });
 
+     // ========== Импорт маршрутов ===================//
+    
+    // Функция инициализации слоёв для отображения информации о маршрутах
+    map.initImportRoutesLayers = function(){
+      layer = 'import_routes';
+      // Маршруты
+      addNewLayer(layer, 'line', 
+        {
+          'line-width': 5,
+          'line-color': ["case",["has","color"],["get","color"],'#F7455D']
+        });
+
+      map.on('mouseenter', layer, function(e) {
+        map.getCanvas().style.cursor = 'pointer';
+        addPopup(point_popup,e);
+      });
+
+      // Change it back to a pointer when it leaves.
+      map.on('mouseleave', layer, function() {
+        map.getCanvas().style.cursor = '';
+        point_popup.remove();
+      });
+
+    }
+
     // ========== Метрики города ======================//
     function initCityMetrics(){
       params = {
@@ -233,16 +264,51 @@ Paloma.controller('Constructor',
         });
     }
 
+    // Обработчик события клика по остановке для вызова popup
+    $(document).on('click', '.station_popup_link', function (e) {
+      e.preventDefault();
+      station_id = $(this).data("src_station_id");
+      getStationPopup(station_id);
+    });
+
+    // Обработчик события клика по остановке для перехода к остановке
+    $(document).on('click', '.station_link', function (e) {
+      e.preventDefault();
+      station_id = $(this).data("station_id");
+      getStationInfo(station_id);
+    });
+
+
     // Функция получения информации об остановке
-    function getStationInfo(selected_station){
+    function getStationInfo(station_id){
+      initStationInfoLayers();
+      switch_tools_layers("station_info");
       params = {
-        station_source_id: selected_station.properties.global_id,
+        station_id: station_id
+      }
+
+      $.get("/stations/show", params)
+        .done(function(data) {
+        });
+    }
+
+    function getStationPopup(station_id){
+      params = {
+        station_source_id: station_id,
         selected_city_id: selected_city_id
       }
 
-      $.get("/constructor/get_station_info", params)
+      $.get("/stations/get_station_popup", params)
         .done(function(data) {
         });
+    }
+
+    // Функция получения списка остановок
+    function getCityStations(){
+      params = {
+        city_id: selected_city_id
+      }
+      $.get('/stations',params);
     }
 
 
@@ -260,7 +326,14 @@ Paloma.controller('Constructor',
       addNewLayer('route_search', 'line', 
         {
           'line-width': 5,
-          'line-color': ["case",["has","color"],["get","color"],'#F7455D']
+          'line-color': ["case",["has","color"],["get","color"],'#53a9ff'] //'#F7455D']
+        });
+
+      // Дублирование маршрутов
+      addNewLayer('route_search_dupl', 'line', 
+        {
+          'line-width': 7,
+          'line-color': ["case",["has","color"],["get","color"],'#f97737']
         });
 
       map.on('mouseenter', 'route_search', function(e) {
@@ -278,9 +351,17 @@ Paloma.controller('Constructor',
 
     // Функция подгрузки списка маршрутов для выбранного города
     function getCityRoutes(){
-      params = {
-        city_id: selected_city_id
-      };
+      // Если выбран проект, то отправлет запрос маршрутов привязанных к проекту. Иначе маршруты города
+      if (selected_project_id != undefined) {
+        params = {
+          project_id: selected_project_id
+        };
+      } else {
+        params = {
+          city_id: selected_city_id
+        };
+      }
+      
       $.get('/routes/get_city_routes',params);
       $('#selected_routes').html("");
     }
@@ -288,14 +369,23 @@ Paloma.controller('Constructor',
     // Обработчик события выбора маршрута в списке маршрутов
     $(document).on('click', '.route_link', function (e) {
       e.preventDefault();
-      route_id = $(this).data("route_id");
-      getRouteInfo(route_id);
+      selected_route_id = $(this).data("route_id");
+      getRouteInfo(selected_route_id);
+    });
+
+    // Обработчик события выбора направления
+    $(document).on('changed.bs.select', '#direction_select', function (e, clickedIndex, isSelected) {
+      direction_id = $('#direction_select').val();
+      getRouteInfo(selected_route_id, direction_id);
     });
 
     // Функция получения ифнормации о маршруте
-    function getRouteInfo(route_id){
+    function getRouteInfo(route_id,direction_id){
+      initRouteSearchLayers();
+      switch_tools_layers("route_search");
       params = {
-        route_id: route_id
+        route_id: route_id,
+        direction_id: direction_id
       };
       $.get('/routes/show', params);
     }
@@ -321,6 +411,27 @@ Paloma.controller('Constructor',
         }
       });
     }
+
+    // Обработчик события выбора дублирующего маршрута
+    $(document).on('click', '.show_dupl_segm', function (e) {
+      e.preventDefault();
+      dupl_direction_id = $(this).data("dupl_direction_id");
+      filter_seg = ["==",["get", "dupl_direction_id"], dupl_direction_id];
+      map.setFilter('route_search_dupl', filter_seg);
+
+      $(this).closest('.list-group').find('.list-group-item').removeClass('active_item')
+      $(this).closest('.list-group-item').addClass('active_item')
+    });
+
+    // Обработчик события переключения вкладок на панели с информацией о маршруте
+    $('#route_info a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
+      tab_id = event.target.id;
+      if(tab_id == 'route_duplications_tab'){
+        map.setLayoutProperty('route_search_dupl', 'visibility', 'visible');
+      } else{
+        map.setLayoutProperty('route_search_dupl', 'visibility', 'none');
+      }
+    })
 
     // ========== Изохроны ==========//
 
@@ -803,12 +914,10 @@ Paloma.controller('Constructor',
 
       // Если слой уже загружен, делаем его видимым
       if (map.getLayer(layer_code)) {
-        console.log("exits");
         map.setFilter(layer_code,true);
       }
       // Иначе загружаем слой
       else {
-        console.log("draw");
         drawLayer(params);
       }
     }

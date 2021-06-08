@@ -1,0 +1,14 @@
+station = <%= raw @station.to_json %>;
+routes = <%= raw @routes.to_json %>;
+
+marker.setLngLat(station.geo_data.coordinates).setPopup(obj_popup).addTo(map);
+
+obj_popup.setLngLat(station.geo_data.coordinates)
+.setHTML(
+  "<span><b>Остановка:</b> <a href class='station_link' title='Перейти к остановке' data-station_id='"+station.id+"'>"+station.station_name+"</a></span><br>"
+  +
+  "<span><b>Маршруты:</b> "+routes.map(function(r){return "<a href class='route_link' title='Перейти к маршруту' data-route_id='"+r.id+"'>"+r.route_code+"</a>"}).join(", ")+"</span>"
+  )
+.addTo(map);
+
+map.flyTo({center: station.geo_data.coordinates});

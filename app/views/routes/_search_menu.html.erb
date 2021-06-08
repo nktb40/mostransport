@@ -1,9 +1,9 @@
-<small class="text-muted">Поиск маршрутов</small>
 <div class="d-flex align-items-center w-100 mt-2">
   <%= fa_icon('search', class:"mr-2 text-blue") %>
   <select id="route_select" class="selectpicker" data-live-search="true" data-width="100%" data-style="" multiple title="Выберите маршруты" data-size="10" data-actions-box="true" data-deselect-all-text="Очистить" data-select-all-text="Выбрать все" data-selected-text-format="count > 5" data-header="Маршруты">
     <% @routes.order(:route_code).each do |route| %>
-      <option title="<%= route.route_code %>" data-content='<span class="text-truncate d-inline-block" style="max-width:265px"><%= route.route_code %> - <small><%= route.route_name %></small></span'>
+      <% direction = route.directions[0] %>
+      <option title="<%= route.route_code %>" data-content='<span class="text-truncate d-inline-block" style="max-width:500px"><%= route.route_code %> - <small><%= direction.name %></small></span'>
         <%= route.route_code %>
       </option>
     <% end %>

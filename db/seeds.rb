@@ -91,7 +91,9 @@ if seeds_params.include? 'layer_types'
     {name: "Очаги ДТП", code: "dtp_ochagi", source_name: "dtp_ochagi", draw_type: "circle", paint_rule:'{"circle-radius": 10,"circle-color": "#eb5310"}', default: false},
     {name: "Подходы к остановкам", code: 'stop_routes', source_name: "stop_routes", draw_type: "line", paint_rule: '{"line_width": 3, "line-color":["case",["==",["get", "distance"],200], "#42d103", ["==", ["get", "distance"], 300], "#f3b307", ["==", ["get","distance"], 400], "#ffa500", ["==", ["get", "distance"], 500], "ff4700", "#e13d02"]}', default: false},
     {name: "Расстояние между остановками", code: 'stops_distance', source_name: 'stops_distance', draw_type: 'line', paint_rule: '{"line-width": 5, "line-color": ["case", ["<", ["get", "distance"], 300], "#d0ea2c", ["<",["get", "distance"], 400], "#fefe33", ["<",["get", "distance"], 500], "#f4bc04", ["<",["get", "distance"], 600], "#f09906", "#eb5310"]}', default: false},
-    {name: "Камеры ГИБДД", code: "traffic_cameras", source_name: "traffic_cameras", draw_type: "circle", paint_rule:'{"circle-radius": 5,"circle-color": "#5038bc", "circle-opacity": 0.8}', default: false}
+    {name: "Камеры ГИБДД", code: "traffic_cameras", source_name: "traffic_cameras", draw_type: "circle", paint_rule:'{"circle-radius": 5,"circle-color": "#5038bc", "circle-opacity": 0.8}', default: false},
+    {name: "Прогноз ДТП", code: "dtp_forecast", source_name: "dtp_forecast", draw_type: "circle", paint_rule:'{"circle-radius": ["+",["*",["get","probability"],10],5],"circle-color": ["case",["<",["*",["get","probability"],100],10],"#4fea00", [">",["*",["get","probability"],100],50],"#e77d91", "#f4bc04"], "circle-opacity": 0.8}', default: false},
+    {name: "Карта скорости ОТ", code: "speed_map", source_name: "speed_map", draw_type: "line", paint_rule:'{"line-width": 3,"line-color": ["get","color"]}', default: false}
   ]
   items.each do |row|
     item = LayerType.find_or_initialize_by(code: row[:code])
@@ -116,6 +118,13 @@ if seeds_params.include? 'metric_type'
     {metric_code: "universities_cnt", metric_name: "Охват университетов", unit_code: ""},
     {metric_code: "universities_population", metric_name: "Охват студентов", unit_code: "чел"},
 
+    {metric_code: "preschool_population", metric_name: "Охват дошкольников", unit_code: "чел"},
+    {metric_code: "schoolkids_population", metric_name: "Охват школьников", unit_code: "чел"},
+    {metric_code: "preschool_places", metric_name: "Количество мест в детских садах", unit_code: "шт"},
+    {metric_code: "schoolkids_places", metric_name: "Количество мест в школах", unit_code: "шт"},
+    {metric_code: "university_places", metric_name: "Количество мест в университетах", unit_code: "шт"},
+    {metric_code: "work_places", metric_name: "Количество рабочих мест", unit_code: "шт"},
+
     # Метрики остановок
     {metric_code: "accessibility", metric_name: "Пешая доступность остановки", unit_code: "%"},  
     {metric_code: "reachable_stops", metric_name: "Кол-во достижимых остановок на ОТ", unit_code: "шт"},
@@ -139,6 +148,15 @@ if seeds_params.include? 'metric_type'
     {metric_code: "cover_population_share", metric_name: "Доля населения в зоне покрытия", unit_code: "%"},
     {metric_code: "stations_per_100k", metric_name: "Число остановок на 100тыс жителей", unit_code: "шт"},
     {metric_code: "routes_per_100k", metric_name: "Число маршрутов на 100тыс жителей", unit_code: "шт"},
+
+    {metric_code: "offices_population_share", metric_name: "Доля работников в зоне покрытия", unit_code: "%"},
+    {metric_code: "preschool_population_share", metric_name: "Доля дошкольников в зоне покрытия", unit_code: "%"},
+    {metric_code: "schoolkids_population_share", metric_name: "Доля школьников в зоне покрытия", unit_code: "%"},
+    {metric_code: "universities_population_share", metric_name: "Доля студентов в зоне покрытия", unit_code: "%"},
+    {metric_code: "preschool_places_share", metric_name: "Доля мест в детских садах в зоне покрытия", unit_code: "%"},
+    {metric_code: "schoolkids_places_share", metric_name: "Доля мест в школах в зоне покрытия", unit_code: "%"},
+    {metric_code: "university_places_share", metric_name: "Доля мест в университетах в зоне покрытия", unit_code: "%"},
+    {metric_code: "work_places_share", metric_name: "Доля рабочих мест в зоне покрытия", unit_code: "%"}
 
   ]
 

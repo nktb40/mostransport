@@ -1,0 +1,90 @@
+<div class="container py-5 d-flex flex-column align-items-center">
+  <h2>Sign up</h2>
+  <%= render "devise/shared/error_messages", resource: resource %>
+  <div class="col-5 mb-3 pt-4">
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+
+      <div class="form-group">
+        <%= f.label :email %>
+        <%= f.email_field :email, autofocus: true, placeholder: "email@mail.com", :class=>"form-control rounded-pill" %>
+        <div class="invalid-feedback">
+            Please enter email in format: name@example.com
+        </div>
+      </div>
+
+
+      <div class="form-group mt-4">
+        <%= f.label :password %>
+        <% if @minimum_password_length %>
+        <em>(<%= @minimum_password_length %> characters minimum)</em>
+        <% end %><br />
+        <%= f.password_field :password, placeholder: "password", :class=>"form-control rounded-pill" %>
+        <div class="invalid-feedback">
+            Please enter your password
+        </div>
+      </div>
+
+      <div class="form-group mt-4">
+        <%= f.label :password_confirmation %>
+        <%= f.password_field :password_confirmation, placeholder: "repeat password", :class=>"form-control rounded-pill"  %>
+        <div class="invalid-feedback">
+            Please confirm your password
+        </div>
+      </div>
+
+      <div class="form-group mt-5 d-flex">
+        <%= f.submit "Sign up", :class=>"btn btn-outline-primary rounded-pill px-4 mx-auto" %>
+      </div>
+    <% end %>
+  </div>
+  <%= render "devise/shared/links" %>
+</div>
+
+
+<script type="text/javascript">
+
+  // Валидация формы при отправке запроса
+  $("#new_user").on("submit", function (event) {
+    return validateForm();
+  });
+
+
+  function validateForm(){
+    result = true;
+    user_email = $('#user_email');
+    user_password = $('#user_password');
+    user_password_confirmation = $('#user_password_confirmation');
+
+    if (isEmail(user_email.val()) == false){
+      $(user_email).addClass("is-invalid");
+      result = false;
+    } else {;
+      $(user_email).removeClass("is-invalid");
+      $(user_email).addClass("is-valid");
+    }
+
+    if (user_password.val() == ""){
+        $(user_password).addClass("is-invalid");
+        result = false;
+    } else {
+      $(user_password).removeClass("is-invalid");
+      $(user_password).addClass("is-valid");
+    }
+
+    if (user_password_confirmation.val() == ""){
+        $(user_password_confirmation).addClass("is-invalid");
+        result = false;
+    } else {
+      $(user_password_confirmation).removeClass("is-invalid");
+      $(user_password_confirmation).addClass("is-valid");
+    }
+
+    return result;
+  }
+
+  function isEmail(email) {
+    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    return regex.test(email);
+  }
+
+</script>

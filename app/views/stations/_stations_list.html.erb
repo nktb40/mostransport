@@ -1,0 +1,14 @@
+<ul class="list-group list-group-flush">
+  <% @stations.each do |s| %>
+    <li class="list-group-item d-flex flex-column">
+      <a href class="station_popup_link" data-src_station_id="<%= s.source_id %>">
+        <%= s.station_name %>
+      </a>
+      <small>Маршруты:
+        <% @route2stations.select{|r2s| r2s[:station_id] == s.id}.each do |r| %>
+          <a href class="route_link" data-route_id="<%= r[:route_id] %>"><%= r[:route_code] %></a>
+        <% end %>
+      </small>
+    </li>
+  <% end %>
+</ul>

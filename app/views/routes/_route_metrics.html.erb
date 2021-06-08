@@ -1,12 +1,6 @@
 <div class="route_metrics">
-  <p class="mb-3 text-blue">Показатели маршрута:</p>
+  <p class="mb-3 text-blue">Метрики маршрута:</p>
   <table id="route_stat" class="table table-hover">
-    <thead class="text-secondary">
-      <tr>
-        <th>Показатель</th>
-        <th>Значение</th>
-      </tr>
-    </thead>
     <tbody>
       <% ['route_length','straightness','route_cost','population_per_track','tracks_per_hour'].each do |metric_code| %>
         <% metric = @route_metrics.find{|m| m[:metric_code] == metric_code}%>

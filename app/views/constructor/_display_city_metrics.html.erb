@@ -1,13 +1,9 @@
-<div class="row mx-0">
-  <div class="area-chart col-4">
-      <p class="text-center mt-4" style="min-height: 48px;">Площадь покрытия остановками</p>
+<div class="row mx-0 justify-content-center">
+  <% @chartData.each do |chart| %>
+  <div class="<%= chart[:name] %> col-4">
+      <p class="text-center mt-4" style="min-height: 48px;"><%= chart[:desc] %></p>
   </div>
-  <div class="houses-chart col-4">
-      <p class="text-center mt-4" style="min-height: 48px;">Доля домов в зоне покрытия</p>
-  </div>
-  <div class="population-chart col-4">
-      <p class="text-center mt-4" style="min-height: 48px;">Доля населения в зоне покрытия</p>
-  </div>
+  <% end %>
 </div>
 
 <table class="table table-hover mt-3">

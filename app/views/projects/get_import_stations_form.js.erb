@@ -1,0 +1,6 @@
+$("#user_projects").addClass("d-none");
+$("#import_stations").removeClass("d-none");
+$('#import_stations .panel').html("<%= j render partial: 'import_stations_form' %>");
+// Инициализация слоя для отображения маршрутов при импорте
+//map.initImportRoutesLayers();
+//map.setLayoutProperty('import_routes', 'visibility', 'visible');

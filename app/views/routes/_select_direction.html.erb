@@ -1,0 +1,10 @@
+<div class="d-flex align-items-center">
+  <p class="text-blue mb-0 mr-2">Направление:</p>
+  <select id="direction_select" class="selectpicker" data-style="border-bottom" title="Выберите направление" data-size="5" data-width="100%">
+    <% @directions.each_with_index do |d,i| %>
+      <option data-content='<span class="text-truncate d-inline-block align-middle" style="max-width:400px"><%= d.name %></span' <%= "selected" if d.id == @direction.id %> >
+        <%= d.id %>
+      </option>
+    <% end %>
+  </select>
+</div>

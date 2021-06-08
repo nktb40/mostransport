@@ -9,18 +9,19 @@
   </thead>
   <tbody>
     <% @routes.each do |route| %>
+      <% direction = route.directions[0] %>
       <tr data-route-code="<%= route.route_code %>">
         <td class="w260">
-          <%= link_to route.route_code, "#", class:"route_link", "data-route_id":route.id, "data-toggle":"tooltip", "data-placement":"right", "title":"#{route.route_code} - #{route.route_name}" %>
+          <%= link_to route.route_code, "#", class:"route_link", "data-route_id":route.id, "data-toggle":"tooltip", "data-placement":"right", "title":"#{route.route_code} - #{direction.name}" %>
         </td>
-        <% length = @metrics.find{|m| m.route_id == route.id and m.metric_code == 'route_length'} %>
-        <td class="text-center"><%= "#{length[:metric_value].round} #{length[:unit_code]}" if length.present? %></td>
+        <% length = @metrics.find{|m| m.direction_id == direction.id and m.metric_code == 'route_length'} %>
+        <td class="text-center" data-toggle="tooltip" data-placement="top" title="Длина маршрута"><%= "#{length[:metric_value].round} #{length[:unit_code]}" if length.present? %></td>
 
-        <% straight = @metrics.find{|m| m.route_id == route.id and m.metric_code == 'straightness'} %>
-        <td class="text-center"><%= "#{(straight[:metric_value]*100).round} #{straight[:unit_code]}" if straight.present? %></td>
+        <% straight = @metrics.find{|m| m.direction_id == direction.id and m.metric_code == 'straightness'} %>
+        <td class="text-center" data-toggle="tooltip" data-placement="top" title="Коэффициент прямолинейности"><%= "#{(straight[:metric_value]*100).round} #{straight[:unit_code]}" if straight.present? %></td>
 
-        <% cost = @metrics.find{|m| m.route_id == route.id and m.metric_code == 'route_cost'} %>
-        <td class="text-center"><%= "#{(cost[:metric_value]/1000).round} тыс" if cost.present? %></td>
+        <% cost = @metrics.find{|m| m.direction_id == direction.id and m.metric_code == 'route_cost'} %>
+        <td class="text-center" data-toggle="tooltip" data-placement="top" title="Стоимость обслуживания маршрута в день (руб)"><%= "#{(cost[:metric_value]/1000).round} тыс" if cost.present? %></td>
       </tr>
     <% end %>
 

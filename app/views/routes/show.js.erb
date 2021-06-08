@@ -1,20 +1,33 @@
-//$('#route_search').addClass("d-none");
+$('.tool_panel').addClass("d-none");
 $('#route_info').removeClass("d-none");
 
 $('#route_code').html("<%= @route.route_code %>");
 
-$('#stops_list').html("<%= j render partial: 'route_list' %>");
+$('#select_direction').html("<%= j render partial: 'select_direction' %>");
+$('#direction_show').html("<%= j render partial: 'direction_show' %>");
 $('#route_info_metrics').html("<%= j render partial: 'route_metrics' %>");
+$('#route_duplications').html("<%= j render partial: 'route_duplications' %>");
 
+// Инициализация selectpicker
+$('#direction_select').selectpicker();
+
+// Загружаем линию направления маршрута
 route_data = <%= raw @route.to_json %>;
-route_features = turf.featureCollection([turf.feature(route_data.geo_data,{route_id:route_data.id, 'Номер':route_data.route_code, 'Маршрут':route_data.route_name})]);
-map.getSource('route_search').setData(route_features);
-
+direction_data = <%= raw @direction.to_json %>;
+direction_features = turf.featureCollection([turf.feature(direction_data.geo_data,{'Маршрут':route_data.route_code, 'Направление':direction_data.name})]);
+map.getSource('route_search').setData(direction_features);
+// Загружаем изохрон направления маршрута
 geo_data = <%= raw @isochrones.to_json() %>;
 iso_features = turf.featureCollection(geo_data.map(function(d){return turf.feature(d)}));
 map.getSource('route_search_iso').setData(iso_features);
 
 // Устанавливаем границы карты в пределах линии маршрута
-map.fitBounds(route_data.bbox, {
+map.fitBounds(direction_data.bbox, {
 	padding: {top: 10, bottom:10, left: 10, right: 10}
 });
+
+// Загружаем дублируемые сегменты маршрута
+dupl_data = <%= raw @duplicated_sections.to_json %>;
+dupl_features = turf.featureCollection(dupl_data.map(function(d){return turf.feature(d.geometry,{'direction_id':d.direction_id, 'dupl_direction_id':d.dupl_direction_id})}));
+map.getSource('route_search_dupl').setData(dupl_features);
+map.setFilter('route_search_dupl', false);

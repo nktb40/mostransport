@@ -1,0 +1,6 @@
+$("#user_projects").addClass("d-none");
+$("#import_routes").removeClass("d-none");
+$('#import_routes .panel').html("<%= j render partial: 'import_routes_form' %>");
+// Инициализация слоя для отображения маршрутов при импорте
+map.initImportRoutesLayers();
+map.setLayoutProperty('import_routes', 'visibility', 'visible');

@@ -7,8 +7,19 @@
     </button>
   </p>
 
-  <div class="panel h-100 overflow-auto">
-    <div id="stops_list" class="mt-3 pb-3"></div>
-    <div id="route_info_metrics" class="mt-3"></div>
+  <div class="panel h-100 px-1">
+    <div id="select_direction" class="mt-3 pb-4"></div>
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="direction_tab" data-toggle="tab" href="#direction_show" role="tab" aria-controls="direction_show" aria-selected="true">Маршрут</a>
+        <a class="nav-link" id="route_metrics_tab" data-toggle="tab" href="#route_info_metrics" role="tab" aria-controls="route_info_metrics" aria-selected="false">Метрики</a>
+        <a class="nav-link" id="route_duplications_tab" data-toggle="tab" href="#route_duplications" role="tab" aria-controls="route_duplications" aria-selected="false">Дублирование</a>
+      </div>
+    </nav>
+    <div class="tab-content panel h-100 pt-3" id="nav-tabContent">
+      <div class="tab-pane fade show h-100 overflow-auto active" id="direction_show" role="tabpanel" aria-labelledby="direction_tab"></div>
+      <div class="tab-pane fade" id="route_info_metrics" role="tabpanel" aria-labelledby="route_metrics_tab"></div>
+      <div class="tab-pane fade h-100" id="route_duplications" role="tabpanel" aria-labelledby="route_duplications_tab"></div>
+    </div>
   </div>
 </div>

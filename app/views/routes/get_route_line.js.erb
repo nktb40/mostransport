@@ -1,0 +1,9 @@
+route_data = <%= raw @route.to_json %>;
+route_features = turf.featureCollection([turf.feature(route_data.geo_data,{route_id:route_data.id, 'Номер':route_data.route_code, 'Маршрут':route_data.route_name})]);
+
+// Отображаем линию маршрута на карте
+map.getSource('import_routes').setData(route_features);
+// Устанавливаем границы карты в пределах линии маршрута
+map.fitBounds(route_data.bbox, {
+	padding: {top: 10, bottom:10, left: 10, right: 10}
+});
