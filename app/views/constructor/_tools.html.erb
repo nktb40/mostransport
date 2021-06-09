@@ -18,6 +18,10 @@
       <%= inline_svg_tag "bus_route.svg" %>
     <% end %>
 
+    <%= button_tag class:"btn btn btn-outline-primary mb-3","data-toggle":"tooltip", "data-placement":"right", title:"Конструктор маршрутов", "data-target":"constructor" do %>
+      <%= inline_svg_tag "build_route.svg" %>
+    <% end %>
+
     <%= button_tag class:"btn btn btn-outline-primary mb-3", "data-toggle":"tooltip", "data-placement":"right", title:"Изохроны", "data-target":"isochrones" do %>
       <i class="fas fa-street-view fa-lg"></i>
     <% end %>
