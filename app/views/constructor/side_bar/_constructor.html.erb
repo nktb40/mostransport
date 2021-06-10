@@ -5,31 +5,32 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </p>
+  <div class="h-100 overflow-auto">
+    <div id="new_route" class="pt-4">
 
-  <div id="new_route" class="pt-4">
+      <p class="txt-l mb-4">Новый маршрут</p>
+      <div id="route_list" class="pr-2"></div>
 
-    <p class="txt-l mb-4">Новый маршрут</p>
-    <div id="route_list" class="pr-2"></div>
+      <p id="choose_points_alert" class="text-muted text-center py-3 border rounded mt-4">Выберите точки на карте</p>
 
-    <p id="choose_points_alert" class="text-muted text-center py-3 border rounded mt-4">Выберите точки на карте</p>
-
-    <div class="d-none justify-content-center" id="constr_btns">
-      <button id="calculate_route" class='btn btn-sm btn-success rounded-pill px-4 mt-4' style="width: 120px">Рассчитать</button>
-      <button id="clean_route" class='btn btn-sm btn-outline-success rounded-pill px-4 mt-4 ml-2' style="width: 120px;">Очистить</button>
+      <div class="d-none justify-content-center" id="constr_btns">
+        <button id="calculate_route" class='btn btn-sm btn-success rounded-pill px-4 mt-4' style="width: 120px">Рассчитать</button>
+        <button id="clean_route" class='btn btn-sm btn-outline-success rounded-pill px-4 mt-4 ml-2' style="width: 120px;">Очистить</button>
+      </div>
     </div>
-  </div>
 
-  <div id="route_metrics" class="d-none">
-    <p class='txt-l mb-4 mt-5'>Показатели маршрута:</p>
-    <table id="route_stat" class="table table-hover">
-      <thead class="text-secondary">
-        <tr>
-          <th>Показатель</th>
-          <th>Значение</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
+    <div id="route_metrics" class="d-none">
+      <p class='txt-l mb-4 mt-5'>Показатели маршрута:</p>
+      <table id="route_stat" class="table table-hover">
+        <thead class="text-secondary">
+          <tr>
+            <th>Показатель</th>
+            <th>Значение</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
