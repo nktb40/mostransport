@@ -4,7 +4,7 @@ class RoutesController < ApplicationController
 
 	def show
 		@route = Route.find(params[:route_id])
-		@directions = @route.directions
+		@directions = @route.directions.where(deleted_flag: false)
 		
 		if params[:direction_id].present?
 			@direction = Direction.find(params[:direction_id])
@@ -12,26 +12,30 @@ class RoutesController < ApplicationController
 			@direction = @directions.first
 		end			
 
-		@stations = LnkDirectionStation.joins(:station).where(direction_id: @direction.id)
+		@stations = LnkDirectionStation.where(direction_id: @direction.id, deleted_flag: false).joins(:station).where("stations.deleted_flag = false")
 					.select("station_id, source_id, stations.station_name, stations.source_id, direction_id, seq_no, route_time, distance").sort_by(&:seq_no)
 
-		isochrones = Isochrone.where(direction_id: @direction.id, profile: "direction_cover", contour: 5)
+		isochrones = Isochrone.where(direction_id: @direction.id, profile: "direction_cover", contour: 5, deleted_flag: false)
 		@isochrones = isochrones.map(&:geo_data)
 
-		@isochrone_metrics = isochrones.joins(:metrics).joins('INNER JOIN metric_types ON metrics.metric_type_id = metric_types.id').select('route_id, metric_value, metric_name, metric_types.unit_code')
+		@isochrone_metrics = isochrones.joins(:metrics).where(deleted_flag: false).joins('INNER JOIN metric_types ON metrics.metric_type_id = metric_types.id').select('route_id, metric_value, metric_name, metric_types.unit_code')
 		
-		@route_metrics = @route.route_metrics.joins(:metric_type).select("metric_types.metric_code, metric_types.metric_name, route_metrics.metric_value, metric_types.unit_code")
+		@route_metrics = @route.route_metrics.where(deleted_flag: false).joins(:metric_type).select("metric_types.metric_code, metric_types.metric_name, route_metrics.metric_value, metric_types.unit_code")
 
 
-		subquery = Direction.find(@direction.id).duplications.select("direction_id, dupl_direction_id, dupl_route_id, distance, value, row_number() over(partition by direction_id, dupl_route_id order by value desc) rn").where(deleted_flag: false)
+		subquery = Direction.find(@direction.id).duplications.where(deleted_flag:false).select("direction_id, dupl_direction_id, dupl_route_id, distance, value, row_number() over(partition by direction_id, dupl_route_id order by value desc) rn")
 		@duplications = Direction.unscoped.select("s.direction_id, s.dupl_direction_id, s.dupl_route_id, r.route_code, s.distance, s.value").from(subquery,:s).joins("INNER JOIN routes r ON r.id = s.dupl_route_id and r.deleted_flag = False")
 						.where("rn=1 and s.value >= 8")
 						.order("s.value desc")
 
-		@duplicated_sections = Section.where(deleted_flag: false)
+		if @duplications.present?
+			@duplicated_sections = Section.where(deleted_flag: false)
 								.joins("INNER JOIN lnk_direction_sections l1 ON l1.direction_id = #{@direction.id} and l1.deleted_flag = False and sections.id = l1.section_id")
 								.joins("INNER JOIN lnk_direction_sections l2 ON l2.direction_id in (#{@duplications.map(&:dupl_direction_id).join(",")}) and l2.deleted_flag = False and l1.section_id = l2.section_id")	
-								.select("l1.direction_id, l2.direction_id as dupl_direction_id, sections.geometry")					
+								.select("l1.direction_id, l2.direction_id as dupl_direction_id, sections.geometry")	
+		else
+			@duplicated_sections = []
+		end												
 	end
 
 	def get_city_routes
