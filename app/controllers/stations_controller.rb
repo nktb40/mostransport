@@ -18,12 +18,12 @@ class StationsController < ApplicationController
 		@routes = Route.where(id: directions.map(&:route_id)).map{|r| {id:r.id, route_code: r.route_code, geo_data: directions.select{|d| d.route_id == r.id}.first.geo_data, color: "#" + generator.create_hex}}
 	
 		isochrones = []
-		iso = Isochrone.find_by(station_id: @station.id, contour: 5, profile: 'walking')
-		isochrones.append({type:"Feature", properties:{profile:iso.profile}, geometry:iso.geo_data})
-		iso = Isochrone.find_by(station_id:@station.id, contour:30, profile: 'public_transport', with_interval: true, with_changes: false)
-		isochrones.append({type:"Feature", properties:{profile:iso.profile}, geometry:iso.geo_data})
-		iso = Isochrone.find_by(station_id:@station.id, contour:30, profile: 'public_transport', with_interval: true, with_changes: true)
-		isochrones.append({type:"Feature", properties:{profile:iso.profile+"_chng"}, geometry:iso.geo_data})
+		iso1 = Isochrone.find_by(station_id: @station.id, contour: 5, profile: 'walking')
+		isochrones.append({type:"Feature", properties:{profile:iso1.profile}, geometry:iso1.geo_data}) if iso1.present?
+		iso2 = Isochrone.find_by(station_id:@station.id, contour:30, profile: 'public_transport', with_interval: true, with_changes: false)
+		isochrones.append({type:"Feature", properties:{profile:iso2.profile}, geometry:iso2.geo_data}) if iso2.present?
+		iso3 = Isochrone.find_by(station_id:@station.id, contour:30, profile: 'public_transport', with_interval: true, with_changes: true)
+		isochrones.append({type:"Feature", properties:{profile:iso3.profile+"_chng"}, geometry:iso3.geo_data}) if iso3.present?
 		
 		@isochrones_collection = {type:"FeatureCollection", features:isochrones}
 	end
